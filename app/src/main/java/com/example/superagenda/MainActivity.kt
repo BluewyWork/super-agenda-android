@@ -3,44 +3,25 @@ package com.example.superagenda
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.viewModels
+import com.example.superagenda.core.navigations.NavigationHost
+import com.example.superagenda.presentation.screens.profile.ProfileViewModel
+import com.example.superagenda.presentation.screens.tasks.TasksViewModel
 import com.example.superagenda.ui.theme.SuperAgendaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val profileViewModel: ProfileViewModel by viewModels()
+    private val tasksViewModel: TasksViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        profileViewModel.onCreate()
+
         setContent {
             SuperAgendaTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                NavigationHost(profileViewModel = profileViewModel, tasksViewModel = tasksViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SuperAgendaTheme {
-        Greeting("Android")
     }
 }
