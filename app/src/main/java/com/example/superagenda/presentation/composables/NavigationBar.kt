@@ -33,7 +33,7 @@ fun NavigationBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("tasks_not_started") },
+            onClick = { navController.navigate("tasks_ongoing") },
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Home,
@@ -43,7 +43,7 @@ fun NavigationBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("tasks_not_started") },
+            onClick = { navController.navigate("tasks_completed") },
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Home,
