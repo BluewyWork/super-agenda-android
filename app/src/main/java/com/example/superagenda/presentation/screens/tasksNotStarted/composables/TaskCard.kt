@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.tasks.composables
+package com.example.superagenda.presentation.screens.tasksNotStarted.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
