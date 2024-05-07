@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.mongodb)
-
+    implementation(libs.retrofit)
 }
 kapt {
     correctErrorTypes = true
