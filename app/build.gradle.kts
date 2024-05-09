@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.mongodb)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.json)
+    implementation(libs.room)
+    kapt(libs.room.compiler)
 }
 kapt {
     correctErrorTypes = true
