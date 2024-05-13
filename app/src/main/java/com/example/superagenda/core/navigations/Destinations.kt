@@ -3,6 +3,7 @@ package com.example.superagenda.core.navigations
 sealed class Destinations(
     val route: String
 ) {
+    object Login : Destinations("login")
     object Profile : Destinations("profile")
     object Tasks : Destinations("tasks")
     object TasksNotStarted : Destinations("tasks_not_started")

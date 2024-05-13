@@ -15,11 +15,11 @@ navigationCompose = "2.7.7"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 daggerHiltAndroid = "2.44"
-mongodb = "5.0.0"
-retrofit = "2.9.0"
-retrofit-converter-gson = "2.9.0"
-room = "2.6.1"
+mongodb = "5.1.0"
+retrofit = "2.11.0"
+retrofit-converter-gson = "2.11.0"
 room-compiler = "2.6.1"
+room-ktx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,8 +43,8 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 mongodb = { group = "org.mongodb", name = "mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-json = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit-converter-gson" }
-room = { group = "androidx.room", name = "roomt-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room-compiler" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

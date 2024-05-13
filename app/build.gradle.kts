@@ -76,7 +76,7 @@ dependencies {
     implementation(libs.mongodb)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.json)
-    implementation(libs.room)
+    implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 }
 kapt {
