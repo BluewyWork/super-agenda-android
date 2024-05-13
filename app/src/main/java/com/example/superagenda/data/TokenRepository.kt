@@ -10,22 +10,22 @@ import javax.inject.Inject
 class TokenRepository @Inject constructor(
     private val tokenDao: TokenDao
 ) {
-    suspend fun retrieveTokenFromApi() {
-
-    }
-
-    suspend fun insertTokenToDatabase(token: String) {
+    suspend fun saveTokenToLocalStorage(token: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val tokenEntity = TokenEntity(token)
                 tokenDao.insert(tokenEntity)
+
+                true
             } catch (e: Exception) {
                 Log.e("LOOK AT ME", "${e.message}")
+
+                false
             }
         }
     }
 
-    suspend fun getGuestTokenFromDatabase() {
+    suspend fun retrieveTokenFromLocalStorage() {
         return withContext(Dispatchers.IO) {
             try {
                 tokenDao.get()
@@ -35,7 +35,7 @@ class TokenRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteTokenTableContents() {
+    suspend fun wipeAllTokensFromLocalStorage() {
         return withContext(Dispatchers.IO) {
             try {
                 tokenDao.deleteAll()

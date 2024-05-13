@@ -19,7 +19,7 @@ import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingVie
 
 @Composable
 fun NavigationHost(
-//    loginViewModel: LoginViewModel,
+    loginViewModel: LoginViewModel,
     profileViewModel: ProfileViewModel,
     tasksViewModel: TasksViewModel,
     tasksNotStartedViewModel: TasksNotStartedViewModel,
@@ -29,11 +29,11 @@ fun NavigationHost(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.Profile.route
+        startDestination = Destinations.Login.route
     ) {
-//        composable(Destinations.Login.route) {
-//            LoginScreen(loginViewModel, navController)
-//        }
+        composable(Destinations.Login.route) {
+            LoginScreen(loginViewModel, navController)
+        }
         composable(Destinations.Profile.route) {
             ProfileScreen(profileViewModel, navController)
         }

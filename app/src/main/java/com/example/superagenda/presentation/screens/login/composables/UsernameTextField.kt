@@ -18,7 +18,7 @@ fun UsernameTextField(username: String, onTextChange: (String) -> Unit) {
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp),
         value = username,
-        enabled = false,
+        enabled = true,
         onValueChange = { onTextChange(it) },
         placeholder = { Text(text = "Username") },
         leadingIcon = { Icon(Icons.Default.Person, null) }

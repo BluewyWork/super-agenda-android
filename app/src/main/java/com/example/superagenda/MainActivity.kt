@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-//    private val loginViewModel: LoginViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
     private val tasksViewModel: TasksViewModel by viewModels()
     private val tasksNotStartedViewModel: TasksNotStartedViewModel by viewModels()
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SuperAgendaTheme {
                 NavigationHost(
-//                    loginViewModel = loginViewModel,
+                    loginViewModel = loginViewModel,
                     profileViewModel = profileViewModel,
                     tasksViewModel = tasksViewModel,
                     tasksNotStartedViewModel = tasksNotStartedViewModel,
