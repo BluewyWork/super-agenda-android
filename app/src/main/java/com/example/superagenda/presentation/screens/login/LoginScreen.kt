@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.login.composables.LoginButton
 import com.example.superagenda.presentation.screens.login.composables.PasswordTextField
@@ -26,22 +27,23 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
 fun Login(loginViewModel: LoginViewModel, navController: NavController) {
     val email: String by loginViewModel.username.observeAsState("")
     val password: String by loginViewModel.password.observeAsState("")
+    val loginSuccess: Boolean by loginViewModel.loginSuccess.observeAsState(false)
 
     Column {
         UsernameTextField(email) {
-           loginViewModel.onUsernameChange(it)
+            loginViewModel.onUsernameChange(it)
         }
         PasswordTextField(password) {
             loginViewModel.onPasswordChange(it)
         }
         LoginButton() {
-            val loginSuccess = loginViewModel.onLoginButtonPress()
+            loginViewModel.onLoginButtonPress()
 
             if (!loginSuccess) {
                 return@LoginButton
             }
 
-            navController.navigate("tasks_not_started")
+            navController.navigate(Destinations.TasksNotStarted.route)
         }
     }
 }

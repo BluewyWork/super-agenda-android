@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(
     private val authenticationApi: AuthenticationApi
-){
+) {
     suspend fun login(userForLoginModel: UserForLoginModel): String? {
         return withContext(Dispatchers.IO) {
             try {

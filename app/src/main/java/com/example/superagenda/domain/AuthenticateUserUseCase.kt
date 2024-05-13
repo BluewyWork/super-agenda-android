@@ -20,12 +20,9 @@ class AuthenticateUserUseCase @Inject constructor(
             return false
         }
 
+        tokenRepository.wipeAllTokensFromLocalStorage()
         val tokenInserted = tokenRepository.saveTokenToLocalStorage(token)
 
-        if (!tokenInserted) {
-            return false
-        }
-
-        return true
+        return tokenInserted
     }
 }

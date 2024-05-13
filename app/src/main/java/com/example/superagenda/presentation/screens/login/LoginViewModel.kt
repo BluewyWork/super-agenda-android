@@ -20,18 +20,18 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
+    private val _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccess: LiveData<Boolean> = _loginSuccess
+
     fun onUsernameChange(username: String) {
-       _username.postValue(username)
+        _username.postValue(username)
     }
 
     fun onPasswordChange(password: String) {
         _password.postValue(password)
     }
 
-    fun onLoginButtonPress(): Boolean {
-        val _loginSuccess = MutableLiveData<Boolean>()
-        val loginSuccess: LiveData<Boolean> = _loginSuccess
-
+    fun onLoginButtonPress() {
         viewModelScope.launch {
             val username = _username.value
             val password = _password.value
@@ -41,10 +41,9 @@ class LoginViewModel @Inject constructor(
             }
 
             val userForLogin = UserForLogin(username, password)
+            val userAuthenticated = authenticateUserUseCase.login(userForLogin)
 
-            _loginSuccess.postValue(authenticateUserUseCase.login(userForLogin))
+            _loginSuccess.postValue(userAuthenticated)
         }
-
-        return _loginSuccess.value ?: false
     }
 }
