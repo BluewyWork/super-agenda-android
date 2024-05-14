@@ -1,6 +1,7 @@
 package com.example.superagenda.data
 
 import android.util.Log
+import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
@@ -29,5 +30,21 @@ class TaskRepository @Inject constructor(
                 null
             }
         }
+    }
+
+    suspend fun updateTask(task: Task): Boolean {
+       return withContext(Dispatchers.IO) {
+           try {
+               val taskModel = task.toData()
+
+               val apiResponse = taskApi.updateTask(taskModel)
+
+               apiResponse.ok
+           } catch (e: Exception) {
+               Log.e("LOOK AT ME", "${e.message}")
+
+               false
+           }
+       }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.tasksNotStarted.composables
+package com.example.superagenda.presentation.screens.shared.tasksNotStarted.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.superagenda.domain.models.Task
 
 @Composable
-fun TaskCard(task: Task) {
+fun TaskCard(task: Task, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -24,7 +24,7 @@ fun TaskCard(task: Task) {
     ) {
         Text(task.title)
         Text(task.description)
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = onClick) {
             Icon(Icons.Default.Create, null)
         }
     }

@@ -28,3 +28,14 @@ fun TaskModel.toDomain() = Task(
         TaskStatusModel.Completed -> TaskStatus.Completed
     }
 )
+
+fun Task.toData() = TaskModel(
+    _id = _id,
+    title = title,
+    description = description,
+    status = when (status) {
+        TaskStatus.NotStarted -> TaskStatusModel.NotStarted
+        TaskStatus.Ongoing -> TaskStatusModel.Ongoing
+        TaskStatus.Completed -> TaskStatusModel.Completed
+    }
+)

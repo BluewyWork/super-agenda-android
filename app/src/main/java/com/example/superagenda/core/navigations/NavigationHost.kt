@@ -8,12 +8,15 @@ import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
-import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
-import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
-import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedScreen
-import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
-import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingScreen
-import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingViewModel
+import com.example.superagenda.presentation.screens.shared.taskEdit.TaskEditScreen
+import com.example.superagenda.presentation.screens.shared.taskEdit.TaskEditViewModel
+import com.example.superagenda.presentation.screens.shared.tasksCompleted.TasksCompletedScreen
+import com.example.superagenda.presentation.screens.shared.tasksCompleted.TasksCompletedViewModel
+import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedScreen
+import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedViewModel
+import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingScreen
+import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingViewModel
+import kotlin.concurrent.timerTask
 
 @Composable
 fun NavigationHost(
@@ -21,7 +24,8 @@ fun NavigationHost(
     profileViewModel: ProfileViewModel,
     tasksNotStartedViewModel: TasksNotStartedViewModel,
     tasksOngoingViewModel: TasksOngoingViewModel,
-    tasksCompletedViewModel: TasksCompletedViewModel
+    tasksCompletedViewModel: TasksCompletedViewModel,
+    taskEditViewModel: TaskEditViewModel,
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -33,6 +37,7 @@ fun NavigationHost(
             LoginScreen(loginViewModel, navController)
         }
         composable(Destinations.Profile.route) {
+            profileViewModel.onShow()
             ProfileScreen(profileViewModel, navController)
         }
         composable(Destinations.TasksNotStarted.route) {
@@ -40,10 +45,15 @@ fun NavigationHost(
             TasksNotStartedScreen(tasksNotStartedViewModel, navController)
         }
         composable(Destinations.TasksOngoing.route) {
+            tasksOngoingViewModel.onShow()
             TasksOngoingScreen(tasksOngoingViewModel, navController)
         }
         composable(Destinations.TasksCompleted.route) {
+            tasksCompletedViewModel.onShow()
             TasksCompletedScreen(tasksCompletedViewModel, navController)
+        }
+        composable(Destinations.TaskEdit.route) {
+            TaskEditScreen(taskEditViewModel, navController)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.tasksNotStarted
+package com.example.superagenda.presentation.screens.shared.tasksOnGoing
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,16 +11,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TasksNotStartedViewModel @Inject constructor(
+class TasksOngoingViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase
 ) : ViewModel() {
-    private val _notStartedTaskList = MutableLiveData<List<Task>?>()
-    val notStartedTaskList: LiveData<List<Task>?> = _notStartedTaskList
+    private val _onGoingTaskList = MutableLiveData<List<Task>?>()
+    val onGoingTaskList: LiveData<List<Task>?> = _onGoingTaskList
 
     fun onShow() {
         viewModelScope.launch {
-            val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList()
-            _notStartedTaskList.postValue(notStartedTaskList)
+            val onGoingTaskList = taskUseCase.retrieveOnGoingTaskList()
+            _onGoingTaskList.postValue(onGoingTaskList)
         }
     }
 }

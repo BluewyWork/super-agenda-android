@@ -17,7 +17,7 @@ class ProfileViewModel @Inject constructor(
     private val _userProfile = MutableLiveData<UserProfile?>()
     val userProfile: LiveData<UserProfile?> = _userProfile
 
-    fun onCreate() {
+    fun onShow() {
         viewModelScope.launch {
             val userProfile = getUserProfileUseCase()
 

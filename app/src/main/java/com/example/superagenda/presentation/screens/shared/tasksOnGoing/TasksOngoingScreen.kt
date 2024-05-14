@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.tasksNotStarted
+package com.example.superagenda.presentation.screens.shared.tasksOnGoing
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,32 +13,39 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
+import com.example.superagenda.presentation.screens.shared.tasksNotStarted.composables.TaskCard
 
 @Composable
-fun TasksNotStartedScreen(
-    tasksNotStartedViewModel: TasksNotStartedViewModel,
+fun TasksOngoingScreen(
+    tasksOngoingViewModel: TasksOngoingViewModel,
     navController: NavController
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            TasksNotStarted(tasksNotStartedViewModel)
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            TaskOngoing(tasksOngoingViewModel, navController)
         }
     }
 }
 
 @Composable
-fun TasksNotStarted(tasksNotStartedViewModel: TasksNotStartedViewModel) {
-    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
+fun TaskOngoing(
+    tasksOngoingViewModel: TasksOngoingViewModel,
+    navController: NavController
+) {
+    val onGoingTaskList: List<Task>? by tasksOngoingViewModel.onGoingTaskList.observeAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            notStartedTaskList.let {
+            onGoingTaskList.let {
                 if (it != null) {
                     for (task in it) {
-                        TaskCard(task)
+                        TaskCard(task) {
+
+                        }
                     }
                 } else {
                     Text("Whoops something went wrong...")
