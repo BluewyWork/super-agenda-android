@@ -9,7 +9,7 @@ import com.example.superagenda.data.database.entities.TokenEntity
 @Dao
 interface TokenDao {
     @Query("SELECT * FROM token_table")
-    fun get(): TokenEntity
+    fun retrieve(): TokenEntity
 
     @Query("DELETE FROM token_table")
     fun deleteAll()

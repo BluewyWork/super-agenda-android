@@ -8,8 +8,6 @@ import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
-import com.example.superagenda.presentation.screens.tasks.TasksScreen
-import com.example.superagenda.presentation.screens.tasks.TasksViewModel
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
 import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedScreen
@@ -21,7 +19,6 @@ import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingVie
 fun NavigationHost(
     loginViewModel: LoginViewModel,
     profileViewModel: ProfileViewModel,
-    tasksViewModel: TasksViewModel,
     tasksNotStartedViewModel: TasksNotStartedViewModel,
     tasksOngoingViewModel: TasksOngoingViewModel,
     tasksCompletedViewModel: TasksCompletedViewModel
@@ -32,15 +29,14 @@ fun NavigationHost(
         startDestination = Destinations.Login.route
     ) {
         composable(Destinations.Login.route) {
+            loginViewModel.onShow()
             LoginScreen(loginViewModel, navController)
         }
         composable(Destinations.Profile.route) {
             ProfileScreen(profileViewModel, navController)
         }
-        composable(Destinations.Tasks.route) {
-            TasksScreen(tasksViewModel, navController)
-        }
         composable(Destinations.TasksNotStarted.route) {
+            tasksNotStartedViewModel.onShow()
             TasksNotStartedScreen(tasksNotStartedViewModel, navController)
         }
         composable(Destinations.TasksOngoing.route) {

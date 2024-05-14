@@ -1,20 +1,14 @@
 package com.example.superagenda.domain
 
-import com.example.superagenda.data.AuthenticationRepository
 import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.UserForLogin
 import javax.inject.Inject
 
-class AuthenticateUserUseCase @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository,
+class LoginUseCase @Inject constructor(
     private val tokenRepository: TokenRepository
 ) {
-    suspend fun register(username: String, password: String) {
-
-    }
-
     suspend fun login(userForLogin: UserForLogin): Boolean {
-        val token = authenticationRepository.login(userForLogin)
+        val token = tokenRepository.retrieveTokenFromApi(userForLogin)
 
         if (token.isNullOrBlank()) {
             return false
@@ -24,5 +18,11 @@ class AuthenticateUserUseCase @Inject constructor(
         val tokenInserted = tokenRepository.saveTokenToLocalStorage(token)
 
         return tokenInserted
+    }
+
+    suspend fun isLoggedIn(): Boolean {
+        val haveToken = tokenRepository.retrieveTokenFromLocalStorage()
+
+        return !haveToken.isNullOrBlank()
     }
 }

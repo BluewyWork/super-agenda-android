@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
-import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.tasks.composables.TaskCard
-import org.bson.types.ObjectId
+import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
 
 @Composable
 fun TasksNotStartedScreen(
@@ -21,21 +22,27 @@ fun TasksNotStartedScreen(
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            TasksNotStarted()
+            TasksNotStarted(tasksNotStartedViewModel)
         }
     }
 }
 
 @Composable
-fun TasksNotStarted() {
+fun TasksNotStarted(tasksNotStartedViewModel: TasksNotStartedViewModel) {
+    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            for (x in 1..25) {
-                val task = Task(ObjectId(), "Title", "Description", TaskStatus.NotStarted)
-
-                TaskCard(task = task)
+            notStartedTaskList.let {
+                if (it != null) {
+                    for (task in it) {
+                        TaskCard(task)
+                    }
+                } else {
+                    Text("Whoops something went wrong...")
+                }
             }
         }
     }

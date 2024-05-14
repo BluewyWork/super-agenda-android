@@ -8,7 +8,7 @@ data class UserForLoginModel(
     @SerializedName("password") val password: String
 )
 
-fun UserForLogin.toDomain() = UserForLoginModel(
+fun UserForLogin.toData() = UserForLoginModel(
     username = username,
     password = password
 )
