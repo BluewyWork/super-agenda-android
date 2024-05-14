@@ -16,7 +16,6 @@ import com.example.superagenda.presentation.screens.shared.tasksNotStarted.Tasks
 import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedViewModel
 import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingScreen
 import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingViewModel
-import kotlin.concurrent.timerTask
 
 @Composable
 fun NavigationHost(
@@ -53,6 +52,7 @@ fun NavigationHost(
             TasksCompletedScreen(tasksCompletedViewModel, navController)
         }
         composable(Destinations.TaskEdit.route) {
+            taskEditViewModel.onShow()
             TaskEditScreen(taskEditViewModel, navController)
         }
     }

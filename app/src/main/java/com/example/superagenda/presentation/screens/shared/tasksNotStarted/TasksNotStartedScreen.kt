@@ -29,7 +29,10 @@ fun TasksNotStartedScreen(
 }
 
 @Composable
-fun TasksNotStarted(tasksNotStartedViewModel: TasksNotStartedViewModel, navController: NavController) {
+fun TasksNotStarted(
+    tasksNotStartedViewModel: TasksNotStartedViewModel,
+    navController: NavController
+) {
     val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
 
     LazyColumn(
@@ -40,6 +43,7 @@ fun TasksNotStarted(tasksNotStartedViewModel: TasksNotStartedViewModel, navContr
                 if (it != null) {
                     for (task in it) {
                         TaskCard(task) {
+                            tasksNotStartedViewModel.onEditClick(task)
                             navController.navigate(Destinations.TaskEdit.route)
                         }
                     }

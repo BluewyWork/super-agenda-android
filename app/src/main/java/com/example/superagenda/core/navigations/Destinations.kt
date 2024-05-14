@@ -9,5 +9,5 @@ sealed class Destinations(
     object TasksNotStarted : Destinations("tasks_not_started")
     object TasksOngoing : Destinations("tasks_ongoing")
     object TasksCompleted : Destinations("tasks_completed")
-    object TaskEdit: Destinations("task_edit")
+    object TaskEdit : Destinations("task_edit")
 }

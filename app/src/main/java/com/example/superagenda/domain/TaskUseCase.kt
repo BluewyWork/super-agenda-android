@@ -1,7 +1,5 @@
 package com.example.superagenda.domain
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.Task
@@ -22,6 +20,7 @@ class TaskUseCase @Inject constructor(
 
         return taskList
     }
+
     suspend fun retrieveNotStartedTaskList(): List<Task>? {
         return retrieveTaskList()
     }

@@ -11,24 +11,43 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.NavigationBar
+import com.example.superagenda.presentation.screens.shared.taskEdit.composables.DescriptionTextField
+import com.example.superagenda.presentation.screens.shared.taskEdit.composables.TaskStatusDropDown
+import com.example.superagenda.presentation.screens.shared.taskEdit.composables.TitleTextField
+import com.example.superagenda.presentation.screens.shared.taskEdit.composables.UpdateButton
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
-   Scaffold(bottomBar = { NavigationBar(navController) }) {innerPadding ->
-       Column(Modifier.padding(innerPadding)) {
-          TaskEdit(taskEditViewModel)
-       }
-   }
+    Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
+        Column(Modifier.padding(innerPadding)) {
+            TaskEdit(taskEditViewModel)
+            UpdateButton {
+                taskEditViewModel.onUpdateButtonPress()
+            }
+        }
+    }
 }
 
 @Composable
 fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
     val taskToEdit: Task? by taskEditViewModel.taskToEdit.observeAsState()
-    
+    val title: String by taskEditViewModel.title.observeAsState( "")
+    val description: String by taskEditViewModel.description.observeAsState("")
+    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
+
     LazyColumn {
         item {
-            taskToEdit?.let { Text(it.title) }
+            taskToEdit?.let {
+                TitleTextField(title) {
+                    taskEditViewModel.onTitleChange(it)
+                }
+                DescriptionTextField(description) {
+                    taskEditViewModel.onDescriptionChange(it)
+                }
+                taskStatus?.let { it1 -> TaskStatusDropDown(it1) }
+            }
         }
     }
 }

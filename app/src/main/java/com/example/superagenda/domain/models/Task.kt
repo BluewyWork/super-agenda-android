@@ -4,7 +4,7 @@ import org.bson.types.ObjectId
 
 data class Task(
     val _id: ObjectId,
-    val title: String,
+    var title: String,
     val description: String,
     val status: TaskStatus
 )

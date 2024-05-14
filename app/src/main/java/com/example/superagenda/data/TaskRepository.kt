@@ -33,18 +33,18 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun updateTask(task: Task): Boolean {
-       return withContext(Dispatchers.IO) {
-           try {
-               val taskModel = task.toData()
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskModel = task.toData()
 
-               val apiResponse = taskApi.updateTask(taskModel)
+                val apiResponse = taskApi.updateTask(taskModel)
 
-               apiResponse.ok
-           } catch (e: Exception) {
-               Log.e("LOOK AT ME", "${e.message}")
+                apiResponse.ok
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
 
-               false
-           }
-       }
+                false
+            }
+        }
     }
 }

@@ -1,30 +1,52 @@
 package com.example.superagenda.presentation.screens.shared.taskEdit
 
-import android.provider.MediaStore.Audio.Media
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.TaskUseCase
-import com.example.superagenda.domain.models.Task
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedViewModel
+import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.presentation.screens.shared.GlobalVariables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.bson.types.ObjectId
 import javax.inject.Inject
 
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase
-) : ViewModel(){
-    val _taskToEdit = MutableLiveData<Task>()
-    var taskToEdit: LiveData<Task> = _taskToEdit
+    private val taskUseCase: TaskUseCase,
+    private val globalVariables: GlobalVariables
+) : ViewModel() {
+    val taskToEdit = globalVariables.getTaskToEdit()
 
-    fun setTaskToEdit(objectId: ObjectId) {
+    private val _title = MutableLiveData<String>()
+    val title = _title
 
+    private val _description = MutableLiveData<String>()
+    val description = _description
+
+    private val _taskStatus = MutableLiveData<TaskStatus>()
+    val taskStatus = _taskStatus
+
+    fun onShow() {
+        _title.postValue(taskToEdit.value?.title ?: return)
+        _description.postValue(taskToEdit.value?.description ?: return)
+        _taskStatus.postValue(taskToEdit.value?.status ?: return)
     }
+
+    fun onUpdateButtonPress() {
+        viewModelScope.launch {
+            taskToEdit.value?.let {
+                taskUseCase.updateTask(it)
+            }
+        }
+    }
+
+    fun onTitleChange(title: String) {
+        _title.postValue(title)
+    }
+
+    fun onDescriptionChange(description: String) {
+        _description.postValue(description)
+    }
+
 }
