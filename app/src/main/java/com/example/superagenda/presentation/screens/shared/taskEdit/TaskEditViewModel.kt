@@ -37,8 +37,6 @@ class TaskEditViewModel @Inject constructor(
 
     fun onUpdateButtonPress() {
         viewModelScope.launch {
-            Log.d("LOOK AT ME", "updatepress: ${taskToEdit.value}")
-
 
             val taskToUpdate = taskToEdit.value?.let {
                 title.value?.let { it1 ->

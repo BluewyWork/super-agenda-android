@@ -24,7 +24,7 @@ class TasksNotStartedViewModel @Inject constructor(
     fun onShow() {
         viewModelScope.launch {
             val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList()
-            Log.d("LOOK AT ME", "retrieved tasks: $notStartedTaskList")
+
             _notStartedTaskList.postValue(notStartedTaskList)
         }
     }

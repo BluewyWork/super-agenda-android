@@ -22,8 +22,6 @@ class TaskRepository @Inject constructor(
                     return@withContext null
                 }
 
-                Log.d("LOOK AT ME", "from api: $taskList")
-
                 val taskListDomain = taskList.map { it.toDomain() }
 
                 taskListDomain
@@ -40,15 +38,7 @@ class TaskRepository @Inject constructor(
             try {
                 val taskModel = task.toData()
 
-                val gson = Gson()
-                val json = gson.toJson(task)
-                Log.d("LOOK AT ME", "$json")
-
-                Log.d("LOOK AT ME", "$taskModel")
-
                 val apiResponse = taskApi.updateTask(token, taskModel)
-
-                Log.d("LOOK AT ME", "${apiResponse.ok}")
 
                 apiResponse.ok
             } catch (e: Exception) {
