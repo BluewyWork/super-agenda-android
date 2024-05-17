@@ -34,6 +34,12 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun updateTask(task: Task): Boolean {
-        return taskRepository.updateTask(task)
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        return taskRepository.updateTask(token, task)
     }
 }

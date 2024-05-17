@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.shared.tasksNotStarted
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,7 @@ class TasksNotStartedViewModel @Inject constructor(
     fun onShow() {
         viewModelScope.launch {
             val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList()
+            Log.d("LOOK AT ME", "retrieved tasks: $notStartedTaskList")
             _notStartedTaskList.postValue(notStartedTaskList)
         }
     }

@@ -1,10 +1,12 @@
 package com.example.superagenda.presentation.screens.shared.taskEdit
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.screens.shared.GlobalVariables
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,8 +37,27 @@ class TaskEditViewModel @Inject constructor(
 
     fun onUpdateButtonPress() {
         viewModelScope.launch {
-            taskToEdit.value?.let {
-                taskUseCase.updateTask(it)
+            Log.d("LOOK AT ME", "updatepress: ${taskToEdit.value}")
+
+
+            val taskToUpdate = taskToEdit.value?.let {
+                title.value?.let { it1 ->
+                    description.value?.let { it2 ->
+                        taskStatus.value?.let { it3 ->
+                            Task(
+                                _id = it._id,
+                                title = it1,
+                                description = it2,
+                                status = it3
+                            )
+                        }
+                    }
+                }
+            }
+
+
+            if (taskToUpdate != null) {
+                taskUseCase.updateTask(taskToUpdate)
             }
         }
     }

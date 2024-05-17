@@ -5,6 +5,7 @@ import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +22,8 @@ class TaskRepository @Inject constructor(
                     return@withContext null
                 }
 
+                Log.d("LOOK AT ME", "from api: $taskList")
+
                 val taskListDomain = taskList.map { it.toDomain() }
 
                 taskListDomain
@@ -32,12 +35,20 @@ class TaskRepository @Inject constructor(
         }
     }
 
-    suspend fun updateTask(task: Task): Boolean {
+    suspend fun updateTask(token: String,task: Task, ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val taskModel = task.toData()
 
-                val apiResponse = taskApi.updateTask(taskModel)
+                val gson = Gson()
+                val json = gson.toJson(task)
+                Log.d("LOOK AT ME", "$json")
+
+                Log.d("LOOK AT ME", "$taskModel")
+
+                val apiResponse = taskApi.updateTask(token, taskModel)
+
+                Log.d("LOOK AT ME", "${apiResponse.ok}")
 
                 apiResponse.ok
             } catch (e: Exception) {

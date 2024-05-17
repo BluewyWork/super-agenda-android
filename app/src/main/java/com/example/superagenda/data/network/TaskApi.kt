@@ -12,5 +12,5 @@ interface TaskApi {
     suspend fun retrieveTaskList(@Header("Authorization") token: String): ApiResponse<List<TaskModel>>
 
     @POST(Endpoints.UPDATE_TASK)
-    suspend fun updateTask(@Body taskModel: TaskModel): ApiResponse<String>
+    suspend fun updateTask(@Header("Authorization") token: String, @Body taskModel: TaskModel): ApiResponse<Map<String, Any>>
 }
