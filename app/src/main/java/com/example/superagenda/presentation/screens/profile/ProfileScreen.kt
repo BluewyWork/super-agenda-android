@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.domain.models.UserProfile
+import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
@@ -31,7 +31,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
 
 @Composable
 fun Profile(profileViewModel: ProfileViewModel) {
-    val userProfile: UserProfile? by profileViewModel.userProfile.observeAsState()
+    val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -42,7 +42,7 @@ fun Profile(profileViewModel: ProfileViewModel) {
 
     ) {
         item {
-            userProfile?.let {
+            userForProfile?.let {
                 UsernameTextField(username = it.username) {}
             }
         }
