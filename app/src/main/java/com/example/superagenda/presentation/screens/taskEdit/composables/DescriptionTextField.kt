@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.shared.taskEdit.composables
+package com.example.superagenda.presentation.screens.taskEdit.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DescriptionTextField(description: String,  onTextChange: (String) -> Unit) {
+fun DescriptionTextField(description: String, onTextChange: (String) -> Unit) {
     TextField(
         modifier = Modifier
             .fillMaxWidth()

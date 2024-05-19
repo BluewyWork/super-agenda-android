@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.shared.taskEdit.composables
+package com.example.superagenda.presentation.screens.taskEdit.composables
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

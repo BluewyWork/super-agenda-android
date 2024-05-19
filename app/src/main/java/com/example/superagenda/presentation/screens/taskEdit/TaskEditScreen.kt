@@ -1,10 +1,9 @@
-package com.example.superagenda.presentation.screens.shared.taskEdit
+package com.example.superagenda.presentation.screens.taskEdit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,10 +12,10 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.shared.taskEdit.composables.DescriptionTextField
-import com.example.superagenda.presentation.screens.shared.taskEdit.composables.TaskStatusDropDown
-import com.example.superagenda.presentation.screens.shared.taskEdit.composables.TitleTextField
-import com.example.superagenda.presentation.screens.shared.taskEdit.composables.UpdateButton
+import com.example.superagenda.presentation.screens.taskEdit.composables.DescriptionTextField
+import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
+import com.example.superagenda.presentation.screens.taskEdit.composables.TitleTextField
+import com.example.superagenda.presentation.screens.taskEdit.composables.UpdateButton
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
@@ -25,6 +24,7 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
             TaskEdit(taskEditViewModel)
             UpdateButton {
                 taskEditViewModel.onUpdateButtonPress()
+                navController.popBackStack()
             }
         }
     }
@@ -33,7 +33,7 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
 @Composable
 fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
     val taskToEdit: Task? by taskEditViewModel.taskToEdit.observeAsState()
-    val title: String by taskEditViewModel.title.observeAsState( "")
+    val title: String by taskEditViewModel.title.observeAsState("")
     val description: String by taskEditViewModel.description.observeAsState("")
     val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
 
@@ -46,7 +46,11 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
                 DescriptionTextField(description) {
                     taskEditViewModel.onDescriptionChange(it)
                 }
-                taskStatus?.let { it1 -> TaskStatusDropDown(it1) }
+                taskStatus?.let { it1 ->
+                    TaskStatusDropDown(it1) {
+                        taskEditViewModel.onTaskStatusChange(it)
+                    }
+                }
             }
         }
     }

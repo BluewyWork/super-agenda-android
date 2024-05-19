@@ -1,10 +1,9 @@
-package com.example.superagenda.presentation.screens.shared.taskEdit.composables
+package com.example.superagenda.presentation.screens.taskEdit.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField

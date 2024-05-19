@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.shared.tasksOnGoing
+package com.example.superagenda.presentation.screens.tasksCompleted
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,40 +11,42 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.composables.TaskCard
+import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
 
 @Composable
-fun TasksOngoingScreen(
-    tasksOngoingViewModel: TasksOngoingViewModel,
+fun TasksCompletedScreen(
+    tasksCompletedViewModel: TasksCompletedViewModel,
     navController: NavController
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            TaskOngoing(tasksOngoingViewModel, navController)
+            TaskCompleted(tasksCompletedViewModel, navController)
         }
     }
 }
 
 @Composable
-fun TaskOngoing(
-    tasksOngoingViewModel: TasksOngoingViewModel,
+fun TaskCompleted(
+    tasksCompletedViewModel: TasksCompletedViewModel,
     navController: NavController
 ) {
-    val onGoingTaskList: List<Task>? by tasksOngoingViewModel.onGoingTaskList.observeAsState()
+    val completedTaskList: List<Task>? by tasksCompletedViewModel.completedTaskList.observeAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            onGoingTaskList.let {
+            completedTaskList.let {
                 if (it != null) {
                     for (task in it) {
                         TaskCard(task) {
-
+                            tasksCompletedViewModel.onEditClick(task)
+                            navController.navigate(Destinations.TaskEdit.route)
                         }
                     }
                 } else {

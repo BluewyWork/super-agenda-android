@@ -1,14 +1,13 @@
-package com.example.superagenda.presentation.screens.shared.taskEdit
+package com.example.superagenda.presentation.screens.taskEdit
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
-import com.example.superagenda.presentation.screens.shared.GlobalVariables
+import com.example.superagenda.presentation.screens.GlobalVariables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -68,4 +67,8 @@ class TaskEditViewModel @Inject constructor(
         _description.postValue(description)
     }
 
+    fun onTaskStatusChange(taskStatus: TaskStatus) {
+        Log.d("LOOK AT ME", "ON task status change: $taskStatus")
+        _taskStatus.postValue(taskStatus)
+    }
 }

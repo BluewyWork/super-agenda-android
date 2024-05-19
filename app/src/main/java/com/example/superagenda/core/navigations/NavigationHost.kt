@@ -8,14 +8,14 @@ import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
-import com.example.superagenda.presentation.screens.shared.taskEdit.TaskEditScreen
-import com.example.superagenda.presentation.screens.shared.taskEdit.TaskEditViewModel
-import com.example.superagenda.presentation.screens.shared.tasksCompleted.TasksCompletedScreen
-import com.example.superagenda.presentation.screens.shared.tasksCompleted.TasksCompletedViewModel
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedScreen
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.TasksNotStartedViewModel
-import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingScreen
-import com.example.superagenda.presentation.screens.shared.tasksOnGoing.TasksOngoingViewModel
+import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
+import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
+import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
+import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
+import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedScreen
+import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
+import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingScreen
+import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingViewModel
 
 @Composable
 fun NavigationHost(

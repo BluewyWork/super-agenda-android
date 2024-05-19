@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.shared.tasksNotStarted
+package com.example.superagenda.presentation.screens.tasksOnGoing
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,36 +14,38 @@ import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.composables.TaskCard
+import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
 
 @Composable
-fun TasksNotStartedScreen(
-    tasksNotStartedViewModel: TasksNotStartedViewModel,
+fun TasksOngoingScreen(
+    tasksOngoingViewModel: TasksOngoingViewModel,
     navController: NavController
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            TasksNotStarted(tasksNotStartedViewModel, navController)
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            TaskOngoing(tasksOngoingViewModel, navController)
         }
     }
 }
 
 @Composable
-fun TasksNotStarted(
-    tasksNotStartedViewModel: TasksNotStartedViewModel,
+fun TaskOngoing(
+    tasksOngoingViewModel: TasksOngoingViewModel,
     navController: NavController
 ) {
-    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
+    val onGoingTaskList: List<Task>? by tasksOngoingViewModel.onGoingTaskList.observeAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            notStartedTaskList.let {
+            onGoingTaskList.let {
                 if (it != null) {
                     for (task in it) {
                         TaskCard(task) {
-                            tasksNotStartedViewModel.onEditClick(task)
+                            tasksOngoingViewModel.onEditClick(task)
                             navController.navigate(Destinations.TaskEdit.route)
                         }
                     }

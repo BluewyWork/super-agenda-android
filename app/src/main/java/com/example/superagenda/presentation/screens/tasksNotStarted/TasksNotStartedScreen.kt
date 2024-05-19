@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.shared.tasksCompleted
+package com.example.superagenda.presentation.screens.tasksNotStarted
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,39 +11,40 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.shared.tasksNotStarted.composables.TaskCard
+import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
 
 @Composable
-fun TasksCompletedScreen(
-    tasksCompletedViewModel: TasksCompletedViewModel,
+fun TasksNotStartedScreen(
+    tasksNotStartedViewModel: TasksNotStartedViewModel,
     navController: NavController
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            TaskCompleted(tasksCompletedViewModel)
+        Column(modifier = Modifier.padding(innerPadding)) {
+            TasksNotStarted(tasksNotStartedViewModel, navController)
         }
     }
 }
 
 @Composable
-fun TaskCompleted(
-    tasksCompletedViewModel: TasksCompletedViewModel
+fun TasksNotStarted(
+    tasksNotStartedViewModel: TasksNotStartedViewModel,
+    navController: NavController
 ) {
-    val completedTaskList: List<Task>? by tasksCompletedViewModel.completedTaskList.observeAsState()
+    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            completedTaskList.let {
+            notStartedTaskList.let {
                 if (it != null) {
                     for (task in it) {
                         TaskCard(task) {
-
+                            tasksNotStartedViewModel.onEditClick(task)
+                            navController.navigate(Destinations.TaskEdit.route)
                         }
                     }
                 } else {

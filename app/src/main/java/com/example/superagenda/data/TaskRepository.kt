@@ -5,7 +5,6 @@ import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,7 +32,7 @@ class TaskRepository @Inject constructor(
         }
     }
 
-    suspend fun updateTask(token: String,task: Task, ): Boolean {
+    suspend fun updateTask(token: String, task: Task): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val taskModel = task.toData()

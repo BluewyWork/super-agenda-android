@@ -3,6 +3,7 @@ package com.example.superagenda.domain
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.domain.models.TaskStatus
 import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
@@ -22,15 +23,39 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun retrieveNotStartedTaskList(): List<Task>? {
-        return retrieveTaskList()
+        val notStartedTaskList: MutableList<Task> = mutableListOf()
+
+        for (task in retrieveTaskList() ?: return null) {
+            if (task.status == TaskStatus.NotStarted) {
+                notStartedTaskList.add(task)
+            }
+        }
+
+        return notStartedTaskList
     }
 
     suspend fun retrieveOnGoingTaskList(): List<Task>? {
-        return retrieveTaskList()
+        val onGoingTaskList: MutableList<Task> = mutableListOf()
+
+        for (task in retrieveTaskList() ?: return null) {
+            if (task.status == TaskStatus.Ongoing) {
+                onGoingTaskList.add(task)
+            }
+        }
+
+        return onGoingTaskList
     }
 
     suspend fun retrieveCompletedTaskList(): List<Task>? {
-        return retrieveTaskList()
+        val completedTaskList: MutableList<Task> = mutableListOf()
+
+        for (task in retrieveTaskList() ?: return null) {
+            if (task.status == TaskStatus.Completed) {
+                completedTaskList.add(task)
+            }
+        }
+
+        return completedTaskList
     }
 
     suspend fun updateTask(task: Task): Boolean {

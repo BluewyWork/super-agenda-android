@@ -2,8 +2,10 @@ package com.example.superagenda.presentation.composables
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -36,7 +38,7 @@ fun NavigationBar(navController: NavController) {
             onClick = { navController.navigate("tasks_ongoing") },
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.Home,
+                    imageVector = Icons.Outlined.ShoppingCart,
                     contentDescription = "Home",
                 )
             }
@@ -46,7 +48,7 @@ fun NavigationBar(navController: NavController) {
             onClick = { navController.navigate("tasks_completed") },
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.Home,
+                    imageVector = Icons.Outlined.Check,
                     contentDescription = "Home",
                 )
             }
