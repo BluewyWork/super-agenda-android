@@ -7,10 +7,12 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import org.bson.BsonDateTime
 import org.bson.types.ObjectId
 import java.lang.reflect.Type
 
@@ -19,7 +21,11 @@ data class TaskModel(
     @SerializedName("_id") val _id: ObjectId,
     @SerializedName("title") val title: String,
     @SerializedName("description") val description: String,
-    @SerializedName("status") val status: TaskStatusModel
+    @SerializedName("status") val status: TaskStatusModel,
+    @JsonAdapter(BsonDateTimeConverter::class)
+    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
+    @JsonAdapter(BsonDateTimeConverter::class)
+    @SerializedName("end_date_time") val endDateTime: BsonDateTime
 )
 
 enum class TaskStatusModel {
@@ -36,7 +42,9 @@ fun TaskModel.toDomain() = Task(
         TaskStatusModel.NotStarted -> TaskStatus.NotStarted
         TaskStatusModel.Ongoing -> TaskStatus.Ongoing
         TaskStatusModel.Completed -> TaskStatus.Completed
-    }
+    },
+    startDateTime = bsonDateTimeToLocalDateTime(startDateTime),
+    endDateTime = bsonDateTimeToLocalDateTime(endDateTime)
 )
 
 fun Task.toData() = TaskModel(
@@ -47,26 +55,11 @@ fun Task.toData() = TaskModel(
         TaskStatus.NotStarted -> TaskStatusModel.NotStarted
         TaskStatus.Ongoing -> TaskStatusModel.Ongoing
         TaskStatus.Completed -> TaskStatusModel.Completed
-    }
+    },
+    startDateTime = localDateTimeToBsonDateTime(startDateTime),
+    endDateTime = localDateTimeToBsonDateTime(endDateTime)
+
 )
-
-// need this because mongodb kotlin driver is wonky
-
-//class ObjectIdSerializer : JsonSerializer<ObjectId> {
-//    override fun serialize(
-//        src: ObjectId?,
-//        typeOfSrc: Type?,
-//        context: JsonSerializationContext?
-//    ): JsonElement {
-//        return if (src == null) {
-//            JsonNull.INSTANCE
-//        } else {
-//            JsonObject().apply {
-//                addProperty("\$oid", src.toHexString())
-//            }
-//        }
-//    }
-//}
 
 class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {
     override fun serialize(
@@ -96,5 +89,32 @@ class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> 
         } else {
             ObjectId(json.asString)
         }
+    }
+}
+
+class BsonDateTimeConverter : JsonSerializer<BsonDateTime>, JsonDeserializer<BsonDateTime> {
+    override fun serialize(
+        src: BsonDateTime?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
+    ): JsonElement {
+        return if (src == null) {
+            JsonNull.INSTANCE
+        } else {
+            JsonObject().apply {
+                add("\$date", JsonObject().apply {
+                    add("\$numberLong", JsonPrimitive(src.value.toString()))
+                })
+            }
+        }
+    }
+
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): BsonDateTime {
+        val longValue = json?.asJsonObject?.getAsJsonObject("\$date")?.get("\$numberLong")?.asLong
+        return BsonDateTime(longValue ?: 0)
     }
 }

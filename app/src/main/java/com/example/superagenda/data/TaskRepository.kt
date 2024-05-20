@@ -1,12 +1,15 @@
 package com.example.superagenda.data
 
 import android.util.Log
+import com.example.superagenda.data.models.BsonDateTimeConverter
 import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.bson.BsonDateTime
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -20,6 +23,9 @@ class TaskRepository @Inject constructor(
                 if (taskList.isEmpty()) {
                     return@withContext null
                 }
+
+                Log.d("LOOK AT ME", "DOWN: $taskList")
+                Log.d("LOOK AT ME", "DOWN 1: ${taskList[0].startDateTime.toString()}")
 
                 val taskListDomain = taskList.map { it.toDomain() }
 
@@ -36,6 +42,16 @@ class TaskRepository @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val taskModel = task.toData()
+
+                Log.d("LOOK AT ME", "UP: $taskModel")
+
+                val gson = GsonBuilder()
+                    .registerTypeAdapter(BsonDateTime::class.java, BsonDateTimeConverter())
+                    .create()
+
+                val serializedJson = gson.toJson(taskModel)
+
+                Log.d("LOOK AT ME", "S: $serializedJson")
 
                 val apiResponse = taskApi.updateTask(token, taskModel)
 
