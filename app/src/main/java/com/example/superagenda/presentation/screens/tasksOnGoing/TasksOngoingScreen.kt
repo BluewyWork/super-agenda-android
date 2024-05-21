@@ -25,6 +25,7 @@ fun TasksOngoingScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
+            Text(text = "Ongoing Tasks:")
             TaskOngoing(tasksOngoingViewModel, navController)
         }
     }

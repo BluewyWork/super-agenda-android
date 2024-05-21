@@ -25,6 +25,7 @@ fun TasksCompletedScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
+            Text(text = "Completed Tasks:")
             TaskCompleted(tasksCompletedViewModel, navController)
         }
     }

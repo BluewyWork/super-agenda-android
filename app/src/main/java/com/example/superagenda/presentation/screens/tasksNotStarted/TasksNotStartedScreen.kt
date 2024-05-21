@@ -23,6 +23,7 @@ fun TasksNotStartedScreen(
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+            Text(text = "Tasks yet to be started:")
             TasksNotStarted(tasksNotStartedViewModel, navController)
         }
     }

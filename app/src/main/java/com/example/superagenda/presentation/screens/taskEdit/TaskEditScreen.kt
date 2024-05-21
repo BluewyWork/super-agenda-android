@@ -25,6 +25,7 @@ import java.time.LocalDateTime
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
+            Text(text = "Edit your task: ")
             TaskEdit(taskEditViewModel)
             UpdateButton {
                 taskEditViewModel.onUpdateButtonPress()
@@ -57,16 +58,16 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
                         taskEditViewModel.onTaskStatusChange(it)
                     }
                 }
-                startDateTime?.let { it ->
-                    DateTimePicker(initialDateTime = it) { it2 ->
+                startDateTime?.let { it3 ->
+                    DateTimePicker(initialDateTime = it3) { it2 ->
                         taskEditViewModel.onStartDateTimeChange(it2)
                     }
                 }
 
                 Text("-----------------------------------------")
 
-                endDateTime?.let { it ->
-                    DateTimePicker(initialDateTime = it)  { it2 ->
+                endDateTime?.let { it5 ->
+                    DateTimePicker(initialDateTime = it5)  { it2 ->
                         taskEditViewModel.onEndDateTimeChange(it2)
 
                     }
