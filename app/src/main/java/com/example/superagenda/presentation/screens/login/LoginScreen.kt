@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.presentation.composables.NavigationBar
+import com.example.superagenda.presentation.screens.login.composables.GoToRegisterScreen
 import com.example.superagenda.presentation.screens.login.composables.LoginButton
 import com.example.superagenda.presentation.screens.login.composables.PasswordTextField
 import com.example.superagenda.presentation.screens.login.composables.UsernameTextField
@@ -49,5 +50,6 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
 
             navController.navigate(Destinations.TasksNotStarted.route)
         }
+        GoToRegisterScreen(navController)
     }
 }

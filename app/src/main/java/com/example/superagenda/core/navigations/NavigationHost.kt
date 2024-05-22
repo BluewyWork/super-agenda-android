@@ -1,13 +1,17 @@
 package com.example.superagenda.core.navigations
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.superagenda.domain.models.UserForRegister
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
+import com.example.superagenda.presentation.screens.register.RegisterScreen
+import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
@@ -19,6 +23,7 @@ import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingVie
 
 @Composable
 fun NavigationHost(
+    registerViewModel: RegisterViewModel,
     loginViewModel: LoginViewModel,
     profileViewModel: ProfileViewModel,
     tasksNotStartedViewModel: TasksNotStartedViewModel,
@@ -31,6 +36,9 @@ fun NavigationHost(
         navController = navController,
         startDestination = Destinations.Login.route
     ) {
+        composable(Destinations.Register.route) {
+           RegisterScreen(registerViewModel, navController)
+        }
         composable(Destinations.Login.route) {
             loginViewModel.onShow()
             LoginScreen(loginViewModel, navController)

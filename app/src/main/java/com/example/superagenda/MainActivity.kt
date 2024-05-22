@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import com.example.superagenda.core.navigations.NavigationHost
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
+import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
 import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
@@ -16,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val registerViewModel: RegisterViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
     private val tasksNotStartedViewModel: TasksNotStartedViewModel by viewModels()
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SuperAgendaTheme {
                 NavigationHost(
+                    registerViewModel = registerViewModel,
                     loginViewModel = loginViewModel,
                     profileViewModel = profileViewModel,
                     tasksNotStartedViewModel = tasksNotStartedViewModel,

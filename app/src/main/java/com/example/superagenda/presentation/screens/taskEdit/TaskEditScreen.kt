@@ -1,7 +1,6 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -67,7 +66,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
                 Text("-----------------------------------------")
 
                 endDateTime?.let { it5 ->
-                    DateTimePicker(initialDateTime = it5)  { it2 ->
+                    DateTimePicker(initialDateTime = it5) { it2 ->
                         taskEditViewModel.onEndDateTimeChange(it2)
 
                     }
