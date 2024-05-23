@@ -8,4 +8,7 @@ import retrofit2.http.Header
 interface ProfileApi {
     @GET(Endpoints.GET_PROFILE)
     suspend fun retrieveUserProfile(@Header("Authorization") token: String): ApiResponse<UserForProfileModel>
+
+    @GET(Endpoints.DELETE_PROFILE)
+    suspend fun deleteProfile(@Header("Authorization") token: String): ApiResponse<Map<String, Any>>
 }

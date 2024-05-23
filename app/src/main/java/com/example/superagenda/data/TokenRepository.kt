@@ -56,12 +56,16 @@ class TokenRepository @Inject constructor(
         }
     }
 
-    suspend fun wipeAllTokensFromLocalStorage() {
+    suspend fun wipeAllTokensFromLocalStorage(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 tokenDao.deleteAll()
+
+                true
             } catch (e: Exception) {
                 Log.e("LOOK AT ME", "${e.message}")
+
+                false
             }
         }
     }

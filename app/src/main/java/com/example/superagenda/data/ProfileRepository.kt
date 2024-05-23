@@ -22,4 +22,18 @@ class ProfileRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun deleteProfile(token: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = profileApi.deleteProfile(token)
+
+                return@withContext response.ok
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
 }

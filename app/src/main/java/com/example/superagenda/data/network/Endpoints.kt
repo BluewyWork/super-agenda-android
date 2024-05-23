@@ -7,4 +7,5 @@ object Endpoints {
     const val GET_TASK_LIST = "/api/user/task/show"
     const val UPDATE_TASK = "/api/user/task/update"
     const val GET_PROFILE = "/api/user/self/show"
+    const val DELETE_PROFILE = "/api/user/self/delete"
 }

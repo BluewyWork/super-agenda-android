@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.composables.NavigationBar
+import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
 @Composable
@@ -26,13 +27,13 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
                 .padding(innerPadding)
         ) {
             Text(text = "Your Profile:")
-            Profile(profileViewModel)
+            Profile(profileViewModel, navController)
         }
     }
 }
 
 @Composable
-fun Profile(profileViewModel: ProfileViewModel) {
+fun Profile(profileViewModel: ProfileViewModel, navController: NavController) {
     val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
     LazyColumn(
@@ -46,6 +47,10 @@ fun Profile(profileViewModel: ProfileViewModel) {
         item {
             userForProfile?.let {
                 UsernameTextField(username = it.username) {}
+            }
+
+            DeleteButton {
+                profileViewModel.onDeleteButtonPressButton(navController)
             }
         }
     }
