@@ -8,11 +8,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.screens.register.composables.PasswordTextField
-import com.example.superagenda.presentation.screens.register.composables.UsernameTextField
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
+import com.example.superagenda.presentation.screens.register.composables.PasswordTextField
 import com.example.superagenda.presentation.screens.register.composables.RegisterButton
+import com.example.superagenda.presentation.screens.register.composables.UsernameTextField
 
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {

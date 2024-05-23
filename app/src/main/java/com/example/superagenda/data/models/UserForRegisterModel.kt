@@ -1,6 +1,5 @@
 package com.example.superagenda.data.models
 
-import com.example.superagenda.domain.models.UserForLogin
 import com.example.superagenda.domain.models.UserForRegister
 import com.google.gson.annotations.SerializedName
 

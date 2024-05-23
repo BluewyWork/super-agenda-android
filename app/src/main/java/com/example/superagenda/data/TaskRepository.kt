@@ -63,4 +63,20 @@ class TaskRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun createTask(token: String, task: Task): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskModel = task.toData()
+
+                val response = taskApi.createTask(token, taskModel)
+
+                return@withContext response.ok
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
 }

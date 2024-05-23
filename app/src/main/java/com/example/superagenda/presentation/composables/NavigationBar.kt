@@ -2,6 +2,7 @@ package com.example.superagenda.presentation.composables
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -23,6 +24,16 @@ fun NavigationBar(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary
     ) {
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate("new_task") },
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = "New Task",
+                )
+            }
+        )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("tasks_not_started") },

@@ -16,4 +16,10 @@ interface TaskApi {
         @Header("Authorization") token: String,
         @Body taskModel: TaskModel
     ): ApiResponse<Map<String, Any>>
+
+    @POST(Endpoints.NEW_TASK)
+    suspend fun createTask(
+        @Header("Authorization") token: String,
+        @Body taskModel: TaskModel
+    ): ApiResponse<Map<String, Any>>
 }

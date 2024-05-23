@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.superagenda.core.navigations.NavigationHost
 import com.example.superagenda.presentation.screens.login.LoginViewModel
+import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
     private val tasksOngoingViewModel: TasksOngoingViewModel by viewModels()
     private val tasksCompletedViewModel: TasksCompletedViewModel by viewModels()
     private val taskEditViewModel: TaskEditViewModel by viewModels()
+    private val newTaskViewModel: NewTaskViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,8 @@ class MainActivity : ComponentActivity() {
                     tasksNotStartedViewModel = tasksNotStartedViewModel,
                     tasksOngoingViewModel = tasksOngoingViewModel,
                     tasksCompletedViewModel = tasksCompletedViewModel,
-                    taskEditViewModel = taskEditViewModel
+                    taskEditViewModel = taskEditViewModel,
+                    newTaskViewModel = newTaskViewModel
                 )
             }
         }

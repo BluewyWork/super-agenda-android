@@ -1,13 +1,13 @@
 package com.example.superagenda.core.navigations
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.superagenda.domain.models.UserForRegister
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
+import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
+import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
@@ -30,6 +30,7 @@ fun NavigationHost(
     tasksOngoingViewModel: TasksOngoingViewModel,
     tasksCompletedViewModel: TasksCompletedViewModel,
     taskEditViewModel: TaskEditViewModel,
+    newTaskViewModel: NewTaskViewModel
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -37,7 +38,7 @@ fun NavigationHost(
         startDestination = Destinations.Login.route
     ) {
         composable(Destinations.Register.route) {
-           RegisterScreen(registerViewModel, navController)
+            RegisterScreen(registerViewModel, navController)
         }
         composable(Destinations.Login.route) {
             loginViewModel.onShow()
@@ -62,6 +63,10 @@ fun NavigationHost(
         composable(Destinations.TaskEdit.route) {
             taskEditViewModel.onShow()
             TaskEditScreen(taskEditViewModel, navController)
+        }
+        composable(Destinations.NewTask.route) {
+            newTaskViewModel.onShow()
+            NewTaskScreen(newTaskViewModel, navController)
         }
     }
 }

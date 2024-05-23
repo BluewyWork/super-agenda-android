@@ -2,7 +2,6 @@ package com.example.superagenda.data.network
 
 import com.example.superagenda.data.models.UserForRegisterModel
 import com.example.superagenda.data.network.response.ApiResponse
-import com.example.superagenda.domain.models.UserForRegister
 import retrofit2.http.Body
 import retrofit2.http.POST
 

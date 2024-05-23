@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.LoginUseCase
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val loginUseCase: LoginUseCase,
-): ViewModel(){
+) : ViewModel() {
     private val _username = MutableLiveData<String>()
     val username: LiveData<String> = _username
 
@@ -41,7 +40,7 @@ class RegisterViewModel @Inject constructor(
                 val ok = registerUseCase.register(userForRegister)
 
                 if (!ok) {
-                   // do something here
+                    // do something here
                     return@launch
                 }
 
@@ -67,6 +66,6 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun onPasswordChange(password: String) {
-       _password.postValue(password)
+        _password.postValue(password)
     }
 }
