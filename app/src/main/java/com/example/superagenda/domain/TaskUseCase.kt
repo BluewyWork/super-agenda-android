@@ -1,9 +1,14 @@
 package com.example.superagenda.domain
 
+import android.os.Environment
+import android.util.Log
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
@@ -76,5 +81,53 @@ class TaskUseCase @Inject constructor(
         }
 
         return taskRepository.createTask(token, task)
+    }
+
+    suspend fun saveTaskListToLocalStorage() {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return
+        }
+
+        taskRepository.writeFileToLocalStorage(token)
+    }
+
+    suspend fun importTaskListFromLocalStorage(taskList: List<Task>) {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return
+        }
+
+        for (task in taskList) {
+            taskRepository.updateTask(token, task)
+        }
+    }
+
+    suspend fun test() {
+        return withContext(Dispatchers.IO) {
+            val directory =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+            Log.d("LOOK AT ME", "$directory")
+
+            val fileName = "example.txt"
+            val fileContent = "Hello, this is the content of the file."
+
+            val file = File(directory, fileName)
+
+            try {
+                directory.mkdirs() // create directories if they don't exist
+                file.createNewFile()
+                file.writeText(fileContent)
+                Log.d(
+                    "LOOK AT ME",
+                    "File '$fileName' created successfully in directory '$directory'."
+                )
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "An error occurred: ${e.message}")
+            }
+        }
     }
 }
