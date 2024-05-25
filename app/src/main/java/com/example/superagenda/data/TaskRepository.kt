@@ -2,8 +2,11 @@ package com.example.superagenda.data
 
 import android.os.Environment
 import android.util.Log
+import com.example.superagenda.data.database.dao.TaskDao
+import com.example.superagenda.data.database.entities.toData
 import com.example.superagenda.data.models.BsonDateTimeConverter
 import com.example.superagenda.data.models.toData
+import com.example.superagenda.data.models.toDatabase
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
@@ -20,7 +23,8 @@ import java.util.Locale
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
-    private val taskApi: TaskApi
+    private val taskApi: TaskApi,
+    private val taskDao: TaskDao
 ) {
     suspend fun retrieveTaskList(token: String): List<Task>? {
         return withContext(Dispatchers.IO) {
@@ -112,6 +116,52 @@ class TaskRepository @Inject constructor(
                 outputStream.close()
             } catch (e: Exception) {
                 Log.e("LOOK AT ME", "${e.message}")
+            }
+        }
+    }
+
+    suspend fun saveTaskListToLocalDatabase(taskList: List<Task>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskModelList = taskList.map { it.toData() }
+
+                for (task in taskModelList) {
+                    taskDao.insertOne(task.toDatabase())
+                }
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+    suspend fun clearTaskListFromLocalDatabase(): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                taskDao.deleteAll()
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+    suspend fun retrieveTaskListFromLocalDatabase(): List<Task>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskList = taskDao.selectAll()
+
+                taskList.map {it.toData().toDomain()}
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                null
             }
         }
     }

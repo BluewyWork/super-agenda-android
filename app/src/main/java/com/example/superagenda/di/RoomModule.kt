@@ -24,4 +24,8 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideTokenDao(db: SuperAgendaDatabase) = db.getTokenDao()
+
+    @Singleton
+    @Provides
+    fun provideTaskDao(db: SuperAgendaDatabase) = db.getTaskDao()
 }

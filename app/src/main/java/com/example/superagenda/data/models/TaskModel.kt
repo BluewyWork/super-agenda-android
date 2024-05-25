@@ -1,5 +1,6 @@
 package com.example.superagenda.data.models
 
+import com.example.superagenda.data.database.entities.TaskEntity
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.google.gson.JsonDeserializationContext
@@ -59,6 +60,15 @@ fun Task.toData() = TaskModel(
     startDateTime = localDateTimeToBsonDateTime(startDateTime),
     endDateTime = localDateTimeToBsonDateTime(endDateTime)
 
+)
+
+fun TaskModel.toDatabase() =  TaskEntity(
+    _id = _id.toString(),
+    title = title,
+    description = description,
+    status = status,
+    startDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(startDateTime))!!,
+    endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!
 )
 
 class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {

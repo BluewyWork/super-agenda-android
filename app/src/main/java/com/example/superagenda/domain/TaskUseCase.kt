@@ -22,7 +22,14 @@ class TaskUseCase @Inject constructor(
             return null
         }
 
-        val taskList = taskRepository.retrieveTaskList(token)
+        var taskList = taskRepository.retrieveTaskList(token)
+
+        if (taskList != null) {
+            taskRepository.clearTaskListFromLocalDatabase()
+            taskRepository.saveTaskListToLocalDatabase(taskList)
+        } else {
+            taskList = taskRepository.retrieveTaskListFromLocalDatabase()
+        }
 
         return taskList
     }
