@@ -26,8 +26,7 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
             Text(text = "Edit your task: ")
             NewTask(newTaskViewModel)
             UpdateButton {
-                newTaskViewModel.onCreateButtonPress()
-                navController.popBackStack()
+                newTaskViewModel.onCreateButtonPress(navController)
             }
         }
     }

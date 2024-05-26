@@ -27,7 +27,7 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
             Text(text = "Edit your task: ")
             TaskEdit(taskEditViewModel)
             UpdateButton {
-                taskEditViewModel.onUpdateButtonPress()
+                taskEditViewModel.onUpdateButtonPress(navController)
                 navController.popBackStack()
             }
         }

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -38,7 +40,7 @@ class NewTaskViewModel @Inject constructor(
         _endDateTime.postValue(LocalDateTime.now())
     }
 
-    fun onCreateButtonPress() {
+    fun onCreateButtonPress(navController: NavController) {
         viewModelScope.launch {
             val task = _title.value?.let {
                 _description.value?.let { it1 ->
@@ -67,6 +69,9 @@ class NewTaskViewModel @Inject constructor(
 
             if (!success) {
                 // do something here
+                navController.navigate(Destinations.NoInternet.route)
+            } else {
+                navController.navigate(Destinations.TasksNotStarted.route)
             }
 
             _title.postValue("")
