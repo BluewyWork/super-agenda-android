@@ -42,7 +42,7 @@ fun NavigationHost(
             RegisterScreen(registerViewModel, navController)
         }
         composable(Destinations.Login.route) {
-            loginViewModel.onShow()
+            loginViewModel.onShow(navController)
             LoginScreen(loginViewModel, navController)
         }
         composable(Destinations.Profile.route) {

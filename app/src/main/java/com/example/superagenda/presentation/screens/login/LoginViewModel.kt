@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.models.UserForLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,9 +22,6 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
-    private val _isLoggedIn = MutableLiveData<Boolean>()
-    val isLoggedIn: LiveData<Boolean> = _isLoggedIn
-
     fun onUsernameChange(username: String) {
         _username.postValue(username)
     }
@@ -31,15 +30,20 @@ class LoginViewModel @Inject constructor(
         _password.postValue(password)
     }
 
-    fun onShow() {
+    fun onShow(navController: NavController) {
         viewModelScope.launch {
             val isLoggedIn = loginUseCase.isLoggedIn()
 
-            _isLoggedIn.postValue(isLoggedIn)
+            if (!isLoggedIn) {
+                return@launch
+            }
+
+            navController.navigate(Destinations.TasksNotStarted.route)
+            _password.postValue("")
         }
     }
 
-    fun onLoginButtonPress() {
+    fun onLoginButtonPress(navController: NavController) {
         viewModelScope.launch {
             val username = _username.value
             val password = _password.value
@@ -51,7 +55,11 @@ class LoginViewModel @Inject constructor(
             val userForLogin = UserForLogin(username, password)
             val userAuthenticated = loginUseCase.login(userForLogin)
 
-            _isLoggedIn.postValue(userAuthenticated)
+            if (!userAuthenticated)  {
+                // warn user of wrong credentials
+            } else {
+                navController.navigate(Destinations.TasksNotStarted.route)
+            }
         }
     }
 }

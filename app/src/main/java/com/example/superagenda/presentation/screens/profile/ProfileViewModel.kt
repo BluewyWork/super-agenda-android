@@ -7,10 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
+import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.ProfileUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileUseCase: ProfileUseCase,
-    private val taskUseCase: TaskUseCase
+    private val taskUseCase: TaskUseCase,
+    private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
     private val _userForProfile = MutableLiveData<UserForProfile?>()
     val userForProfile: LiveData<UserForProfile?> = _userForProfile
@@ -64,6 +67,15 @@ class ProfileViewModel @Inject constructor(
             }
 
             taskUseCase.importTaskListFromLocalStorage(taskList)
+        }
+    }
+
+    fun onLogoutPress(navController: NavController) {
+        viewModelScope.launch {
+            if(!loginUseCase.logout())
+            {return@launch}
+
+            navController.navigate(Destinations.Login.route)
         }
     }
 

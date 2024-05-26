@@ -19,6 +19,7 @@ import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.profile.composables.BackupTaskList
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.profile.composables.ImportTaskList
+import com.example.superagenda.presentation.screens.profile.composables.LogoutButton
 import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
 @Composable
@@ -63,6 +64,9 @@ fun Profile(profileViewModel: ProfileViewModel, navController: NavController) {
                 profileViewModel.onImportButtonPress(contentResolver, filePath)
             }
 
+            LogoutButton {
+                profileViewModel.onLogoutPress(navController)
+            }
         }
     }
 }

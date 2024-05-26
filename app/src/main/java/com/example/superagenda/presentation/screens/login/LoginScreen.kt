@@ -28,11 +28,6 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
 fun Login(loginViewModel: LoginViewModel, navController: NavController) {
     val email: String by loginViewModel.username.observeAsState("")
     val password: String by loginViewModel.password.observeAsState("")
-    val isLoggedIn: Boolean by loginViewModel.isLoggedIn.observeAsState(false)
-
-    if (isLoggedIn) {
-        navController.navigate(Destinations.TasksNotStarted.route)
-    }
 
     Column {
         UsernameTextField(email) {
@@ -42,13 +37,7 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
             loginViewModel.onPasswordChange(it)
         }
         LoginButton() {
-            loginViewModel.onLoginButtonPress()
-
-            if (!isLoggedIn) {
-                return@LoginButton
-            }
-
-            navController.navigate(Destinations.TasksNotStarted.route)
+            loginViewModel.onLoginButtonPress(navController)
         }
         GoToRegisterScreen(navController)
     }
