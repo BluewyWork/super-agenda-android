@@ -157,7 +157,7 @@ class TaskRepository @Inject constructor(
             try {
                 val taskList = taskDao.selectAll()
 
-                taskList.map {it.toData().toDomain()}
+                taskList.map { it.toData().toDomain() }
             } catch (e: Exception) {
                 Log.e("LOOK AT ME", "${e.message}")
 

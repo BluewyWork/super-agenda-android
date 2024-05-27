@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.superagenda.core.NotificationService
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.profile.composables.BackupTaskList
@@ -23,20 +25,20 @@ import com.example.superagenda.presentation.screens.profile.composables.LogoutBu
 import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavController) {
+fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavController, service: NotificationService) {
     Scaffold(bottomBar = { NavigationBar(navController = navController) }) { innerPadding ->
         Column(
             Modifier
                 .padding(innerPadding)
         ) {
             Text(text = "Your Profile:")
-            Profile(profileViewModel, navController)
+            Profile(profileViewModel, navController, service)
         }
     }
 }
 
 @Composable
-fun Profile(profileViewModel: ProfileViewModel, navController: NavController) {
+fun Profile(profileViewModel: ProfileViewModel, navController: NavController, service: NotificationService) {
     val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
     LazyColumn(
@@ -66,6 +68,14 @@ fun Profile(profileViewModel: ProfileViewModel, navController: NavController) {
 
             LogoutButton {
                 profileViewModel.onLogoutPress(navController)
+            }
+
+            Button(
+                onClick = {
+                    service.showNotification("hi", "hi")
+                }
+            ) {
+
             }
         }
     }

@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.login.composables.GoToRegisterScreen
 import com.example.superagenda.presentation.screens.login.composables.LoginButton

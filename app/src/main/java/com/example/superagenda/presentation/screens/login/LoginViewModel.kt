@@ -55,7 +55,7 @@ class LoginViewModel @Inject constructor(
             val userForLogin = UserForLogin(username, password)
             val userAuthenticated = loginUseCase.login(userForLogin)
 
-            if (!userAuthenticated)  {
+            if (!userAuthenticated) {
                 // warn user of wrong credentials
             } else {
                 navController.navigate(Destinations.TasksNotStarted.route)

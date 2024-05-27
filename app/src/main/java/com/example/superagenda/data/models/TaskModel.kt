@@ -62,7 +62,7 @@ fun Task.toData() = TaskModel(
 
 )
 
-fun TaskModel.toDatabase() =  TaskEntity(
+fun TaskModel.toDatabase() = TaskEntity(
     _id = _id.toString(),
     title = title,
     description = description,

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.superagenda.core.NotificationService
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
@@ -24,6 +25,7 @@ import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingVie
 
 @Composable
 fun NavigationHost(
+    service: NotificationService,
     registerViewModel: RegisterViewModel,
     loginViewModel: LoginViewModel,
     profileViewModel: ProfileViewModel,
@@ -47,7 +49,7 @@ fun NavigationHost(
         }
         composable(Destinations.Profile.route) {
             profileViewModel.onShow()
-            ProfileScreen(profileViewModel, navController)
+            ProfileScreen(profileViewModel, navController, service)
         }
         composable(Destinations.TasksNotStarted.route) {
             tasksNotStartedViewModel.onShow()

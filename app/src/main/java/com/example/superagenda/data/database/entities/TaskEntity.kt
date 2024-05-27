@@ -1,6 +1,5 @@
 package com.example.superagenda.data.database.entities
 
-import android.app.ActivityManager.TaskDescription
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,14 +7,10 @@ import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.TaskStatusModel
 import com.example.superagenda.data.models.localDateTimeToBsonDateTime
 import com.example.superagenda.data.models.stringToLocalDateTime
-import com.example.superagenda.domain.models.Task
-import org.bson.BsonDateTime
 import org.bson.types.ObjectId
-import java.time.LocalDateTime
-import java.util.Date
 
 @Entity(tableName = "task_table")
-data class TaskEntity (
+data class TaskEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "_id") val _id: String,
     @ColumnInfo(name = "title") val title: String,

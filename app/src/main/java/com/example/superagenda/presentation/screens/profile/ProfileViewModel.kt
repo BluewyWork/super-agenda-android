@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.data.models.TaskModel
@@ -72,8 +71,9 @@ class ProfileViewModel @Inject constructor(
 
     fun onLogoutPress(navController: NavController) {
         viewModelScope.launch {
-            if(!loginUseCase.logout())
-            {return@launch}
+            if (!loginUseCase.logout()) {
+                return@launch
+            }
 
             navController.navigate(Destinations.Login.route)
         }
@@ -95,7 +95,10 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    private fun deserializeTasksFromJson(contentResolver: ContentResolver, filePath: String): List<Task> {
+    private fun deserializeTasksFromJson(
+        contentResolver: ContentResolver,
+        filePath: String
+    ): List<Task> {
         val gson = Gson()
         val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
         val reader = BufferedReader(InputStreamReader(inputStream))

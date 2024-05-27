@@ -5,12 +5,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.superagenda.data.database.entities.TaskEntity
-import com.example.superagenda.data.models.TaskModel
 
 @Dao
-interface TaskDao{
+interface TaskDao {
     @Query("SELECT * FROM task_table")
-    fun selectAll() : List<TaskEntity>
+    fun selectAll(): List<TaskEntity>
 
     @Query("DELETE FROM task_table")
     fun deleteAll()
