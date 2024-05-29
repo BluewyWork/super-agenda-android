@@ -52,7 +52,7 @@ fun NavigationHost(
             ProfileScreen(profileViewModel, navController, service)
         }
         composable(Destinations.TasksNotStarted.route) {
-            tasksNotStartedViewModel.onShow()
+            tasksNotStartedViewModel.onShow(service)
             TasksNotStartedScreen(tasksNotStartedViewModel, navController)
         }
         composable(Destinations.TasksOngoing.route) {

@@ -38,8 +38,6 @@ class MainActivity : ComponentActivity() {
 
         val service = NotificationService(applicationContext)
 
-        service.showNotification("TEST", "TEST")
-
         setContent {
             SuperAgendaTheme {
                 NavigationHost(

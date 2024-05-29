@@ -2,6 +2,7 @@ package com.example.superagenda.domain
 
 import android.os.Environment
 import android.util.Log
+import com.example.superagenda.core.NotificationService
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.Task
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
     private val tokenRepository: TokenRepository,
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
 ) {
     private suspend fun retrieveTaskList(): List<Task>? {
         val token = tokenRepository.retrieveTokenFromLocalStorage()
@@ -136,5 +137,15 @@ class TaskUseCase @Inject constructor(
                 Log.e("LOOK AT ME", "An error occurred: ${e.message}")
             }
         }
+    }
+
+    suspend fun showTaskNotification(service: NotificationService) {
+        val list = retrieveNotStartedTaskList()
+
+        val size = list ?: return
+
+        val size2 = list.size
+
+        service.showNotification("You have $size2 tasks to start!", "...")
     }
 }
