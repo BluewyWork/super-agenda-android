@@ -23,7 +23,7 @@ class TasksNotStartedViewModel @Inject constructor(
 
     fun onShow(notificationService: NotificationService) {
         viewModelScope.launch {
-            val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList()
+            val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList2()
 
             _notStartedTaskList.postValue(notStartedTaskList)
 

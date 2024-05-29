@@ -75,6 +75,22 @@ class TaskRepository @Inject constructor(
         }
     }
 
+    suspend fun updateTaskList(token: String, taskList: List<Task>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskModelList = taskList.map { it.toData() }
+
+                taskApi.updateTaskList(token, taskModelList)
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
     suspend fun createTask(token: String, task: Task): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -128,6 +144,22 @@ class TaskRepository @Inject constructor(
                 for (task in taskModelList) {
                     taskDao.insertOne(task.toDatabase())
                 }
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+    suspend fun updateOrInsertTaskToLocalDatabase(task: Task): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskEntity = task.toData().toDatabase()
+
+                taskDao.insertOne(taskEntity)
 
                 true
             } catch (e: Exception) {

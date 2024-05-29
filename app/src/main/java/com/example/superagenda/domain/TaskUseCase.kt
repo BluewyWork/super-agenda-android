@@ -16,29 +16,31 @@ class TaskUseCase @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val taskRepository: TaskRepository,
 ) {
-    private suspend fun retrieveTaskList(): List<Task>? {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+    private suspend fun retrieveTaskList2(): List<Task>? {
+        val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase()
+        if (!localTaskList.isNullOrEmpty()) {
+            return localTaskList
+        }
 
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
         if (token.isNullOrBlank()) {
             return null
         }
 
-        var taskList = taskRepository.retrieveTaskList(token)
-
-        if (taskList != null) {
-            taskRepository.clearTaskListFromLocalDatabase()
-            taskRepository.saveTaskListToLocalDatabase(taskList)
-        } else {
-            taskList = taskRepository.retrieveTaskListFromLocalDatabase()
+        val remoteTaskList = taskRepository.retrieveTaskList(token)
+        if (remoteTaskList.isNullOrEmpty()) {
+            return null
         }
 
-        return taskList
+        taskRepository.saveTaskListToLocalDatabase(remoteTaskList)
+        return taskRepository.retrieveTaskListFromLocalDatabase()
     }
 
-    suspend fun retrieveNotStartedTaskList(): List<Task>? {
+
+    suspend fun retrieveNotStartedTaskList2(): List<Task>? {
         val notStartedTaskList: MutableList<Task> = mutableListOf()
 
-        for (task in retrieveTaskList() ?: return null) {
+        for (task in retrieveTaskList2() ?: return null) {
             if (task.status == TaskStatus.NotStarted) {
                 notStartedTaskList.add(task)
             }
@@ -47,10 +49,11 @@ class TaskUseCase @Inject constructor(
         return notStartedTaskList
     }
 
-    suspend fun retrieveOnGoingTaskList(): List<Task>? {
+
+    suspend fun retrieveOnGoingTaskList2(): List<Task>? {
         val onGoingTaskList: MutableList<Task> = mutableListOf()
 
-        for (task in retrieveTaskList() ?: return null) {
+        for (task in retrieveTaskList2() ?: return null) {
             if (task.status == TaskStatus.Ongoing) {
                 onGoingTaskList.add(task)
             }
@@ -59,10 +62,11 @@ class TaskUseCase @Inject constructor(
         return onGoingTaskList
     }
 
-    suspend fun retrieveCompletedTaskList(): List<Task>? {
+
+    suspend fun retrieveCompletedTaskList2(): List<Task>? {
         val completedTaskList: MutableList<Task> = mutableListOf()
 
-        for (task in retrieveTaskList() ?: return null) {
+        for (task in retrieveTaskList2() ?: return null) {
             if (task.status == TaskStatus.Completed) {
                 completedTaskList.add(task)
             }
@@ -71,24 +75,29 @@ class TaskUseCase @Inject constructor(
         return completedTaskList
     }
 
-    suspend fun updateTask(task: Task): Boolean {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
 
-        if (token.isNullOrBlank()) {
-            return false
-        }
-
-        return taskRepository.updateTask(token, task)
+    suspend fun updateTask2(task: Task): Boolean {
+        return taskRepository.updateOrInsertTaskToLocalDatabase(task)
     }
 
-    suspend fun createTask(task: Task): Boolean {
+    suspend fun createTask2(task: Task): Boolean {
+        return taskRepository.updateOrInsertTaskToLocalDatabase(task)
+    }
+
+    suspend fun synchronizeTaskListToApi(): Boolean {
+        val taskList = taskRepository.retrieveTaskListFromLocalDatabase()
+
+        if (taskList.isNullOrEmpty()) {
+            return false
+        }
+
         val token = tokenRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return false
         }
 
-        return taskRepository.createTask(token, task)
+        return taskRepository.updateTaskList(token, taskList)
     }
 
     suspend fun saveTaskListToLocalStorage() {
@@ -140,7 +149,7 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun showTaskNotification(service: NotificationService) {
-        val list = retrieveNotStartedTaskList()
+        val list = retrieveNotStartedTaskList2()
 
         val size = list ?: return
 

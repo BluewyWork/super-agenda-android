@@ -65,7 +65,7 @@ class NewTaskViewModel @Inject constructor(
                 return@launch
             }
 
-            val success = taskUseCase.createTask(task)
+            val success = taskUseCase.createTask2(task)
 
             if (!success) {
                 // do something here
@@ -77,6 +77,7 @@ class NewTaskViewModel @Inject constructor(
             _title.postValue("")
             _description.postValue("")
             onShow()
+            taskUseCase.synchronizeTaskListToApi()
         }
     }
 

@@ -25,7 +25,11 @@ import com.example.superagenda.presentation.screens.profile.composables.LogoutBu
 import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavController, service: NotificationService) {
+fun ProfileScreen(
+    profileViewModel: ProfileViewModel,
+    navController: NavController,
+    service: NotificationService
+) {
     Scaffold(bottomBar = { NavigationBar(navController = navController) }) { innerPadding ->
         Column(
             Modifier
@@ -38,7 +42,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
 }
 
 @Composable
-fun Profile(profileViewModel: ProfileViewModel, navController: NavController, service: NotificationService) {
+fun Profile(
+    profileViewModel: ProfileViewModel,
+    navController: NavController,
+    service: NotificationService
+) {
     val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
     LazyColumn(

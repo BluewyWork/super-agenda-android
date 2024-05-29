@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -71,11 +70,8 @@ class TaskEditViewModel @Inject constructor(
             }
 
             if (taskToUpdate != null) {
-                val ok = taskUseCase.updateTask(taskToUpdate)
-
-                if (!ok) {
-                    navController.navigate(Destinations.NoInternet.route)
-                }
+                val ok = taskUseCase.updateTask2(taskToUpdate)
+                val ok2 = taskUseCase.synchronizeTaskListToApi()
             }
         }
     }

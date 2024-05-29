@@ -21,7 +21,7 @@ class TasksOngoingViewModel @Inject constructor(
 
     fun onShow() {
         viewModelScope.launch {
-            val onGoingTaskList = taskUseCase.retrieveOnGoingTaskList()
+            val onGoingTaskList = taskUseCase.retrieveOnGoingTaskList2()
 
             _onGoingTaskList.postValue(onGoingTaskList)
         }

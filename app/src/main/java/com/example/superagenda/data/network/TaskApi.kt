@@ -22,4 +22,10 @@ interface TaskApi {
         @Header("Authorization") token: String,
         @Body taskModel: TaskModel
     ): ApiResponse<Map<String, Any>>
+
+    @POST(Endpoints.UPDATE_TASK_LIST)
+    suspend fun updateTaskList(
+        @Header("Authorization") token: String,
+        @Body taskList: List<TaskModel>
+    ): ApiResponse<Map<String, Any>>
 }

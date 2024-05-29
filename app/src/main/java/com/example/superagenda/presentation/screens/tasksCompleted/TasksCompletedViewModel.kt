@@ -21,7 +21,7 @@ class TasksCompletedViewModel @Inject constructor(
 
     fun onShow() {
         viewModelScope.launch {
-            val completedTaskList = taskUseCase.retrieveCompletedTaskList()
+            val completedTaskList = taskUseCase.retrieveCompletedTaskList2()
             _completedTaskList.postValue(completedTaskList)
         }
     }
