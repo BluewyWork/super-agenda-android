@@ -41,6 +41,7 @@ class TaskEditViewModel @Inject constructor(
         _title.postValue(taskToEdit.value?.title ?: return)
         _description.postValue(taskToEdit.value?.description ?: return)
         _taskStatus.postValue(taskToEdit.value?.status ?: return)
+        Log.d("LOOK AT ME", "CHEK STATUS: ${_taskStatus.value}")
         _startDateTime.postValue(taskToEdit.value?.startDateTime ?: return)
         _endDateTime.postValue(taskToEdit.value?.endDateTime ?: return)
     }

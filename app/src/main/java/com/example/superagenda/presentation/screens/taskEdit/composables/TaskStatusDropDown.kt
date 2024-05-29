@@ -90,7 +90,7 @@ fun TaskStatusDropDown(
             }
         ) {
             TextField(
-                value = selectedStatus.name,
+                value = taskStatus.name,
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
