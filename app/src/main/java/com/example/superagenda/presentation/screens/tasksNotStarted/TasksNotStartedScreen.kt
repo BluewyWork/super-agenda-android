@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.tasksNotStarted
 
+import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,7 +24,7 @@ fun TasksNotStartedScreen(
 ) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Text(text = "Tasks yet to be started:")
+            BeautifulTitle(title = "TASKS (NOT STARTED)")
             TasksNotStarted(tasksNotStartedViewModel, navController)
         }
     }

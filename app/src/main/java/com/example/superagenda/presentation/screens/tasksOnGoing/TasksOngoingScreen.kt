@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.tasksOnGoing
 
+import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,7 @@ fun TasksOngoingScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "Ongoing Tasks:")
+            BeautifulTitle(title = "TASKS (ONGOING)")
             TaskOngoing(tasksOngoingViewModel, navController)
         }
     }

@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.tasksCompleted
 
+import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,7 @@ fun TasksCompletedScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "Completed Tasks:")
+            BeautifulTitle(title = "TASKS (COMPLETED)")
             TaskCompleted(tasksCompletedViewModel, navController)
         }
     }
