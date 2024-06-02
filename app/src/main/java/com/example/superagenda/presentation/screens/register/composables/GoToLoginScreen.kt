@@ -19,6 +19,6 @@ fun GoToLoginScreen(navController: NavController) {
             .padding(top = 5.dp)
             .clickable { navController.navigate("login") },
         text = "Haz click aqui para logearte!",
-                style = TextStyle(textAlign = TextAlign.Right)
+        style = TextStyle(textAlign = TextAlign.Right)
     )
 }

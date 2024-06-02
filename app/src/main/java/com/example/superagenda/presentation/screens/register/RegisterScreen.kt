@@ -10,7 +10,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
 import com.example.superagenda.presentation.screens.register.composables.PasswordTextField
 import com.example.superagenda.presentation.screens.register.composables.RegisterButton

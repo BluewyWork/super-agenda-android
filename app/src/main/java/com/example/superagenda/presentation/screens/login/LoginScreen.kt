@@ -10,7 +10,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.login.composables.GoToRegisterScreen
 import com.example.superagenda.presentation.screens.login.composables.LoginButton
 import com.example.superagenda.presentation.screens.login.composables.PasswordTextField
@@ -44,9 +43,9 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
         PasswordTextField(password) {
             loginViewModel.onPasswordChange(it)
         }
-        
+
         Spacer(modifier = Modifier.padding(16.dp))
-        
+
         LoginButton() {
             loginViewModel.onLoginButtonPress(navController)
         }

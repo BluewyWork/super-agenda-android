@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.NavigationBar
-import com.example.superagenda.presentation.screens.tasksNotStarted.composables.TaskCard
+import com.example.superagenda.presentation.composables.TaskCard
 
 @Composable
 fun TasksOngoingScreen(
