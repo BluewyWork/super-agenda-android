@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.newTask
 
+import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +24,7 @@ import java.time.LocalDateTime
 fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            Text(text = "Edit your task: ")
+            BeautifulTitle(title = "TASK: CREATE")
             NewTask(newTaskViewModel)
             UpdateButton {
                 newTaskViewModel.onCreateButtonPress(navController)
