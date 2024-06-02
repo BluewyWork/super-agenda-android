@@ -1,12 +1,14 @@
 package com.example.superagenda.presentation.screens.register
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
@@ -16,11 +18,8 @@ import com.example.superagenda.presentation.screens.register.composables.Usernam
 
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-    Scaffold(bottomBar = {
-        NavigationBar(
-            navController
-        )
-    }) { innerPadding ->
+    Scaffold(
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Register(registerViewModel, navController)
         }
@@ -32,12 +31,23 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
     val username: String by registerViewModel.username.observeAsState("")
     val password: String by registerViewModel.password.observeAsState("")
 
+
+    Spacer(modifier = Modifier.padding(16.dp))
+    Spacer(modifier = Modifier.padding(16.dp))
+    Spacer(modifier = Modifier.padding(16.dp))
+    Spacer(modifier = Modifier.padding(16.dp))
+    Spacer(modifier = Modifier.padding(16.dp))
+    Spacer(modifier = Modifier.padding(16.dp))
+
     UsernameTextField(username) {
         registerViewModel.onUsernameChange(it)
     }
     PasswordTextField(password) {
         registerViewModel.onPasswordChange(it)
     }
+
+    Spacer(modifier = Modifier.padding(16.dp))
+
     RegisterButton {
         registerViewModel.onRegisterButtonPress(navController)
     }

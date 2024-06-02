@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.login.composables
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 fun PasswordTextField(password: String, onTextChange: (String) -> Unit) {
     TextField(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(start = 8.dp, end = 8.dp),
         value = password,
         visualTransformation = PasswordVisualTransformation(),
