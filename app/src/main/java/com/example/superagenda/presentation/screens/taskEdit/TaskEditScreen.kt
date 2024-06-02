@@ -1,6 +1,8 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
+import BeautifulTitle
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -9,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -24,7 +27,8 @@ import java.time.LocalDateTime
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
     Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
-            Text(text = "Edit your task: ")
+            BeautifulTitle(title = "TASK: EDIT")
+            Spacer(modifier = Modifier.padding(8.dp))
             TaskEdit(taskEditViewModel)
             UpdateButton {
                 taskEditViewModel.onUpdateButtonPress(navController)
@@ -57,14 +61,15 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
                         taskEditViewModel.onTaskStatusChange(it)
                     }
                 }
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text(text = "START DATETIME")
                 startDateTime?.let { it3 ->
                     DateTimePicker(initialDateTime = it3) { it2 ->
                         taskEditViewModel.onStartDateTimeChange(it2)
                     }
                 }
-
-                Text("-----------------------------------------")
-
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text(text = "END DATETIME")
                 endDateTime?.let { it5 ->
                     DateTimePicker(initialDateTime = it5) { it2 ->
                         taskEditViewModel.onEndDateTimeChange(it2)

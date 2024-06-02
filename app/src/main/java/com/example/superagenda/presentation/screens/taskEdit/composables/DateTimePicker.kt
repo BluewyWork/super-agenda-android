@@ -2,9 +2,11 @@ package com.example.superagenda.presentation.screens.taskEdit.composables
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -45,12 +47,12 @@ fun DateTimePicker(
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Selected Date: ${selectedDateTime.format(dateFormatter)}")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Selected Time: ${selectedDateTime.format(timeFormatter)}")
-        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Selected Date: ${selectedDateTime.format(dateFormatter)}")
 
-        Row {
             Button(onClick = {
                 val now = Calendar.getInstance()
                 DatePickerDialog(
@@ -63,8 +65,15 @@ fun DateTimePicker(
             }) {
                 Text(text = "Pick Date")
             }
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Selected Time: ${selectedDateTime.format(timeFormatter)}")
 
             Button(onClick = {
                 val now = Calendar.getInstance()
