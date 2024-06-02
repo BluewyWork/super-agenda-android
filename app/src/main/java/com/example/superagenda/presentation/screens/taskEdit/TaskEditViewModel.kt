@@ -77,6 +77,13 @@ class TaskEditViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteButtonPress() {
+        viewModelScope.launch {
+            taskToEdit.value?.let { taskUseCase.deleteTask(it) }
+            taskUseCase.synchronizeApiToLocalDatabase()
+        }
+    }
+
     fun onTitleChange(title: String) {
         _title.postValue(title)
     }

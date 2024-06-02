@@ -16,6 +16,32 @@ class TaskUseCase @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val taskRepository: TaskRepository,
 ) {
+    suspend fun deleteTask(task: Task): Boolean {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        Log.d("LOOK AT ME", "UUUWU: ${task._id}")
+
+        return taskRepository.deleteTask(token, task._id.toHexString())
+    }
+
+    suspend fun synchronizeApiToLocalDatabase(): Boolean {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        val remoteTaskList = taskRepository.retrieveTaskList(token)
+        if (remoteTaskList.isNullOrEmpty()) {
+            return false
+        }
+
+        taskRepository.clearTaskListFromLocalDatabase()
+        return taskRepository.saveTaskListToLocalDatabase(remoteTaskList)
+    }
+
     private suspend fun retrieveTaskList2(): List<Task>? {
         val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase()
         if (!localTaskList.isNullOrEmpty()) {

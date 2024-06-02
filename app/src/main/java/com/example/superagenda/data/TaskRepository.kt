@@ -107,6 +107,20 @@ class TaskRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteTask(token: String, taskId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = taskApi.deleteTask(token, taskId)
+
+                response.ok
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
     suspend fun writeFileToLocalStorage(token: String) {
         return withContext(Dispatchers.IO) {
             try {
