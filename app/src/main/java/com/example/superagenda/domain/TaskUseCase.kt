@@ -183,4 +183,9 @@ class TaskUseCase @Inject constructor(
 
         service.showNotification("You have $size2 tasks to start!", "...")
     }
+
+
+    suspend fun logoutTask() {
+        taskRepository.cleanLogout()
+    }
 }

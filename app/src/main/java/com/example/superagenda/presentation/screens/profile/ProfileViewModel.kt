@@ -75,6 +75,7 @@ class ProfileViewModel @Inject constructor(
                 return@launch
             }
 
+            taskUseCase.logoutTask()
             navController.navigate(Destinations.Login.route)
         }
     }

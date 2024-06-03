@@ -211,4 +211,18 @@ class TaskRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun cleanLogout(): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val taskList = taskDao.deleteAll()
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
 }
