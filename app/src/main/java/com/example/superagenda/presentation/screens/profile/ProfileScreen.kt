@@ -63,6 +63,16 @@ fun Profile(
             }
 
             Spacer(modifier = Modifier.padding(16.dp))
+
+            DeleteButton {
+                profileViewModel.onDeleteButtonPressButton(navController)
+            }
+
+            LogoutButton {
+                profileViewModel.onLogoutPress(navController)
+            }
+
+            Spacer(modifier = Modifier.padding(16.dp))
             Spacer(modifier = Modifier.padding(16.dp))
             Spacer(modifier = Modifier.padding(16.dp))
             Spacer(modifier = Modifier.padding(16.dp))
@@ -71,20 +81,12 @@ fun Profile(
 
             BeautifulTitle(title = "OTHER")
 
-            DeleteButton {
-                profileViewModel.onDeleteButtonPressButton(navController)
-            }
-
             BackupTaskList {
                 profileViewModel.onBackupButtonPress()
             }
 
             ImportTaskList { contentResolver, filePath ->
                 profileViewModel.onImportButtonPress(contentResolver, filePath)
-            }
-
-            LogoutButton {
-                profileViewModel.onLogoutPress(navController)
             }
         }
     }
