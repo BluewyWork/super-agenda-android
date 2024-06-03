@@ -80,6 +80,7 @@ class TaskEditViewModel @Inject constructor(
     fun onDeleteButtonPress() {
         viewModelScope.launch {
             taskToEdit.value?.let { taskUseCase.deleteTask(it) }
+            taskUseCase.logoutTask()
             taskUseCase.synchronizeApiToLocalDatabase()
         }
     }

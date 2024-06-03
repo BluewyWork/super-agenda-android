@@ -110,6 +110,16 @@ class TaskUseCase @Inject constructor(
         return taskRepository.updateOrInsertTaskToLocalDatabase(task)
     }
 
+    suspend fun createTask3(task: Task): Boolean {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        return taskRepository.createTask(token, task)
+    }
+
     suspend fun synchronizeTaskListToApi(): Boolean {
         val taskList = taskRepository.retrieveTaskListFromLocalDatabase()
 
