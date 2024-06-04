@@ -2,7 +2,6 @@ package com.example.superagenda.presentation.screens.taskEdit
 
 import BeautifulTitle
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,14 +31,14 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
             BeautifulTitle(title = "TASK: EDIT")
             Spacer(modifier = Modifier.padding(8.dp))
             TaskEdit(taskEditViewModel)
-                DeleteButton {
-                    taskEditViewModel.onDeleteButtonPress()
-                    navController.popBackStack()
-                }
-                UpdateButton {
-                    taskEditViewModel.onUpdateButtonPress(navController)
-                    navController.popBackStack()
-                }
+            DeleteButton {
+                taskEditViewModel.onDeleteButtonPress()
+                navController.popBackStack()
+            }
+            UpdateButton {
+                taskEditViewModel.onUpdateButtonPress(navController)
+                navController.popBackStack()
+            }
         }
     }
 }
