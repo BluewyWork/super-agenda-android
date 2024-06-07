@@ -156,7 +156,7 @@ class TaskRepository @Inject constructor(
                 val taskModelList = taskList.map { it.toData() }
 
                 for (task in taskModelList) {
-                    taskDao.insertOne(task.toDatabase())
+                    taskDao.insertOrUpdate(task.toDatabase())
                 }
 
                 true
@@ -173,7 +173,7 @@ class TaskRepository @Inject constructor(
             try {
                 val taskEntity = task.toData().toDatabase()
 
-                taskDao.insertOne(taskEntity)
+                taskDao.insertOrUpdate(taskEntity)
 
                 true
             } catch (e: Exception) {
@@ -216,6 +216,49 @@ class TaskRepository @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val taskList = taskDao.deleteAll()
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+    suspend fun defCreateOrUpdateTask(task: Task): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                taskDao.insertOrUpdate(task.toData().toDatabase())
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+
+    suspend fun defCreateOrUpdateTaskList(taskList: List<Task>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                taskDao.insertOrUpdateMany(taskList.map { it.toData().toDatabase() })
+
+                true
+            } catch (e: Exception) {
+                Log.e("LOOK AT ME", "${e.message}")
+
+                false
+            }
+        }
+    }
+
+    suspend fun defDeleteTask(task_id: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                taskDao.deleteById(task_id)
 
                 true
             } catch (e: Exception) {

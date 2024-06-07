@@ -198,4 +198,40 @@ class TaskUseCase @Inject constructor(
     suspend fun logoutTask() {
         taskRepository.cleanLogout()
     }
+
+    //
+
+    suspend fun definitiveCreateOrUpdateTask(task: Task): Boolean {
+       return taskRepository.defCreateOrUpdateTask(task)
+    }
+
+    suspend fun definitiveDeleteTask(task_id: String): Boolean {
+        return taskRepository.defDeleteTask(task_id)
+    }
+
+    // save to online as backup
+    suspend fun definitiveSynchronizeUpTaskList(): Boolean {
+        val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase() ?: return false
+
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        return taskRepository.updateTaskList(token, localTaskList)
+    }
+
+    // probably only used when first time login
+    suspend fun definitiveSynchronizeDownTaskList(): Boolean {
+        val token = tokenRepository.retrieveTokenFromLocalStorage()
+
+        if (token.isNullOrBlank()) {
+            return false
+        }
+
+        val remoteTaskList = taskRepository.retrieveTaskList(token) ?: return false
+
+        return taskRepository.defCreateOrUpdateTaskList(remoteTaskList)
+    }
 }

@@ -19,6 +19,7 @@ import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.taskEdit.composables.DescriptionTextField
+import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 import com.example.superagenda.presentation.screens.taskEdit.composables.TitleTextField
 import com.example.superagenda.presentation.screens.taskEdit.composables.UpdateButton
@@ -38,6 +39,14 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
             UpdateButton {
                 taskEditViewModel.onUpdateButtonPress(navController)
                 navController.popBackStack()
+            }
+        }
+
+        val errorMessage: String? by taskEditViewModel.errorMessage.observeAsState(null)
+
+        if (errorMessage != null) {
+            ErrorDialog(errorMessage = errorMessage) {
+                taskEditViewModel.onErrorDismissed()
             }
         }
     }

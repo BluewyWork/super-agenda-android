@@ -35,6 +35,8 @@ class NewTaskViewModel @Inject constructor(
     val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
     fun onShow() {
+        _title.postValue("")
+        _description.postValue("")
         _taskStatus.postValue(TaskStatus.NotStarted)
         _startDateTime.postValue(LocalDateTime.now())
         _endDateTime.postValue(LocalDateTime.now())
@@ -65,19 +67,15 @@ class NewTaskViewModel @Inject constructor(
                 return@launch
             }
 
-            val success = taskUseCase.createTask3(task)
-
-            if (!success) {
+            if (!taskUseCase.definitiveCreateOrUpdateTask(task)) {
                 // do something here
-                navController.navigate(Destinations.NoInternet.route)
-            } else {
-                navController.navigate(Destinations.TasksNotStarted.route)
             }
 
-            _title.postValue("")
-            _description.postValue("")
+            if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
+                // do something here
+            }
+
             onShow()
-            taskUseCase.synchronizeApiToLocalDatabase()
         }
     }
 

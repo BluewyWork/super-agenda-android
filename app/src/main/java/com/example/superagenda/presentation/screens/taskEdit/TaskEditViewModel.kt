@@ -1,6 +1,7 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,6 +38,17 @@ class TaskEditViewModel @Inject constructor(
     private val _endDateTime = MutableLiveData<LocalDateTime>()
     val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    fun onError(message: String) {
+        _errorMessage.postValue(message)
+    }
+
+    fun onErrorDismissed() {
+        _errorMessage.postValue(null)
+    }
+
     fun onShow() {
         _title.postValue(taskToEdit.value?.title ?: return)
         _description.postValue(taskToEdit.value?.description ?: return)
@@ -70,18 +82,35 @@ class TaskEditViewModel @Inject constructor(
                 }
             }
 
-            if (taskToUpdate != null) {
-                val ok = taskUseCase.updateTask2(taskToUpdate)
-                val ok2 = taskUseCase.synchronizeTaskListToApi()
+            if (taskToUpdate == null) {
+                return@launch
+            }
+
+            if (!taskUseCase.definitiveCreateOrUpdateTask(taskToUpdate)) {
+                // do something here
+            }
+
+            if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
+                // do something here
             }
         }
     }
 
     fun onDeleteButtonPress() {
         viewModelScope.launch {
-            taskToEdit.value?.let { taskUseCase.deleteTask(it) }
-            taskUseCase.logoutTask()
-            taskUseCase.synchronizeApiToLocalDatabase()
+            val taskToEdit = taskToEdit.value ?: return@launch
+
+            if (!taskUseCase.deleteTask(taskToEdit)) {
+                onError("Failed for API to delete task...")
+
+                return@launch
+            }
+
+            if (!taskUseCase.definitiveDeleteTask(taskToEdit._id.toHexString())) {
+                onError("Failed for local database to delete task... HOW?")
+
+                return@launch
+            }
         }
     }
 

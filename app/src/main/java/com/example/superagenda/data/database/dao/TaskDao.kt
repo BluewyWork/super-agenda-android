@@ -15,5 +15,11 @@ interface TaskDao {
     fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOne(taskEntity: TaskEntity)
+    suspend fun insertOrUpdateMany(taskEntityList: List<TaskEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOrUpdate(taskEntity: TaskEntity)
+
+    @Query("DELETE FROM task_table WHERE _id = :taskId")
+    fun deleteById(taskId: String)
 }
