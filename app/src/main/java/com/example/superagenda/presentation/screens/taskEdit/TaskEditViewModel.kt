@@ -1,7 +1,6 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -87,21 +86,27 @@ class TaskEditViewModel @Inject constructor(
             }
 
             if (!taskUseCase.definitiveCreateOrUpdateTask(taskToUpdate)) {
-                // do something here
+                onError("Failed for local database to insert task... HOW?")
+
+                return@launch
             }
 
             if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
-                // do something here
+                onError("Failed for API to update task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
+
+                return@launch
             }
+
+            navController.popBackStack()
         }
     }
 
-    fun onDeleteButtonPress() {
+    fun onDeleteButtonPress(navController: NavController) {
         viewModelScope.launch {
             val taskToEdit = taskToEdit.value ?: return@launch
 
             if (!taskUseCase.deleteTask(taskToEdit)) {
-                onError("Failed for API to delete task...")
+                onError("Failed for API to delete task...\nMaybe check your internet connection?")
 
                 return@launch
             }
@@ -111,6 +116,8 @@ class TaskEditViewModel @Inject constructor(
 
                 return@launch
             }
+
+            navController.popBackStack()
         }
     }
 

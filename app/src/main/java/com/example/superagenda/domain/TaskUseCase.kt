@@ -202,7 +202,7 @@ class TaskUseCase @Inject constructor(
     //
 
     suspend fun definitiveCreateOrUpdateTask(task: Task): Boolean {
-       return taskRepository.defCreateOrUpdateTask(task)
+        return taskRepository.defCreateOrUpdateTask(task)
     }
 
     suspend fun definitiveDeleteTask(task_id: String): Boolean {
