@@ -52,7 +52,7 @@ fun TaskOngoing(
                         }
                     }
                 } else {
-                    Text("Whoops something went wrong...")
+                    Text("Either no tasks or no internet connection...")
                 }
             }
         }

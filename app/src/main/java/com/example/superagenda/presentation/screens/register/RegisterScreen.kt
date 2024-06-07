@@ -10,6 +10,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
 import com.example.superagenda.presentation.screens.register.composables.PasswordTextField
 import com.example.superagenda.presentation.screens.register.composables.RegisterButton
@@ -21,6 +22,14 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Register(registerViewModel, navController)
+        }
+
+        val errorMessage: String? by registerViewModel.errorMessage.observeAsState(null)
+
+        if (errorMessage != null) {
+            ErrorDialog(errorMessage = errorMessage) {
+                registerViewModel.onErrorDismissed()
+            }
         }
     }
 }

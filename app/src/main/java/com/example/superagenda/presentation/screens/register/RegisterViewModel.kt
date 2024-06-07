@@ -25,6 +25,18 @@ class RegisterViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    fun onError(message: String) {
+        _errorMessage.postValue(message)
+    }
+
+    fun onErrorDismissed() {
+        _errorMessage.postValue(null)
+    }
+
     fun onRegisterButtonPress(navController: NavController) {
         viewModelScope.launch {
             val userForRegister = _username.value?.let {
@@ -40,7 +52,8 @@ class RegisterViewModel @Inject constructor(
                 val ok = registerUseCase.register(userForRegister)
 
                 if (!ok) {
-                    // do something here
+                    onError("Either invalid credentials or something else...")
+
                     return@launch
                 }
 

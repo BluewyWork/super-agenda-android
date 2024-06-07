@@ -24,6 +24,18 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    fun onError(message: String) {
+        _errorMessage.postValue(message)
+    }
+
+    fun onErrorDismissed() {
+        _errorMessage.postValue(null)
+    }
+
     fun onUsernameChange(username: String) {
         _username.postValue(username)
     }
@@ -59,11 +71,13 @@ class LoginViewModel @Inject constructor(
 
             if (!userAuthenticated) {
                 // warn user of wrong credentials
+                onError("Either invalid credentials or no internet connection...")
             } else {
                 val ok = taskUseCase.definitiveSynchronizeDownTaskList()
 
                 if (!ok) {
                     // do something
+                    onError("Was the internet disconnected?")
                 }
 
                 navController.navigate(Destinations.TasksNotStarted.route)

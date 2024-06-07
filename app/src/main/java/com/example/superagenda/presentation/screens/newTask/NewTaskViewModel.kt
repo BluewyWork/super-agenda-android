@@ -33,6 +33,17 @@ class NewTaskViewModel @Inject constructor(
     private val _endDateTime = MutableLiveData<LocalDateTime>()
     val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    fun onError(message: String) {
+        _errorMessage.postValue(message)
+    }
+
+    fun onErrorDismissed() {
+        _errorMessage.postValue(null)
+    }
+
     fun onShow() {
         _title.postValue("")
         _description.postValue("")
@@ -68,10 +79,12 @@ class NewTaskViewModel @Inject constructor(
 
             if (!taskUseCase.definitiveCreateOrUpdateTask(task)) {
                 // do something here
+                onError("Well, this is certainly super rare to happen...")
             }
 
             if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
                 // do something here
+                onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
             }
 
             onShow()

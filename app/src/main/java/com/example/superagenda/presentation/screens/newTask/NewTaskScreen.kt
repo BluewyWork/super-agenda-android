@@ -12,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.composables.NavigationBar
 import com.example.superagenda.presentation.screens.newTask.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.newTask.composables.DescriptionTextField
@@ -28,6 +29,14 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
             NewTask(newTaskViewModel)
             UpdateButton {
                 newTaskViewModel.onCreateButtonPress(navController)
+            }
+        }
+
+        val errorMessage: String? by newTaskViewModel.errorMessage.observeAsState(null)
+
+        if (errorMessage != null) {
+            ErrorDialog(errorMessage = errorMessage) {
+                newTaskViewModel.onErrorDismissed()
             }
         }
     }
