@@ -63,14 +63,15 @@ fun NewTask(newTaskViewModel: NewTaskViewModel) {
                     newTaskViewModel.onTaskStatusChange(it)
                 }
             }
+
+            Text(text = "START DATETIME")
             startDateTime?.let { it3 ->
                 DateTimePicker(initialDateTime = it3) { it2 ->
                     newTaskViewModel.onStartDateTimeChange(it2)
                 }
             }
 
-            Text("-----------------------------------------")
-
+            Text(text = "END DATETIME")
             endDateTime?.let { it5 ->
                 DateTimePicker(initialDateTime = it5) { it2 ->
                     newTaskViewModel.onEndDateTimeChange(it2)
