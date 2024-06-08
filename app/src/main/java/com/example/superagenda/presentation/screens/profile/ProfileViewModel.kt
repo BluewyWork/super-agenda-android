@@ -66,6 +66,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             taskUseCase.importTaskListFromLocalStorage(taskList)
+            taskUseCase.definitiveSynchronizeUpTaskList()
         }
     }
 

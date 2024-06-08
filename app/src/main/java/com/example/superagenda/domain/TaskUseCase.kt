@@ -147,15 +147,7 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun importTaskListFromLocalStorage(taskList: List<Task>) {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
-
-        if (token.isNullOrBlank()) {
-            return
-        }
-
-        for (task in taskList) {
-            taskRepository.updateTask(token, task)
-        }
+        taskRepository.defCreateOrUpdateTaskList(taskList)
     }
 
     suspend fun test() {
@@ -217,6 +209,20 @@ class TaskUseCase @Inject constructor(
 
         if (token.isNullOrBlank()) {
             return false
+        }
+
+        val remoteTaskList = taskRepository.retrieveTaskList(token);
+
+        val remoteTaskListIDs = remoteTaskList?.map { it._id }?.toSet()
+
+        for (localTask in localTaskList) {
+            if (remoteTaskListIDs == null) {
+                continue
+            }
+
+            if (!remoteTaskListIDs.contains(localTask._id)) {
+                taskRepository.createTask(token, localTask)
+            }
         }
 
         return taskRepository.updateTaskList(token, localTaskList)
