@@ -82,6 +82,10 @@ class NewTaskViewModel @Inject constructor(
                 onError("Well, this is certainly super rare to happen...")
             }
 
+            if (!taskUseCase.createTask3(task)) {
+                onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
+            }
+
             if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
                 // do something here
                 onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
