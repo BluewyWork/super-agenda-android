@@ -1,6 +1,5 @@
 package com.example.superagenda.core.navigations
 
-import TasksOverviewScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +16,7 @@ import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
+import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewScreen
 import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewViewModel
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel

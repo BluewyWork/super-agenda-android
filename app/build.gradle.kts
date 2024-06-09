@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.retrofit.converter.json)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+    implementation(libs.coil.compose)
+
 }
 kapt {
     correctErrorTypes = true
