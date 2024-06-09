@@ -211,21 +211,18 @@ class TaskUseCase @Inject constructor(
             return false
         }
 
-        val remoteTaskList = taskRepository.retrieveTaskList(token);
-
-        val remoteTaskListIDs = remoteTaskList?.map { it._id }?.toSet()
+        val remoteTaskList = taskRepository.retrieveTaskList(token)
+        val remoteTaskListIDs = remoteTaskList?.map { it._id }?.toSet() ?: emptySet()
 
         for (localTask in localTaskList) {
-            if (remoteTaskListIDs == null) {
-                continue
-            }
-
             if (!remoteTaskListIDs.contains(localTask._id)) {
                 taskRepository.createTask(token, localTask)
+            } else {
+                taskRepository.updateTask(token, localTask)
             }
         }
 
-        return taskRepository.updateTaskList(token, localTaskList)
+        return true
     }
 
     // probably only used when first time login

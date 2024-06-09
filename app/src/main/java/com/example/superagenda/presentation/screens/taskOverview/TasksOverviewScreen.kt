@@ -51,12 +51,12 @@ fun AdPlaceholder() {
     val imageUrl =
         "https://cdn.businessinsider.es/sites/navi.axelspringer.es/public/media/image/2023/11/aplicacion-duolingo-3213288.jpg?tf=1920x"
 
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-            modifier = Modifier.height(100.dp),
-            contentScale = ContentScale.FillBounds
-        )
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = null,
+        modifier = Modifier.height(100.dp),
+        contentScale = ContentScale.FillBounds
+    )
 }
 
 @Composable
