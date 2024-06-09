@@ -15,6 +15,7 @@ import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
+import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewViewModel
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
 import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
 import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingViewModel
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
     private val tasksCompletedViewModel: TasksCompletedViewModel by viewModels()
     private val taskEditViewModel: TaskEditViewModel by viewModels()
     private val newTaskViewModel: NewTaskViewModel by viewModels()
+    private val tasksOverviewViewModel: TasksOverviewViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         createNotificationChannel()
@@ -49,7 +51,8 @@ class MainActivity : ComponentActivity() {
                     tasksOngoingViewModel = tasksOngoingViewModel,
                     tasksCompletedViewModel = tasksCompletedViewModel,
                     taskEditViewModel = taskEditViewModel,
-                    newTaskViewModel = newTaskViewModel
+                    newTaskViewModel = newTaskViewModel,
+                    tasksOverviewViewModel = tasksOverviewViewModel
                 )
             }
         }

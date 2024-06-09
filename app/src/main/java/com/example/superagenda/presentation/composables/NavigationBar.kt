@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
@@ -24,6 +25,16 @@ fun NavigationBar(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary
     ) {
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate("tasks_overview") },
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Home,
+                    contentDescription = "Tasks Overview",
+                )
+            }
+        )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("new_task") },
