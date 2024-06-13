@@ -80,7 +80,7 @@ fun NavigationBar(navController: NavController) {
             selected = false,
             onClick = { navController.navigate("filter") },
             icon = {
-               Text("F")
+                Text("F")
             }
         )
         NavigationBarItem(
