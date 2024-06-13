@@ -18,7 +18,7 @@ import com.example.superagenda.presentation.screens.login.composables.UsernameTe
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-    Scaffold() { innerPadding ->
+    Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Login(loginViewModel, navController)
         }
@@ -55,7 +55,7 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.padding(16.dp))
 
-        LoginButton() {
+        LoginButton {
             loginViewModel.onLoginButtonPress(navController)
         }
         GoToRegisterScreen(navController)

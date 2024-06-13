@@ -18,8 +18,7 @@ import com.example.superagenda.presentation.screens.register.composables.Usernam
 
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-    Scaffold(
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             Register(registerViewModel, navController)
         }

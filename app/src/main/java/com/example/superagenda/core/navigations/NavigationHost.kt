@@ -5,6 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.core.NotificationService
+import com.example.superagenda.presentation.screens.filter.FilterScreen
+import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
@@ -36,7 +38,8 @@ fun NavigationHost(
     tasksCompletedViewModel: TasksCompletedViewModel,
     taskEditViewModel: TaskEditViewModel,
     newTaskViewModel: NewTaskViewModel,
-    tasksOverviewViewModel: TasksOverviewViewModel
+    tasksOverviewViewModel: TasksOverviewViewModel,
+    filterScreenViewModel: FilterScreenViewModel
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -80,6 +83,10 @@ fun NavigationHost(
         composable(Destinations.TasksOverview.route) {
             tasksOverviewViewModel.onShow()
             TasksOverviewScreen(tasksOverviewViewModel, navController)
+        }
+        composable(Destinations.Filter.route) {
+            filterScreenViewModel.onShow()
+            FilterScreen(filterScreenViewModel, navController)
         }
     }
 }

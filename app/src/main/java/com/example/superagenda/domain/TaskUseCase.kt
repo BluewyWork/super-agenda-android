@@ -42,7 +42,7 @@ class TaskUseCase @Inject constructor(
         return taskRepository.saveTaskListToLocalDatabase(remoteTaskList)
     }
 
-    private suspend fun retrieveTaskList2(): List<Task>? {
+    suspend fun retrieveTaskList2(): List<Task>? {
         val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase()
         if (!localTaskList.isNullOrEmpty()) {
             return localTaskList

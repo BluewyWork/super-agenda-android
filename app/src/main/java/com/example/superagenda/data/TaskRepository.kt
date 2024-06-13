@@ -36,7 +36,7 @@ class TaskRepository @Inject constructor(
                 }
 
                 Log.d("LOOK AT ME", "DOWN: $taskList")
-                Log.d("LOOK AT ME", "DOWN 1: ${taskList[0].startDateTime.toString()}")
+                Log.d("LOOK AT ME", "DOWN 1: ${taskList[0].startDateTime}")
 
                 val taskListDomain = taskList.map { it.toDomain() }
 
