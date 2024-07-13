@@ -1,6 +1,6 @@
 [versions]
 # plugins
-agp = "8.4.2"
+agp = "8.5.1"
 kotlin = "1.8.10" # do not upgrade because latest is broken
 
 # plugins not included by default
