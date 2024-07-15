@@ -2,19 +2,19 @@ package com.example.superagenda.data
 
 import android.util.Log
 import com.example.superagenda.data.models.toDomain
-import com.example.superagenda.data.network.ProfileApi
+import com.example.superagenda.data.network.SelfApi
 import com.example.superagenda.domain.models.UserForProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProfileRepository @Inject constructor(
-    private val profileApi: ProfileApi
+class SelfRepository @Inject constructor(
+    private val selfApi: SelfApi
 ) {
     suspend fun retrieveUserProfile(token: String): UserForProfile? {
         return withContext(Dispatchers.IO) {
             try {
-                profileApi.retrieveUserProfile(token).data.toDomain()
+                selfApi.retrieveUserProfile(token).data.toDomain()
             } catch (e: Exception) {
                 Log.e("LOOK AT ME", "${e.message}")
 
@@ -26,7 +26,7 @@ class ProfileRepository @Inject constructor(
     suspend fun deleteProfile(token: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val response = profileApi.deleteProfile(token)
+                val response = selfApi.deleteProfile(token)
 
                 return@withContext response.ok
             } catch (e: Exception) {

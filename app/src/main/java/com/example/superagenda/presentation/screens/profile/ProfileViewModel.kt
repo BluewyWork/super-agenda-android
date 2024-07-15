@@ -12,7 +12,7 @@ import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.ProfileUseCase
+import com.example.superagenda.domain.SelfUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.UserForProfile
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileUseCase: ProfileUseCase,
+    private val selfUseCase: SelfUseCase,
     private val taskUseCase: TaskUseCase,
     private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
@@ -34,7 +34,7 @@ class ProfileViewModel @Inject constructor(
 
     fun onShow() {
         viewModelScope.launch {
-            val userProfile = profileUseCase.retrieveUserForProfile()
+            val userProfile = selfUseCase.retrieveUserForProfile()
 
             _userForProfile.postValue(userProfile)
         }
@@ -42,7 +42,7 @@ class ProfileViewModel @Inject constructor(
 
     fun onDeleteButtonPressButton(navController: NavController) {
         viewModelScope.launch {
-            if (!profileUseCase.deleteProfile()) {
+            if (!selfUseCase.deleteProfile()) {
                 return@launch
             }
 

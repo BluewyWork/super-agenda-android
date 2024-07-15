@@ -1,32 +1,32 @@
 package com.example.superagenda.domain
 
-import com.example.superagenda.data.TokenRepository
+import com.example.superagenda.data.LoginRepository
 import com.example.superagenda.domain.models.UserForLogin
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
-    private val tokenRepository: TokenRepository
+    private val loginRepository: LoginRepository
 ) {
     suspend fun login(userForLogin: UserForLogin): Boolean {
-        val token = tokenRepository.retrieveTokenFromApi(userForLogin)
+        val token = loginRepository.retrieveTokenFromApi(userForLogin)
 
         if (token.isNullOrBlank()) {
             return false
         }
 
-        tokenRepository.wipeAllTokensFromLocalStorage()
-        val tokenInserted = tokenRepository.saveTokenToLocalStorage(token)
+        loginRepository.wipeAllTokensFromLocalStorage()
+        val tokenInserted = loginRepository.saveTokenToLocalStorage(token)
 
         return tokenInserted
     }
 
     suspend fun isLoggedIn(): Boolean {
-        val haveToken = tokenRepository.retrieveTokenFromLocalStorage()
+        val haveToken = loginRepository.retrieveTokenFromLocalStorage()
 
         return !haveToken.isNullOrBlank()
     }
 
     suspend fun logout(): Boolean {
-        return tokenRepository.wipeAllTokensFromLocalStorage()
+        return loginRepository.wipeAllTokensFromLocalStorage()
     }
 }

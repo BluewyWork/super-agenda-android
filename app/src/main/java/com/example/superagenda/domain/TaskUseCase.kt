@@ -3,8 +3,8 @@ package com.example.superagenda.domain
 import android.os.Environment
 import android.util.Log
 import com.example.superagenda.core.NotificationService
+import com.example.superagenda.data.LoginRepository
 import com.example.superagenda.data.TaskRepository
-import com.example.superagenda.data.TokenRepository
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import kotlinx.coroutines.Dispatchers
@@ -13,11 +13,11 @@ import java.io.File
 import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
-    private val tokenRepository: TokenRepository,
+    private val loginRepository: LoginRepository,
     private val taskRepository: TaskRepository,
 ) {
     suspend fun deleteTask(task: Task): Boolean {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
         if (token.isNullOrBlank()) {
             return false
         }
@@ -28,7 +28,7 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun synchronizeApiToLocalDatabase(): Boolean {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
         if (token.isNullOrBlank()) {
             return false
         }
@@ -48,7 +48,7 @@ class TaskUseCase @Inject constructor(
             return localTaskList
         }
 
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
         if (token.isNullOrBlank()) {
             return null
         }
@@ -111,7 +111,7 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun createTask3(task: Task): Boolean {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return false
@@ -127,7 +127,7 @@ class TaskUseCase @Inject constructor(
             return false
         }
 
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return false
@@ -137,7 +137,7 @@ class TaskUseCase @Inject constructor(
     }
 
     suspend fun saveTaskListToLocalStorage() {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return
@@ -205,7 +205,7 @@ class TaskUseCase @Inject constructor(
     suspend fun definitiveSynchronizeUpTaskList(): Boolean {
         val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase() ?: return false
 
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return false
@@ -227,7 +227,7 @@ class TaskUseCase @Inject constructor(
 
     // probably only used when first time login
     suspend fun definitiveSynchronizeDownTaskList(): Boolean {
-        val token = tokenRepository.retrieveTokenFromLocalStorage()
+        val token = loginRepository.retrieveTokenFromLocalStorage()
 
         if (token.isNullOrBlank()) {
             return false
