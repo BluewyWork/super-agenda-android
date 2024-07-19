@@ -17,40 +17,40 @@ import com.example.superagenda.presentation.composables.TaskCard
 
 @Composable
 fun TasksCompletedScreen(
-    tasksCompletedViewModel: TasksCompletedViewModel,
-    navController: NavController
+   tasksCompletedViewModel: TasksCompletedViewModel,
+   navController: NavController
 ) {
-    Navigation(content = { padding ->
-        TaskCompleted(tasksCompletedViewModel, navController, padding)
-    }, navController, "Completed Tasks")
+   Navigation(content = { padding ->
+      TaskCompleted(tasksCompletedViewModel, navController, padding)
+   }, navController, "Completed Tasks")
 }
 
 @Composable
 fun TaskCompleted(
-    tasksCompletedViewModel: TasksCompletedViewModel,
-    navController: NavController,
-    padding: PaddingValues
+   tasksCompletedViewModel: TasksCompletedViewModel,
+   navController: NavController,
+   padding: PaddingValues
 ) {
-    val completedTaskList: List<Task>? by tasksCompletedViewModel.completedTaskList.observeAsState()
+   val completedTaskList: List<Task>? by tasksCompletedViewModel.completedTaskList.observeAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(padding)
-    ) {
-        item {
-            completedTaskList.let {
-                if (it != null) {
-                    for (task in it) {
-                        TaskCard(task) {
-                            tasksCompletedViewModel.onEditClick(task)
-                            navController.navigate(Destinations.TaskEdit.route)
-                        }
-                    }
-                } else {
-                    Text("Either no tasks or no internet connection...")
-                }
+   LazyColumn(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(padding)
+   ) {
+      item {
+         completedTaskList.let {
+            if (it != null) {
+               for (task in it) {
+                  TaskCard(task) {
+                     tasksCompletedViewModel.onEditClick(task)
+                     navController.navigate(Destinations.TaskEdit.route)
+                  }
+               }
+            } else {
+               Text("Either no tasks or no internet connection...")
             }
-        }
-    }
+         }
+      }
+   }
 }

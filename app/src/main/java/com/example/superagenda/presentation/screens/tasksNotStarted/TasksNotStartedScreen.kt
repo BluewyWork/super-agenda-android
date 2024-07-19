@@ -18,51 +18,51 @@ import com.example.superagenda.presentation.composables.TaskCard
 
 @Composable
 fun TasksNotStartedScreen(
-    tasksNotStartedViewModel: TasksNotStartedViewModel,
-    navController: NavController
+   tasksNotStartedViewModel: TasksNotStartedViewModel,
+   navController: NavController
 ) {
-    Navigation(
-        content = { padding ->
-            TasksNotStarted(tasksNotStartedViewModel, navController, padding)
-        },
-        navController,
-        "Not Started Tasks",
-        floatingActionButton = {
-            NewTaskFloatingActionButton(onClick = {
-                navController.navigate(
-                    Destinations.NewTask.route
-                )
-            })
-        },
-    )
+   Navigation(
+      content = { padding ->
+         TasksNotStarted(tasksNotStartedViewModel, navController, padding)
+      },
+      navController,
+      "Not Started Tasks",
+      floatingActionButton = {
+         NewTaskFloatingActionButton(onClick = {
+            navController.navigate(
+               Destinations.NewTask.route
+            )
+         })
+      },
+   )
 }
 
 @Composable
 fun TasksNotStarted(
-    tasksNotStartedViewModel: TasksNotStartedViewModel,
-    navController: NavController,
-    padding: PaddingValues
+   tasksNotStartedViewModel: TasksNotStartedViewModel,
+   navController: NavController,
+   padding: PaddingValues
 ) {
-    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
+   val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(padding)
-    ) {
-        item {
-            notStartedTaskList.let {
-                if (it != null) {
-                    for (task in it) {
-                        TaskCard(task) {
-                            tasksNotStartedViewModel.onEditClick(task)
-                            navController.navigate(Destinations.TaskEdit.route)
-                        }
-                    }
-                } else {
-                    Text("Either no tasks or no internet connection...")
-                }
+   LazyColumn(
+      modifier = Modifier
+          .fillMaxWidth()
+          .padding(padding)
+   ) {
+      item {
+         notStartedTaskList.let {
+            if (it != null) {
+               for (task in it) {
+                  TaskCard(task) {
+                     tasksNotStartedViewModel.onEditClick(task)
+                     navController.navigate(Destinations.TaskEdit.route)
+                  }
+               }
+            } else {
+               Text("Either no tasks or no internet connection...")
             }
-        }
-    }
+         }
+      }
+   }
 }

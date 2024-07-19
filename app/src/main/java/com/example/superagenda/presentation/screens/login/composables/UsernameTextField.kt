@@ -13,14 +13,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun UsernameTextField(username: String, onTextChange: (String) -> Unit) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp),
-        value = username,
-        enabled = true,
-        onValueChange = { onTextChange(it) },
-        placeholder = { Text(text = "Username") },
-        leadingIcon = { Icon(Icons.Default.Person, null) }
-    )
+   TextField(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+      value = username,
+      enabled = true,
+      onValueChange = { onTextChange(it) },
+      placeholder = { Text(text = "Username") },
+      leadingIcon = { Icon(Icons.Default.Person, null) }
+   )
 }

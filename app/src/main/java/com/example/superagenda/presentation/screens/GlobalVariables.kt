@@ -11,14 +11,14 @@ import javax.inject.Singleton
 class GlobalVariables @Inject constructor(
 
 ) {
-    private val _taskToEdit = MutableLiveData<Task>()
+   private val _taskToEdit = MutableLiveData<Task>()
 
-    fun getTaskToEdit(): LiveData<Task> {
-        Log.d("LOOK AT ME", "--> ${_taskToEdit.value?.status}")
-        return _taskToEdit
-    }
+   fun getTaskToEdit(): LiveData<Task> {
+      Log.d("LOOK AT ME", "--> ${_taskToEdit.value?.status}")
+      return _taskToEdit
+   }
 
-    fun setTaskToEdit(task: Task) {
-        _taskToEdit.postValue(task)
-    }
+   fun setTaskToEdit(task: Task) {
+      _taskToEdit.postValue(task)
+   }
 }

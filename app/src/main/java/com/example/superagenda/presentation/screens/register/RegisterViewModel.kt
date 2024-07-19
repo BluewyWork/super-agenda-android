@@ -16,69 +16,69 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase,
-    private val loginUseCase: LoginUseCase,
+   private val registerUseCase: RegisterUseCase,
+   private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
-    private val _username = MutableLiveData<String>()
-    val username: LiveData<String> = _username
+   private val _username = MutableLiveData<String>()
+   val username: LiveData<String> = _username
 
-    private val _password = MutableLiveData<String>()
-    val password: LiveData<String> = _password
+   private val _password = MutableLiveData<String>()
+   val password: LiveData<String> = _password
 
 
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+   private val _errorMessage = MutableLiveData<String?>()
+   val errorMessage: LiveData<String?> = _errorMessage
 
-    fun onError(message: String) {
-        _errorMessage.postValue(message)
-    }
+   fun onError(message: String) {
+      _errorMessage.postValue(message)
+   }
 
-    fun onErrorDismissed() {
-        _errorMessage.postValue(null)
-    }
+   fun onErrorDismissed() {
+      _errorMessage.postValue(null)
+   }
 
-    fun onRegisterButtonPress(navController: NavController) {
-        viewModelScope.launch {
-            val userForRegister = _username.value?.let {
-                _password.value?.let { it1 ->
-                    UserForRegister(
-                        username = it,
-                        password = it1
-                    )
-                }
+   fun onRegisterButtonPress(navController: NavController) {
+      viewModelScope.launch {
+         val userForRegister = _username.value?.let {
+            _password.value?.let { it1 ->
+               UserForRegister(
+                  username = it,
+                  password = it1
+               )
+            }
+         }
+
+         if (userForRegister != null) {
+            val ok = registerUseCase.register(userForRegister)
+
+            if (!ok) {
+               onError("Either invalid credentials or something else...")
+
+               return@launch
             }
 
-            if (userForRegister != null) {
-                val ok = registerUseCase.register(userForRegister)
+            val userForLogin = UserForLogin(
+               username = userForRegister.username,
+               password = userForRegister.password
+            )
 
-                if (!ok) {
-                    onError("Either invalid credentials or something else...")
+            val ok2 = loginUseCase.login(userForLogin)
 
-                    return@launch
-                }
-
-                val userForLogin = UserForLogin(
-                    username = userForRegister.username,
-                    password = userForRegister.password
-                )
-
-                val ok2 = loginUseCase.login(userForLogin)
-
-                if (!ok2) {
-                    // do something here
-                    return@launch
-                }
-
-                navController.navigate(Destinations.TasksNotStarted.route)
+            if (!ok2) {
+               // do something here
+               return@launch
             }
-        }
-    }
 
-    fun onUsernameChange(username: String) {
-        _username.postValue(username)
-    }
+            navController.navigate(Destinations.TasksNotStarted.route)
+         }
+      }
+   }
 
-    fun onPasswordChange(password: String) {
-        _password.postValue(password)
-    }
+   fun onUsernameChange(username: String) {
+      _username.postValue(username)
+   }
+
+   fun onPasswordChange(password: String) {
+      _password.postValue(password)
+   }
 }

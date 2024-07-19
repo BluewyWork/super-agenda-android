@@ -9,31 +9,31 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SelfRepository @Inject constructor(
-    private val selfApi: SelfApi
+   private val selfApi: SelfApi
 ) {
-    suspend fun retrieveUserProfile(token: String): UserForProfile? {
-        return withContext(Dispatchers.IO) {
-            try {
-                selfApi.retrieveUserProfile(token).data.toDomain()
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+   suspend fun retrieveUserProfile(token: String): UserForProfile? {
+      return withContext(Dispatchers.IO) {
+         try {
+            selfApi.retrieveUserProfile(token).data.toDomain()
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                null
-            }
-        }
-    }
+            null
+         }
+      }
+   }
 
-    suspend fun deleteProfile(token: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = selfApi.deleteProfile(token)
+   suspend fun deleteProfile(token: String): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val response = selfApi.deleteProfile(token)
 
-                return@withContext response.ok
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            return@withContext response.ok
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                false
-            }
-        }
-    }
+            false
+         }
+      }
+   }
 }

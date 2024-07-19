@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LoginButton(onClick: () -> Unit) {
-    Button(onClick, modifier = Modifier.fillMaxWidth()) {
-        Text("Login")
-    }
+   Button(onClick, modifier = Modifier.fillMaxWidth()) {
+      Text("Login")
+   }
 }

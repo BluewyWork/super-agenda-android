@@ -20,54 +20,54 @@ import com.example.superagenda.domain.models.TaskStatus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskStatusDropDown(
-    taskStatus: TaskStatus? = null,
-    onStatusChange: (TaskStatus?) -> Unit
+   taskStatus: TaskStatus? = null,
+   onStatusChange: (TaskStatus?) -> Unit
 ) {
-    val context = LocalContext.current
-    val taskStatuses = TaskStatus.values()
+   val context = LocalContext.current
+   val taskStatuses = TaskStatus.values()
 
-    var expanded by remember { mutableStateOf(false) }
-    var selectedStatus by remember { mutableStateOf(taskStatus) }
+   var expanded by remember { mutableStateOf(false) }
+   var selectedStatus by remember { mutableStateOf(taskStatus) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ExposedDropdownMenuBox(
+   Column(modifier = Modifier.fillMaxWidth()) {
+      ExposedDropdownMenuBox(
+         expanded = expanded,
+         onExpandedChange = { expanded = it },
+         modifier = Modifier.fillMaxWidth()
+      ) {
+         TextField(
+            value = selectedStatus?.name ?: "None",
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+               .fillMaxWidth()
+               .menuAnchor()
+         )
+
+         ExposedDropdownMenu(
             expanded = expanded,
-            onExpandedChange = { expanded = it },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TextField(
-                value = selectedStatus?.name ?: "None",
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
+            onDismissRequest = { expanded = false }
+         ) {
+            DropdownMenuItem(
+               text = { Text(text = "None") },
+               onClick = {
+                  selectedStatus = null
+                  expanded = false
+                  onStatusChange(null)
+               }
             )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(text = "None") },
-                    onClick = {
-                        selectedStatus = null
-                        expanded = false
-                        onStatusChange(null)
-                    }
-                )
-                taskStatuses.forEach { status ->
-                    DropdownMenuItem(
-                        text = { Text(text = status.name) },
-                        onClick = {
-                            selectedStatus = status
-                            expanded = false
-                            onStatusChange(status)
-                        }
-                    )
-                }
+            taskStatuses.forEach { status ->
+               DropdownMenuItem(
+                  text = { Text(text = status.name) },
+                  onClick = {
+                     selectedStatus = status
+                     expanded = false
+                     onStatusChange(status)
+                  }
+               )
             }
-        }
-    }
+         }
+      }
+   }
 }

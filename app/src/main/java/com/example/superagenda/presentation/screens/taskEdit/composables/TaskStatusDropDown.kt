@@ -20,46 +20,46 @@ import com.example.superagenda.domain.models.TaskStatus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskStatusDropDown(
-    taskStatus: TaskStatus,
-    onStatusChange: (TaskStatus) -> Unit
+   taskStatus: TaskStatus,
+   onStatusChange: (TaskStatus) -> Unit
 ) {
-    val context = LocalContext.current
-    val taskStatuses = TaskStatus.values()
+   val context = LocalContext.current
+   val taskStatuses = TaskStatus.values()
 
-    var expanded by remember { mutableStateOf(false) }
-    var selectedStatus by remember { mutableStateOf(taskStatus) }
+   var expanded by remember { mutableStateOf(false) }
+   var selectedStatus by remember { mutableStateOf(taskStatus) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ExposedDropdownMenuBox(
+   Column(modifier = Modifier.fillMaxWidth()) {
+      ExposedDropdownMenuBox(
+         expanded = expanded,
+         onExpandedChange = { expanded = it },
+         modifier = Modifier.fillMaxWidth()
+      ) {
+         TextField(
+            value = taskStatus.name,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+               .fillMaxWidth()
+               .menuAnchor()
+         )
+
+         ExposedDropdownMenu(
             expanded = expanded,
-            onExpandedChange = { expanded = it },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TextField(
-                value = taskStatus.name,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                taskStatuses.forEach { status ->
-                    DropdownMenuItem(
-                        text = { Text(text = status.name) },
-                        onClick = {
-                            selectedStatus = status
-                            expanded = false
-                            onStatusChange(status)
-                        }
-                    )
-                }
+            onDismissRequest = { expanded = false }
+         ) {
+            taskStatuses.forEach { status ->
+               DropdownMenuItem(
+                  text = { Text(text = status.name) },
+                  onClick = {
+                     selectedStatus = status
+                     expanded = false
+                     onStatusChange(status)
+                  }
+               )
             }
-        }
-    }
+         }
+      }
+   }
 }

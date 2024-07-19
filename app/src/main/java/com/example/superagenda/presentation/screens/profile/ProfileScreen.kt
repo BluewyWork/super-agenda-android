@@ -25,63 +25,63 @@ import com.example.superagenda.presentation.screens.profile.composables.Username
 
 @Composable
 fun ProfileScreen(
-    profileViewModel: ProfileViewModel,
-    navController: NavController,
-    service: NotificationService
+   profileViewModel: ProfileViewModel,
+   navController: NavController,
+   service: NotificationService
 ) {
-    Navigation(content = { padding ->
-        Profile(profileViewModel, navController, service, padding)
-    }, navController, "Profile")
+   Navigation(content = { padding ->
+      Profile(profileViewModel, navController, service, padding)
+   }, navController, "Profile")
 }
 
 @Composable
 fun Profile(
-    profileViewModel: ProfileViewModel,
-    navController: NavController,
-    service: NotificationService,
-    padding: PaddingValues
+   profileViewModel: ProfileViewModel,
+   navController: NavController,
+   service: NotificationService,
+   padding: PaddingValues
 ) {
-    val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
+   val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+   LazyColumn(
+      modifier = Modifier
+         .padding(padding)
+         .fillMaxSize(),
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+      horizontalAlignment = Alignment.CenterHorizontally
 
-    ) {
-        item {
-            userForProfile?.let {
-                UsernameTextField(username = it.username) {}
-            }
+   ) {
+      item {
+         userForProfile?.let {
+            UsernameTextField(username = it.username) {}
+         }
 
-            Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
 
-            DeleteButton {
-                profileViewModel.onDeleteButtonPressButton(navController)
-            }
+         DeleteButton {
+            profileViewModel.onDeleteButtonPressButton(navController)
+         }
 
-            LogoutButton {
-                profileViewModel.onLogoutPress(navController)
-            }
+         LogoutButton {
+            profileViewModel.onLogoutPress(navController)
+         }
 
-            Spacer(modifier = Modifier.padding(16.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
-            Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
+         Spacer(modifier = Modifier.padding(16.dp))
 
-            BeautifulTitle(title = "OTHER")
+         BeautifulTitle(title = "OTHER")
 
-            BackupTaskList {
-                profileViewModel.onBackupButtonPress()
-            }
+         BackupTaskList {
+            profileViewModel.onBackupButtonPress()
+         }
 
-            ImportTaskList { contentResolver, filePath ->
-                profileViewModel.onImportButtonPress(contentResolver, filePath)
-            }
-        }
-    }
+         ImportTaskList { contentResolver, filePath ->
+            profileViewModel.onImportButtonPress(contentResolver, filePath)
+         }
+      }
+   }
 }

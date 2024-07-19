@@ -17,40 +17,40 @@ import com.example.superagenda.presentation.composables.TaskCard
 
 @Composable
 fun TasksOngoingScreen(
-    tasksOngoingViewModel: TasksOngoingViewModel,
-    navController: NavController
+   tasksOngoingViewModel: TasksOngoingViewModel,
+   navController: NavController
 ) {
-    Navigation(content = { padding ->
-        TaskOngoing(tasksOngoingViewModel, navController, padding)
-    }, navController, "Ongoing Tasks")
+   Navigation(content = { padding ->
+      TaskOngoing(tasksOngoingViewModel, navController, padding)
+   }, navController, "Ongoing Tasks")
 }
 
 @Composable
 fun TaskOngoing(
-    tasksOngoingViewModel: TasksOngoingViewModel,
-    navController: NavController,
-    padding: PaddingValues
+   tasksOngoingViewModel: TasksOngoingViewModel,
+   navController: NavController,
+   padding: PaddingValues
 ) {
-    val onGoingTaskList: List<Task>? by tasksOngoingViewModel.onGoingTaskList.observeAsState()
+   val onGoingTaskList: List<Task>? by tasksOngoingViewModel.onGoingTaskList.observeAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(padding)
-    ) {
-        item {
-            onGoingTaskList.let {
-                if (it != null) {
-                    for (task in it) {
-                        TaskCard(task) {
-                            tasksOngoingViewModel.onEditClick(task)
-                            navController.navigate(Destinations.TaskEdit.route)
-                        }
-                    }
-                } else {
-                    Text("Either no tasks or no internet connection...")
-                }
+   LazyColumn(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(padding)
+   ) {
+      item {
+         onGoingTaskList.let {
+            if (it != null) {
+               for (task in it) {
+                  TaskCard(task) {
+                     tasksOngoingViewModel.onEditClick(task)
+                     navController.navigate(Destinations.TaskEdit.route)
+                  }
+               }
+            } else {
+               Text("Either no tasks or no internet connection...")
             }
-        }
-    }
+         }
+      }
+   }
 }

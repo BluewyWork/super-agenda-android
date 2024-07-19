@@ -10,31 +10,31 @@ import java.time.format.DateTimeFormatter
 data class TestModel(val dateTime: BsonDateTime)
 
 fun TestModel.toDomain() = Test(
-    dateTime = bsonDateTimeToLocalDateTime(dateTime)
+   dateTime = bsonDateTimeToLocalDateTime(dateTime)
 )
 
 fun bsonDateTimeToLocalDateTime(bsonDateTime: BsonDateTime): LocalDateTime {
-    val milliseconds = bsonDateTime.value
-    val instant = Instant.ofEpochMilli(milliseconds)
-    return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+   val milliseconds = bsonDateTime.value
+   val instant = Instant.ofEpochMilli(milliseconds)
+   return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
 }
 
 fun Test.toData() = TestModel(
-    dateTime = localDateTimeToBsonDateTime(dateTime)
+   dateTime = localDateTimeToBsonDateTime(dateTime)
 )
 
 fun localDateTimeToBsonDateTime(localDateTime: LocalDateTime): BsonDateTime {
-    val instant = localDateTime.toInstant(ZoneOffset.UTC)
-    val milliseconds = instant.toEpochMilli()
-    return BsonDateTime(milliseconds)
+   val instant = localDateTime.toInstant(ZoneOffset.UTC)
+   val milliseconds = instant.toEpochMilli()
+   return BsonDateTime(milliseconds)
 }
 
 fun localDateTimeToString(localDateTime: LocalDateTime?): String? {
-    return localDateTime?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+   return localDateTime?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 }
 
 fun stringToLocalDateTime(dateTimeString: String?): LocalDateTime? {
-    return dateTimeString?.let {
-        LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-    }
+   return dateTimeString?.let {
+      LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+   }
 }

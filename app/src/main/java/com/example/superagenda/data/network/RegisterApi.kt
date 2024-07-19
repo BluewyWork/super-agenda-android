@@ -6,6 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface RegisterApi {
-    @POST(Endpoints.REGISTER_USER)
-    suspend fun register(@Body user: UserForRegisterModel): ApiResponse<Map<String, Any>>
+   @POST(Endpoints.REGISTER_USER)
+   suspend fun register(@Body user: UserForRegisterModel): ApiResponse<Map<String, Any>>
 }

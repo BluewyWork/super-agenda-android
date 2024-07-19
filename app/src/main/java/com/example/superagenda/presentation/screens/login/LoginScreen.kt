@@ -18,46 +18,46 @@ import com.example.superagenda.presentation.screens.login.composables.UsernameTe
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-    Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Login(loginViewModel, navController)
-        }
+   Scaffold { innerPadding ->
+      Column(modifier = Modifier.padding(innerPadding)) {
+         Login(loginViewModel, navController)
+      }
 
-        val errorMessage: String? by loginViewModel.errorMessage.observeAsState(null)
+      val errorMessage: String? by loginViewModel.errorMessage.observeAsState(null)
 
-        if (errorMessage != null) {
-            ErrorDialog(errorMessage = errorMessage) {
-                loginViewModel.onErrorDismissed()
-            }
-        }
-    }
+      if (errorMessage != null) {
+         ErrorDialog(errorMessage = errorMessage) {
+            loginViewModel.onErrorDismissed()
+         }
+      }
+   }
 }
 
 @Composable
 fun Login(loginViewModel: LoginViewModel, navController: NavController) {
-    val email: String by loginViewModel.username.observeAsState("")
-    val password: String by loginViewModel.password.observeAsState("")
+   val email: String by loginViewModel.username.observeAsState("")
+   val password: String by loginViewModel.password.observeAsState("")
 
-    Column {
-        Spacer(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.padding(16.dp))
+   Column {
+      Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
 
-        UsernameTextField(email) {
-            loginViewModel.onUsernameChange(it)
-        }
-        PasswordTextField(password) {
-            loginViewModel.onPasswordChange(it)
-        }
+      UsernameTextField(email) {
+         loginViewModel.onUsernameChange(it)
+      }
+      PasswordTextField(password) {
+         loginViewModel.onPasswordChange(it)
+      }
 
-        Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
 
-        LoginButton {
-            loginViewModel.onLoginButtonPress(navController)
-        }
-        GoToRegisterScreen(navController)
-    }
+      LoginButton {
+         loginViewModel.onLoginButtonPress(navController)
+      }
+      GoToRegisterScreen(navController)
+   }
 }

@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun NewTaskFloatingActionButton(onClick: () -> Unit) {
-    FloatingActionButton(
-        onClick = { onClick() },
-    ) {
-        Icon(Icons.Filled.Add, "New Task")
-    }
+   FloatingActionButton(
+      onClick = { onClick() },
+   ) {
+      Icon(Icons.Filled.Add, "New Task")
+   }
 }

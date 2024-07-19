@@ -25,57 +25,57 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val registerViewModel: RegisterViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
-    private val profileViewModel: ProfileViewModel by viewModels()
-    private val tasksNotStartedViewModel: TasksNotStartedViewModel by viewModels()
-    private val tasksOngoingViewModel: TasksOngoingViewModel by viewModels()
-    private val tasksCompletedViewModel: TasksCompletedViewModel by viewModels()
-    private val taskEditViewModel: TaskEditViewModel by viewModels()
-    private val newTaskViewModel: NewTaskViewModel by viewModels()
-    private val tasksOverviewViewModel: TasksOverviewViewModel by viewModels()
-    private val filterScreenViewModel: FilterScreenViewModel by viewModels()
+   private val registerViewModel: RegisterViewModel by viewModels()
+   private val loginViewModel: LoginViewModel by viewModels()
+   private val profileViewModel: ProfileViewModel by viewModels()
+   private val tasksNotStartedViewModel: TasksNotStartedViewModel by viewModels()
+   private val tasksOngoingViewModel: TasksOngoingViewModel by viewModels()
+   private val tasksCompletedViewModel: TasksCompletedViewModel by viewModels()
+   private val taskEditViewModel: TaskEditViewModel by viewModels()
+   private val newTaskViewModel: NewTaskViewModel by viewModels()
+   private val tasksOverviewViewModel: TasksOverviewViewModel by viewModels()
+   private val filterScreenViewModel: FilterScreenViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        createNotificationChannel()
-        super.onCreate(savedInstanceState)
+   override fun onCreate(savedInstanceState: Bundle?) {
+      createNotificationChannel()
+      super.onCreate(savedInstanceState)
 
-        val service = NotificationService(applicationContext)
+      val service = NotificationService(applicationContext)
 
-        setContent {
-            SuperAgendaTheme {
-                NavigationHost(
-                    service = service,
-                    registerViewModel = registerViewModel,
-                    loginViewModel = loginViewModel,
-                    profileViewModel = profileViewModel,
-                    tasksNotStartedViewModel = tasksNotStartedViewModel,
-                    tasksOngoingViewModel = tasksOngoingViewModel,
-                    tasksCompletedViewModel = tasksCompletedViewModel,
-                    taskEditViewModel = taskEditViewModel,
-                    newTaskViewModel = newTaskViewModel,
-                    tasksOverviewViewModel = tasksOverviewViewModel,
-                    filterScreenViewModel = filterScreenViewModel
-                )
-
-            }
-        }
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NotificationService.CHANNEL_ID,
-                "Random Name",
-                NotificationManager.IMPORTANCE_DEFAULT
+      setContent {
+         SuperAgendaTheme {
+            NavigationHost(
+               service = service,
+               registerViewModel = registerViewModel,
+               loginViewModel = loginViewModel,
+               profileViewModel = profileViewModel,
+               tasksNotStartedViewModel = tasksNotStartedViewModel,
+               tasksOngoingViewModel = tasksOngoingViewModel,
+               tasksCompletedViewModel = tasksCompletedViewModel,
+               taskEditViewModel = taskEditViewModel,
+               newTaskViewModel = newTaskViewModel,
+               tasksOverviewViewModel = tasksOverviewViewModel,
+               filterScreenViewModel = filterScreenViewModel
             )
 
-            channel.description = "This is an example description."
+         }
+      }
+   }
 
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
+   private fun createNotificationChannel() {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+         val channel = NotificationChannel(
+            NotificationService.CHANNEL_ID,
+            "Random Name",
+            NotificationManager.IMPORTANCE_DEFAULT
+         )
+
+         channel.description = "This is an example description."
+
+         val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+         notificationManager.createNotificationChannel(channel)
+      }
+   }
 }
 

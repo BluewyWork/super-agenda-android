@@ -10,12 +10,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun FilterButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Text("Filter")
-    }
+   Button(
+      onClick = onClick,
+      modifier = Modifier
+         .padding(vertical = 8.dp)
+         .fillMaxWidth()
+   ) {
+      Text("Filter")
+   }
 }

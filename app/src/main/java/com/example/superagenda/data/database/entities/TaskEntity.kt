@@ -11,20 +11,20 @@ import org.bson.types.ObjectId
 
 @Entity(tableName = "task_table")
 data class TaskEntity(
-    @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "_id") val _id: String,
-    @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo("description") val description: String,
-    @ColumnInfo("status") val status: TaskStatusModel,
-    @ColumnInfo("startDateTime") val startDateTime: String,
-    @ColumnInfo(name = "endDateTime") val endDateTime: String
+   @PrimaryKey(autoGenerate = false)
+   @ColumnInfo(name = "_id") val _id: String,
+   @ColumnInfo(name = "title") val title: String,
+   @ColumnInfo("description") val description: String,
+   @ColumnInfo("status") val status: TaskStatusModel,
+   @ColumnInfo("startDateTime") val startDateTime: String,
+   @ColumnInfo(name = "endDateTime") val endDateTime: String
 )
 
 fun TaskEntity.toData() = TaskModel(
-    _id = ObjectId(_id),
-    title = title,
-    description = description,
-    status = status,
-    startDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(startDateTime)!!),
-    endDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endDateTime)!!)
+   _id = ObjectId(_id),
+   title = title,
+   description = description,
+   status = status,
+   startDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(startDateTime)!!),
+   endDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endDateTime)!!)
 )

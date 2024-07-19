@@ -7,6 +7,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginApi {
-    @POST(Endpoints.LOGIN_USER)
-    suspend fun login(@Body user: UserForLoginModel): ApiResponse<TokenBody>
+   @POST(Endpoints.LOGIN_USER)
+   suspend fun login(@Body user: UserForLoginModel): ApiResponse<TokenBody>
 }

@@ -18,45 +18,45 @@ import com.example.superagenda.presentation.screens.register.composables.Usernam
 
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-    Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            Register(registerViewModel, navController)
-        }
+   Scaffold { innerPadding ->
+      Column(modifier = Modifier.padding(innerPadding)) {
+         Register(registerViewModel, navController)
+      }
 
-        val errorMessage: String? by registerViewModel.errorMessage.observeAsState(null)
+      val errorMessage: String? by registerViewModel.errorMessage.observeAsState(null)
 
-        if (errorMessage != null) {
-            ErrorDialog(errorMessage = errorMessage) {
-                registerViewModel.onErrorDismissed()
-            }
-        }
-    }
+      if (errorMessage != null) {
+         ErrorDialog(errorMessage = errorMessage) {
+            registerViewModel.onErrorDismissed()
+         }
+      }
+   }
 }
 
 @Composable
 fun Register(registerViewModel: RegisterViewModel, navController: NavController) {
-    val username: String by registerViewModel.username.observeAsState("")
-    val password: String by registerViewModel.password.observeAsState("")
+   val username: String by registerViewModel.username.observeAsState("")
+   val password: String by registerViewModel.password.observeAsState("")
 
 
-    Spacer(modifier = Modifier.padding(16.dp))
-    Spacer(modifier = Modifier.padding(16.dp))
-    Spacer(modifier = Modifier.padding(16.dp))
-    Spacer(modifier = Modifier.padding(16.dp))
-    Spacer(modifier = Modifier.padding(16.dp))
-    Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
 
-    UsernameTextField(username) {
-        registerViewModel.onUsernameChange(it)
-    }
-    PasswordTextField(password) {
-        registerViewModel.onPasswordChange(it)
-    }
+   UsernameTextField(username) {
+      registerViewModel.onUsernameChange(it)
+   }
+   PasswordTextField(password) {
+      registerViewModel.onPasswordChange(it)
+   }
 
-    Spacer(modifier = Modifier.padding(16.dp))
+   Spacer(modifier = Modifier.padding(16.dp))
 
-    RegisterButton {
-        registerViewModel.onRegisterButtonPress(navController)
-    }
-    GoToLoginScreen(navController)
+   RegisterButton {
+      registerViewModel.onRegisterButtonPress(navController)
+   }
+   GoToLoginScreen(navController)
 }

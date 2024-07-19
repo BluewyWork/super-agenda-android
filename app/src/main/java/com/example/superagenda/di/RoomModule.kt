@@ -13,19 +13,19 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RoomModule {
-    private const val SUPER_AGENDA_DATABASE_NAME = "SuperAgenda"
+   private const val SUPER_AGENDA_DATABASE_NAME = "SuperAgenda"
 
-    @Singleton
-    @Provides
-    fun provideRoom(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, SuperAgendaDatabase::class.java, SUPER_AGENDA_DATABASE_NAME)
-            .build()
+   @Singleton
+   @Provides
+   fun provideRoom(@ApplicationContext context: Context) =
+      Room.databaseBuilder(context, SuperAgendaDatabase::class.java, SUPER_AGENDA_DATABASE_NAME)
+         .build()
 
-    @Singleton
-    @Provides
-    fun provideTokenDao(db: SuperAgendaDatabase) = db.getTokenDao()
+   @Singleton
+   @Provides
+   fun provideTokenDao(db: SuperAgendaDatabase) = db.getTokenDao()
 
-    @Singleton
-    @Provides
-    fun provideTaskDao(db: SuperAgendaDatabase) = db.getTaskDao()
+   @Singleton
+   @Provides
+   fun provideTaskDao(db: SuperAgendaDatabase) = db.getTaskDao()
 }

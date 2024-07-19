@@ -7,16 +7,16 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun ErrorDialog(errorMessage: String?, onDismiss: () -> Unit) {
-    if (errorMessage != null) {
-        AlertDialog(
-            onDismissRequest = { onDismiss() },
-            title = { Text(text = "Error") },
-            text = { Text(text = errorMessage) },
-            confirmButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(text = "OK")
-                }
+   if (errorMessage != null) {
+      AlertDialog(
+         onDismissRequest = { onDismiss() },
+         title = { Text(text = "Error") },
+         text = { Text(text = errorMessage) },
+         confirmButton = {
+            TextButton(onClick = { onDismiss() }) {
+               Text(text = "OK")
             }
-        )
-    }
+         }
+      )
+   }
 }

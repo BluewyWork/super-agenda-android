@@ -13,21 +13,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksOngoingViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
-    private val globalVariables: GlobalVariables
+   private val taskUseCase: TaskUseCase,
+   private val globalVariables: GlobalVariables
 ) : ViewModel() {
-    private val _onGoingTaskList = MutableLiveData<List<Task>?>()
-    val onGoingTaskList: LiveData<List<Task>?> = _onGoingTaskList
+   private val _onGoingTaskList = MutableLiveData<List<Task>?>()
+   val onGoingTaskList: LiveData<List<Task>?> = _onGoingTaskList
 
-    fun onShow() {
-        viewModelScope.launch {
-            val onGoingTaskList = taskUseCase.retrieveOnGoingTaskList2()
+   fun onShow() {
+      viewModelScope.launch {
+         val onGoingTaskList = taskUseCase.retrieveOnGoingTaskList2()
 
-            _onGoingTaskList.postValue(onGoingTaskList)
-        }
-    }
+         _onGoingTaskList.postValue(onGoingTaskList)
+      }
+   }
 
-    fun onEditClick(task: Task) {
-        globalVariables.setTaskToEdit(task)
-    }
+   fun onEditClick(task: Task) {
+      globalVariables.setTaskToEdit(task)
+   }
 }

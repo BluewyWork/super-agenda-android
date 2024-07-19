@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun NoInternetScreen() {
-    Text(text = "Unable to connect to the internet, try again later...")
+   Text(text = "Unable to connect to the internet, try again later...")
 }

@@ -23,38 +23,38 @@ import com.example.superagenda.domain.models.Task
 
 @Composable
 fun SmallTaskCard(task: Task, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .padding(8.dp),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            Text(
-                text = task.title,
-                modifier = Modifier.padding(bottom = 8.dp),
-                color = Color.Black
+   Card(
+      modifier = Modifier
+         .fillMaxWidth()
+         .height(150.dp)
+         .padding(8.dp),
+      shape = RoundedCornerShape(8.dp)
+   ) {
+      Column(
+         modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize()
+      ) {
+         Text(
+            text = task.title,
+            modifier = Modifier.padding(bottom = 8.dp),
+            color = Color.Black
+         )
+         Text(
+            text = task.description,
+            modifier = Modifier.padding(bottom = 16.dp)
+         )
+         Button(
+            onClick = onClick,
+            modifier = Modifier.align(Alignment.End)
+         ) {
+            Icon(
+               imageVector = Icons.Default.Create,
+               contentDescription = null
             )
-            Text(
-                text = task.description,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            Button(
-                onClick = onClick,
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Create,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Edit")
-            }
-        }
-    }
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = "Edit")
+         }
+      }
+   }
 }

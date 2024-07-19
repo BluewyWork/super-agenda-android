@@ -13,12 +13,12 @@ import androidx.navigation.NavController
 
 @Composable
 fun GoToLoginScreen(navController: NavController) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp)
-            .clickable { navController.navigate("login") },
-        text = "Haz click aqui para logearte!",
-        style = TextStyle(textAlign = TextAlign.Right)
-    )
+   Text(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(top = 5.dp)
+         .clickable { navController.navigate("login") },
+      text = "Haz click aqui para logearte!",
+      style = TextStyle(textAlign = TextAlign.Right)
+   )
 }

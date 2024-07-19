@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LogoutButton(onClick: () -> Unit) {
-    Button(onClick, modifier = Modifier.fillMaxWidth()) {
-        Text("Logout")
-    }
+   Button(onClick, modifier = Modifier.fillMaxWidth()) {
+      Text("Logout")
+   }
 }

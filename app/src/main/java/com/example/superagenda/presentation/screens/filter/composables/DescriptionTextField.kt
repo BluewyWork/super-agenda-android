@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun DescriptionTextField(description: String, onTextChange: (String) -> Unit) {
-    TextField(
-        value = description,
-        onValueChange = onTextChange,
-        label = { Text("Description") },
-        modifier = Modifier.fillMaxWidth()
-    )
+   TextField(
+      value = description,
+      onValueChange = onTextChange,
+      label = { Text("Description") },
+      modifier = Modifier.fillMaxWidth()
+   )
 }

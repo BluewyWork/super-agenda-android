@@ -23,64 +23,64 @@ import java.time.LocalDateTime
 
 @Composable
 fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
-    Navigation(content = { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            Filter(filterScreenViewModel, navController)
-        }
-    }, navController, "Find Tasks")
+   Navigation(content = { padding ->
+      Column(modifier = Modifier.padding(padding)) {
+         Filter(filterScreenViewModel, navController)
+      }
+   }, navController, "Find Tasks")
 }
 
 @Composable
 fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
-    val title: String by filterScreenViewModel.title.observeAsState("")
-    val taskStatus: TaskStatus? by filterScreenViewModel.taskStatus.observeAsState()
-    val startDateTime: LocalDateTime? by filterScreenViewModel.startDateTime.observeAsState()
-    val endDateTime: LocalDateTime? by filterScreenViewModel.endDateTime.observeAsState()
-    val filteredTaskList: List<Task>? by filterScreenViewModel.filteredTaskList.observeAsState()
+   val title: String by filterScreenViewModel.title.observeAsState("")
+   val taskStatus: TaskStatus? by filterScreenViewModel.taskStatus.observeAsState()
+   val startDateTime: LocalDateTime? by filterScreenViewModel.startDateTime.observeAsState()
+   val endDateTime: LocalDateTime? by filterScreenViewModel.endDateTime.observeAsState()
+   val filteredTaskList: List<Task>? by filterScreenViewModel.filteredTaskList.observeAsState()
 
-    LazyColumn {
-        item {
-            TitleTextField(title) {
-                filterScreenViewModel.onTitleChange(it)
+   LazyColumn {
+      item {
+         TitleTextField(title) {
+            filterScreenViewModel.onTitleChange(it)
+         }
+
+         TaskStatusDropDown(null) {
+            if (it != null) {
+               filterScreenViewModel.onTaskStatusChange(it)
             }
+         }
 
-            TaskStatusDropDown(null) {
-                if (it != null) {
-                    filterScreenViewModel.onTaskStatusChange(it)
-                }
+         Spacer(modifier = Modifier.padding(8.dp))
+
+         Text(text = "START DATETIME")
+
+         DateTimePicker(initialDateTime = null) { it2 ->
+            if (it2 != null) {
+               filterScreenViewModel.onStartDateTimeChange(it2)
             }
+         }
 
-            Spacer(modifier = Modifier.padding(8.dp))
+         Spacer(modifier = Modifier.padding(8.dp))
+         Text(text = "END DATETIME")
 
-            Text(text = "START DATETIME")
-
-            DateTimePicker(initialDateTime = null) { it2 ->
-                if (it2 != null) {
-                    filterScreenViewModel.onStartDateTimeChange(it2)
-                }
+         DateTimePicker(initialDateTime = null) { it2 ->
+            if (it2 != null) {
+               filterScreenViewModel.onEndDateTimeChange(it2)
             }
+         }
 
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "END DATETIME")
+         FilterButton {
+            filterScreenViewModel.onFilter(navController)
+         }
 
-            DateTimePicker(initialDateTime = null) { it2 ->
-                if (it2 != null) {
-                    filterScreenViewModel.onEndDateTimeChange(it2)
-                }
+         if (filteredTaskList.isNullOrEmpty()) {
+            Text(text = "No tasks found.")
+         } else {
+            filteredTaskList?.forEach {
+               TaskCard(task = it) {
+               }
             }
-
-            FilterButton {
-                filterScreenViewModel.onFilter(navController)
-            }
-
-            if (filteredTaskList.isNullOrEmpty()) {
-                Text(text = "No tasks found.")
-            } else {
-                filteredTaskList?.forEach {
-                    TaskCard(task = it) {
-                    }
-                }
-            }
-        }
-    }
+         }
+      }
+   }
 }

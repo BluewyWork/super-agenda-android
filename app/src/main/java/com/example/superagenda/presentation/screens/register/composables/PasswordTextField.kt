@@ -14,15 +14,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PasswordTextField(password: String, onTextChange: (String) -> Unit) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp),
-        value = password,
-        visualTransformation = PasswordVisualTransformation(),
-        onValueChange = { onTextChange(it) },
-        singleLine = true,
-        placeholder = { Text(text = "Password") },
-        leadingIcon = { Icon(Icons.Filled.Lock, null) }
-    )
+   TextField(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+      value = password,
+      visualTransformation = PasswordVisualTransformation(),
+      onValueChange = { onTextChange(it) },
+      singleLine = true,
+      placeholder = { Text(text = "Password") },
+      leadingIcon = { Icon(Icons.Filled.Lock, null) }
+   )
 }

@@ -26,67 +26,67 @@ import java.util.Calendar
 
 @Composable
 fun DateTimePicker(
-    initialDateTime: LocalDateTime,
-    onDateTimeSelected: (LocalDateTime) -> Unit
+   initialDateTime: LocalDateTime,
+   onDateTimeSelected: (LocalDateTime) -> Unit
 ) {
-    var selectedDateTime by remember { mutableStateOf(initialDateTime) }
+   var selectedDateTime by remember { mutableStateOf(initialDateTime) }
 
-    val context = LocalContext.current
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+   val context = LocalContext.current
+   val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-    val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-        selectedDateTime =
-            selectedDateTime.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
-        onDateTimeSelected(selectedDateTime)
-    }
+   val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+      selectedDateTime =
+         selectedDateTime.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
+      onDateTimeSelected(selectedDateTime)
+   }
 
-    val timeListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-        selectedDateTime = selectedDateTime.withHour(hour).withMinute(minute)
-        onDateTimeSelected(selectedDateTime)
-    }
+   val timeListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+      selectedDateTime = selectedDateTime.withHour(hour).withMinute(minute)
+      onDateTimeSelected(selectedDateTime)
+   }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Selected Date: ${selectedDateTime.format(dateFormatter)}")
+   Column(modifier = Modifier.padding(16.dp)) {
+      Row(
+         horizontalArrangement = Arrangement.SpaceBetween,
+         modifier = Modifier.fillMaxWidth()
+      ) {
+         Text(text = "Selected Date: ${selectedDateTime.format(dateFormatter)}")
 
-            Button(onClick = {
-                val now = Calendar.getInstance()
-                DatePickerDialog(
-                    context,
-                    dateListener,
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH)
-                ).show()
-            }) {
-                Text(text = "Pick Date")
-            }
-        }
+         Button(onClick = {
+            val now = Calendar.getInstance()
+            DatePickerDialog(
+               context,
+               dateListener,
+               now.get(Calendar.YEAR),
+               now.get(Calendar.MONTH),
+               now.get(Calendar.DAY_OF_MONTH)
+            ).show()
+         }) {
+            Text(text = "Pick Date")
+         }
+      }
 
-        Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Selected Time: ${selectedDateTime.format(timeFormatter)}")
+      Row(
+         horizontalArrangement = Arrangement.SpaceBetween,
+         modifier = Modifier.fillMaxWidth()
+      ) {
+         Text(text = "Selected Time: ${selectedDateTime.format(timeFormatter)}")
 
-            Button(onClick = {
-                val now = Calendar.getInstance()
-                TimePickerDialog(
-                    context,
-                    timeListener,
-                    now.get(Calendar.HOUR_OF_DAY),
-                    now.get(Calendar.MINUTE),
-                    true
-                ).show()
-            }) {
-                Text(text = "Pick Time")
-            }
-        }
-    }
+         Button(onClick = {
+            val now = Calendar.getInstance()
+            TimePickerDialog(
+               context,
+               timeListener,
+               now.get(Calendar.HOUR_OF_DAY),
+               now.get(Calendar.MINUTE),
+               true
+            ).show()
+         }) {
+            Text(text = "Pick Time")
+         }
+      }
+   }
 }

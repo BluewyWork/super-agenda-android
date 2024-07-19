@@ -14,24 +14,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksNotStartedViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
-    private val globalVariables: GlobalVariables
+   private val taskUseCase: TaskUseCase,
+   private val globalVariables: GlobalVariables
 ) : ViewModel() {
-    // Everything inside live data is nullable.
-    private val _notStartedTaskList = MutableLiveData<List<Task>?>()
-    val notStartedTaskList: LiveData<List<Task>?> = _notStartedTaskList
+   // Everything inside live data is nullable.
+   private val _notStartedTaskList = MutableLiveData<List<Task>?>()
+   val notStartedTaskList: LiveData<List<Task>?> = _notStartedTaskList
 
-    fun onShow(notificationService: NotificationService) {
-        viewModelScope.launch {
-            val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList2()
+   fun onShow(notificationService: NotificationService) {
+      viewModelScope.launch {
+         val notStartedTaskList = taskUseCase.retrieveNotStartedTaskList2()
 
-            _notStartedTaskList.postValue(notStartedTaskList)
+         _notStartedTaskList.postValue(notStartedTaskList)
 
-            taskUseCase.showTaskNotification(notificationService)
-        }
-    }
+         taskUseCase.showTaskNotification(notificationService)
+      }
+   }
 
-    fun onEditClick(task: Task) {
-        globalVariables.setTaskToEdit(task)
-    }
+   fun onEditClick(task: Task) {
+      globalVariables.setTaskToEdit(task)
+   }
 }

@@ -16,20 +16,20 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BeautifulTitle(title: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = title,
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        HorizontalDivider(thickness = 1.dp, color = Color.Gray)
-    }
+   Column(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(horizontal = 16.dp, vertical = 8.dp)
+   ) {
+      Text(
+         text = title,
+         style = TextStyle(
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+         )
+      )
+      Spacer(modifier = Modifier.height(4.dp))
+      HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+   }
 }

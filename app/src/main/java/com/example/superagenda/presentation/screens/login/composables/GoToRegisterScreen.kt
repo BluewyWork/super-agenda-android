@@ -13,12 +13,12 @@ import androidx.navigation.NavController
 
 @Composable
 fun GoToRegisterScreen(navController: NavController) {
-    Text(
-        modifier = Modifier
-            .padding(top = 5.dp)
-            .fillMaxWidth()
-            .clickable { navController.navigate("register") },
-        text = "Haz click aqui para registrarte!",
-        style = TextStyle(textAlign = TextAlign.Right)
-    )
+   Text(
+      modifier = Modifier
+         .padding(top = 5.dp)
+         .fillMaxWidth()
+         .clickable { navController.navigate("register") },
+      text = "Haz click aqui para registrarte!",
+      style = TextStyle(textAlign = TextAlign.Right)
+   )
 }

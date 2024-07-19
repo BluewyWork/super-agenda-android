@@ -43,144 +43,144 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Navigation(
-    content: @Composable (padding: PaddingValues) -> Unit,
-    navController: NavController,
-    topBarTitle: String,
-    floatingActionButton: @Composable () -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
+   content: @Composable (padding: PaddingValues) -> Unit,
+   navController: NavController,
+   topBarTitle: String,
+   floatingActionButton: @Composable () -> Unit = {},
+   navigationIcon: @Composable () -> Unit = {},
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+   val scope = rememberCoroutineScope()
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet { DrawerContent(navController, scope, drawerState) }
-            },
-        ) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Scaffold(
-                    topBar = {
-                        TopBar(scope, drawerState, topBarTitle, navigationIcon)
-                    },
-                    bottomBar = { BottomBar(navController) },
-                    floatingActionButton = floatingActionButton,
-                ) { contentPadding ->
-                    content(contentPadding)
-                }
+   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+      ModalNavigationDrawer(
+         drawerState = drawerState,
+         drawerContent = {
+            ModalDrawerSheet { DrawerContent(navController, scope, drawerState) }
+         },
+      ) {
+         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            Scaffold(
+               topBar = {
+                  TopBar(scope, drawerState, topBarTitle, navigationIcon)
+               },
+               bottomBar = { BottomBar(navController) },
+               floatingActionButton = floatingActionButton,
+            ) { contentPadding ->
+               content(contentPadding)
             }
-        }
-    }
+         }
+      }
+   }
 }
 
 @Composable
 fun DrawerContent(navController: NavController, scope: CoroutineScope, drawerState: DrawerState) {
-    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = {
-            navController.navigate(Destinations.Profile.route)
-            scope.launch { drawerState.close() }
-        }, modifier = Modifier.fillMaxWidth()) {
-            Icon(imageVector = Icons.Filled.Person, contentDescription = "profile")
-            Text("Profile")
-        }
-        HorizontalDivider()
-    }
+   Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      Button(onClick = {
+         navController.navigate(Destinations.Profile.route)
+         scope.launch { drawerState.close() }
+      }, modifier = Modifier.fillMaxWidth()) {
+         Icon(imageVector = Icons.Filled.Person, contentDescription = "profile")
+         Text("Profile")
+      }
+      HorizontalDivider()
+   }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    scope: CoroutineScope,
-    drawerState: DrawerState,
-    topBarTitle: String,
-    navigationIcon: @Composable () -> Unit
+   scope: CoroutineScope,
+   drawerState: DrawerState,
+   topBarTitle: String,
+   navigationIcon: @Composable () -> Unit
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(topBarTitle) },
-        navigationIcon = navigationIcon,
-        actions = {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.apply {
-                        if (isClosed) open() else close()
-                    }
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu"
-                )
+   CenterAlignedTopAppBar(
+      title = { Text(topBarTitle) },
+      navigationIcon = navigationIcon,
+      actions = {
+         IconButton(onClick = {
+            scope.launch {
+               drawerState.apply {
+                  if (isClosed) open() else close()
+               }
             }
-        }
+         }) {
+            Icon(
+               imageVector = Icons.Filled.Menu,
+               contentDescription = "Menu"
+            )
+         }
+      }
 
-    )
+   )
 }
 
 @Composable
 fun BottomBar(navController: NavController) {
-    androidx.compose.material3.NavigationBar(
-        modifier = Modifier
-            .height(50.dp),
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.primary
-    ) {
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("tasks_overview") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Home,
-                    contentDescription = "Tasks Overview",
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("new_task") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = "New Task",
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("tasks_not_started") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Star,
-                    contentDescription = "Home",
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("tasks_ongoing") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Build,
-                    contentDescription = "Home",
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("tasks_completed") },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = "Home",
-                )
-            }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("filter") },
-            icon = {
-                Text("F")
-            }
-        )
-    }
+   androidx.compose.material3.NavigationBar(
+      modifier = Modifier
+         .height(50.dp),
+      containerColor = MaterialTheme.colorScheme.primaryContainer,
+      contentColor = MaterialTheme.colorScheme.primary
+   ) {
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("tasks_overview") },
+         icon = {
+            Icon(
+               imageVector = Icons.Outlined.Home,
+               contentDescription = "Tasks Overview",
+            )
+         }
+      )
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("new_task") },
+         icon = {
+            Icon(
+               imageVector = Icons.Outlined.Add,
+               contentDescription = "New Task",
+            )
+         }
+      )
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("tasks_not_started") },
+         icon = {
+            Icon(
+               imageVector = Icons.Outlined.Star,
+               contentDescription = "Home",
+            )
+         }
+      )
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("tasks_ongoing") },
+         icon = {
+            Icon(
+               imageVector = Icons.Outlined.Build,
+               contentDescription = "Home",
+            )
+         }
+      )
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("tasks_completed") },
+         icon = {
+            Icon(
+               imageVector = Icons.Outlined.Check,
+               contentDescription = "Home",
+            )
+         }
+      )
+      NavigationBarItem(
+         selected = false,
+         onClick = { navController.navigate("filter") },
+         icon = {
+            Text("F")
+         }
+      )
+   }
 }

@@ -13,20 +13,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksCompletedViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
-    private val globalVariables: GlobalVariables
+   private val taskUseCase: TaskUseCase,
+   private val globalVariables: GlobalVariables
 ) : ViewModel() {
-    private val _completedTaskList = MutableLiveData<List<Task>?>()
-    val completedTaskList: LiveData<List<Task>?> = _completedTaskList
+   private val _completedTaskList = MutableLiveData<List<Task>?>()
+   val completedTaskList: LiveData<List<Task>?> = _completedTaskList
 
-    fun onShow() {
-        viewModelScope.launch {
-            val completedTaskList = taskUseCase.retrieveCompletedTaskList2()
-            _completedTaskList.postValue(completedTaskList)
-        }
-    }
+   fun onShow() {
+      viewModelScope.launch {
+         val completedTaskList = taskUseCase.retrieveCompletedTaskList2()
+         _completedTaskList.postValue(completedTaskList)
+      }
+   }
 
-    fun onEditClick(task: Task) {
-        globalVariables.setTaskToEdit(task)
-    }
+   fun onEditClick(task: Task) {
+      globalVariables.setTaskToEdit(task)
+   }
 }

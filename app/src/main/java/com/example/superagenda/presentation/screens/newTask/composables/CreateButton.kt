@@ -10,12 +10,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun UpdateButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Text("Create")
-    }
+   Button(
+      onClick = onClick,
+      modifier = Modifier
+         .padding(vertical = 8.dp)
+         .fillMaxWidth()
+   ) {
+      Text("Create")
+   }
 }

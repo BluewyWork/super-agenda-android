@@ -23,249 +23,249 @@ import java.util.Locale
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
-    private val taskApi: TaskApi,
-    private val taskDao: TaskDao
+   private val taskApi: TaskApi,
+   private val taskDao: TaskDao
 ) {
-    suspend fun retrieveTaskList(token: String): List<Task>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskList = taskApi.retrieveTaskList(token).data
+   suspend fun retrieveTaskList(token: String): List<Task>? {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskList = taskApi.retrieveTaskList(token).data
 
-                if (taskList.isEmpty()) {
-                    return@withContext null
-                }
-
-                Log.d("LOOK AT ME", "DOWN: $taskList")
-                Log.d("LOOK AT ME", "DOWN 1: ${taskList[0].startDateTime}")
-
-                val taskListDomain = taskList.map { it.toDomain() }
-
-                taskListDomain
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                null
+            if (taskList.isEmpty()) {
+               return@withContext null
             }
-        }
-    }
 
-    suspend fun updateTask(token: String, task: Task): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskModel = task.toData()
+            Log.d("LOOK AT ME", "DOWN: $taskList")
+            Log.d("LOOK AT ME", "DOWN 1: ${taskList[0].startDateTime}")
 
-                Log.d("LOOK AT ME", "UP: $taskModel")
+            val taskListDomain = taskList.map { it.toDomain() }
 
-                val gson = GsonBuilder()
-                    .registerTypeAdapter(BsonDateTime::class.java, BsonDateTimeConverter())
-                    .create()
+            taskListDomain
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                val serializedJson = gson.toJson(taskModel)
+            null
+         }
+      }
+   }
 
-                Log.d("LOOK AT ME", "S: $serializedJson")
+   suspend fun updateTask(token: String, task: Task): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskModel = task.toData()
 
-                val apiResponse = taskApi.updateTask(token, taskModel)
+            Log.d("LOOK AT ME", "UP: $taskModel")
 
-                apiResponse.ok
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            val gson = GsonBuilder()
+               .registerTypeAdapter(BsonDateTime::class.java, BsonDateTimeConverter())
+               .create()
 
-                false
+            val serializedJson = gson.toJson(taskModel)
+
+            Log.d("LOOK AT ME", "S: $serializedJson")
+
+            val apiResponse = taskApi.updateTask(token, taskModel)
+
+            apiResponse.ok
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+
+            false
+         }
+      }
+   }
+
+   suspend fun updateTaskList(token: String, taskList: List<Task>): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskModelList = taskList.map { it.toData() }
+
+            taskApi.updateTaskList(token, taskModelList)
+
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+
+            false
+         }
+      }
+   }
+
+   suspend fun createTask(token: String, task: Task): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskModel = task.toData()
+
+            val response = taskApi.createTask(token, taskModel)
+
+            return@withContext response.ok
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+
+            false
+         }
+      }
+   }
+
+   suspend fun deleteTask(token: String, taskId: String): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val response = taskApi.deleteTask(token, taskId)
+
+            response.ok
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+
+            false
+         }
+      }
+   }
+
+   suspend fun writeFileToLocalStorage(token: String) {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskList = taskApi.retrieveTaskList(token).data
+
+            val gson = Gson()
+            val taskListJson = gson.toJson(taskList)
+
+            val directory =
+               Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+            if (!directory.exists()) {
+               directory.mkdirs()
             }
-        }
-    }
 
-    suspend fun updateTaskList(token: String, taskList: List<Task>): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskModelList = taskList.map { it.toData() }
+            val fileName =
+               SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date()) + ".json"
+            val file = File(directory, fileName)
 
-                taskApi.updateTaskList(token, taskModelList)
 
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            val outputStream = FileOutputStream(file)
+            outputStream.write(taskListJson.toByteArray())
+            outputStream.close()
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+         }
+      }
+   }
 
-                false
+   suspend fun saveTaskListToLocalDatabase(taskList: List<Task>): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskModelList = taskList.map { it.toData() }
+
+            for (task in taskModelList) {
+               taskDao.insertOrUpdate(task.toDatabase())
             }
-        }
-    }
 
-    suspend fun createTask(token: String, task: Task): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskModel = task.toData()
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                val response = taskApi.createTask(token, taskModel)
+            false
+         }
+      }
+   }
 
-                return@withContext response.ok
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+   suspend fun updateOrInsertTaskToLocalDatabase(task: Task): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskEntity = task.toData().toDatabase()
 
-                false
-            }
-        }
-    }
+            taskDao.insertOrUpdate(taskEntity)
 
-    suspend fun deleteTask(token: String, taskId: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = taskApi.deleteTask(token, taskId)
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                response.ok
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            false
+         }
+      }
+   }
 
-                false
-            }
-        }
-    }
+   suspend fun clearTaskListFromLocalDatabase(): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskDao.deleteAll()
 
-    suspend fun writeFileToLocalStorage(token: String) {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskList = taskApi.retrieveTaskList(token).data
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                val gson = Gson()
-                val taskListJson = gson.toJson(taskList)
+            false
+         }
+      }
+   }
 
-                val directory =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+   suspend fun retrieveTaskListFromLocalDatabase(): List<Task>? {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskList = taskDao.selectAll()
 
-                if (!directory.exists()) {
-                    directory.mkdirs()
-                }
+            taskList.map { it.toData().toDomain() }
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                val fileName =
-                    SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date()) + ".json"
-                val file = File(directory, fileName)
+            null
+         }
+      }
+   }
 
+   suspend fun cleanLogout(): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val taskList = taskDao.deleteAll()
 
-                val outputStream = FileOutputStream(file)
-                outputStream.write(taskListJson.toByteArray())
-                outputStream.close()
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-            }
-        }
-    }
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-    suspend fun saveTaskListToLocalDatabase(taskList: List<Task>): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskModelList = taskList.map { it.toData() }
+            false
+         }
+      }
+   }
 
-                for (task in taskModelList) {
-                    taskDao.insertOrUpdate(task.toDatabase())
-                }
+   suspend fun defCreateOrUpdateTask(task: Task): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskDao.insertOrUpdate(task.toData().toDatabase())
 
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                false
-            }
-        }
-    }
-
-    suspend fun updateOrInsertTaskToLocalDatabase(task: Task): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskEntity = task.toData().toDatabase()
-
-                taskDao.insertOrUpdate(taskEntity)
-
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                false
-            }
-        }
-    }
-
-    suspend fun clearTaskListFromLocalDatabase(): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                taskDao.deleteAll()
-
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                false
-            }
-        }
-    }
-
-    suspend fun retrieveTaskListFromLocalDatabase(): List<Task>? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskList = taskDao.selectAll()
-
-                taskList.map { it.toData().toDomain() }
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                null
-            }
-        }
-    }
-
-    suspend fun cleanLogout(): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val taskList = taskDao.deleteAll()
-
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                false
-            }
-        }
-    }
-
-    suspend fun defCreateOrUpdateTask(task: Task): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                taskDao.insertOrUpdate(task.toData().toDatabase())
-
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
-
-                false
-            }
-        }
-    }
+            false
+         }
+      }
+   }
 
 
-    suspend fun defCreateOrUpdateTaskList(taskList: List<Task>): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                taskDao.insertOrUpdateMany(taskList.map { it.toData().toDatabase() })
+   suspend fun defCreateOrUpdateTaskList(taskList: List<Task>): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskDao.insertOrUpdateMany(taskList.map { it.toData().toDatabase() })
 
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                false
-            }
-        }
-    }
+            false
+         }
+      }
+   }
 
-    suspend fun defDeleteTask(task_id: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                taskDao.deleteById(task_id)
+   suspend fun defDeleteTask(task_id: String): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskDao.deleteById(task_id)
 
-                true
-            } catch (e: Exception) {
-                Log.e("LOOK AT ME", "${e.message}")
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
 
-                false
-            }
-        }
-    }
+            false
+         }
+      }
+   }
 }

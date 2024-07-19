@@ -8,12 +8,12 @@ import com.example.superagenda.data.database.entities.TokenEntity
 
 @Dao
 interface TokenDao {
-    @Query("SELECT * FROM token_table")
-    fun retrieve(): TokenEntity
+   @Query("SELECT * FROM token_table")
+   fun retrieve(): TokenEntity
 
-    @Query("DELETE FROM token_table")
-    fun deleteAll()
+   @Query("DELETE FROM token_table")
+   fun deleteAll()
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(tokenEntity: TokenEntity)
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+   fun insert(tokenEntity: TokenEntity)
 }

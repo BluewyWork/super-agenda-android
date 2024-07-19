@@ -13,21 +13,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksOverviewViewModel @Inject constructor(
-    private val globalVariables: GlobalVariables,
-    private val taskUseCase: TaskUseCase
+   private val globalVariables: GlobalVariables,
+   private val taskUseCase: TaskUseCase
 ) : ViewModel() {
-    private val _tasksNotStarted = MutableLiveData<List<Task>?>()
-    val tasksNotStarted: LiveData<List<Task>?> = _tasksNotStarted
+   private val _tasksNotStarted = MutableLiveData<List<Task>?>()
+   val tasksNotStarted: LiveData<List<Task>?> = _tasksNotStarted
 
-    private val _tasksOngoing = MutableLiveData<List<Task>?>()
-    val tasksOngoing: LiveData<List<Task>?> = _tasksOngoing
+   private val _tasksOngoing = MutableLiveData<List<Task>?>()
+   val tasksOngoing: LiveData<List<Task>?> = _tasksOngoing
 
-    private val _tasksCompleted = MutableLiveData<List<Task>?>()
-    val taskCompleted: LiveData<List<Task>?> = _tasksCompleted
+   private val _tasksCompleted = MutableLiveData<List<Task>?>()
+   val taskCompleted: LiveData<List<Task>?> = _tasksCompleted
 
-    fun onShow() {
-        viewModelScope.launch {
-            val tasksNotStarted = taskUseCase.retrieveNotStartedTaskList2()
+   fun onShow() {
+      viewModelScope.launch {
+         val tasksNotStarted = taskUseCase.retrieveNotStartedTaskList2()
 
 //            if (tasksNotStarted == null) {
 //                // do something here
@@ -36,7 +36,7 @@ class TasksOverviewViewModel @Inject constructor(
 //            }
 
 
-            val tasksOngoing = taskUseCase.retrieveOnGoingTaskList2()
+         val tasksOngoing = taskUseCase.retrieveOnGoingTaskList2()
 
 //            if (tasksOngoing == null) {
 //                // do something here
@@ -45,7 +45,7 @@ class TasksOverviewViewModel @Inject constructor(
 //            }
 
 
-            val tasksCompleted = taskUseCase.retrieveCompletedTaskList2()
+         val tasksCompleted = taskUseCase.retrieveCompletedTaskList2()
 
 //            if (tasksCompleted == null) {
 //                // do something here
@@ -53,14 +53,14 @@ class TasksOverviewViewModel @Inject constructor(
 //                return@launch
 //            }
 
-            _tasksNotStarted.postValue(tasksNotStarted)
-            _tasksOngoing.postValue(tasksOngoing)
-            _tasksCompleted.postValue(tasksCompleted)
-        }
-    }
+         _tasksNotStarted.postValue(tasksNotStarted)
+         _tasksOngoing.postValue(tasksOngoing)
+         _tasksCompleted.postValue(tasksCompleted)
+      }
+   }
 
 
-    fun onEditClick(task: Task) {
-        globalVariables.setTaskToEdit(task)
-    }
+   fun onEditClick(task: Task) {
+      globalVariables.setTaskToEdit(task)
+   }
 }
