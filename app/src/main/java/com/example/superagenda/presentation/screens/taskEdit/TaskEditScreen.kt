@@ -1,11 +1,9 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
-import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +14,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.ErrorDialog
-import com.example.superagenda.presentation.composables.NavigationBar
+import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.taskEdit.composables.DescriptionTextField
@@ -27,9 +25,8 @@ import java.time.LocalDateTime
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
-    Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
-            BeautifulTitle(title = "TASK: EDIT")
+    Navigation(content = { padding ->
+        Column(modifier = Modifier.padding(padding)) {
             Spacer(modifier = Modifier.padding(8.dp))
             TaskEdit(taskEditViewModel)
             DeleteButton {
@@ -47,7 +44,8 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
                 taskEditViewModel.onErrorDismissed()
             }
         }
-    }
+
+    }, navController, "Edit Task")
 }
 
 @Composable

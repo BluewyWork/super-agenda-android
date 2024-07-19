@@ -1,11 +1,9 @@
 package com.example.superagenda.presentation.screens.filter
 
-import BeautifulTitle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
-import com.example.superagenda.presentation.composables.NavigationBar
+import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.filter.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.filter.composables.FilterButton
@@ -25,15 +23,11 @@ import java.time.LocalDateTime
 
 @Composable
 fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
-    Scaffold(bottomBar = { NavigationBar(navController) }) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            BeautifulTitle(title = "Filter")
+    Navigation(content = { padding ->
+        Column(modifier = Modifier.padding(padding)) {
             Filter(filterScreenViewModel, navController)
         }
-    }
-
+    }, navController, "Find Tasks")
 }
 
 @Composable
