@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
@@ -25,27 +26,32 @@ import java.time.LocalDateTime
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
-   Navigation(content = { padding ->
-      Column(modifier = Modifier.padding(padding)) {
-         Spacer(modifier = Modifier.padding(8.dp))
-         TaskEdit(taskEditViewModel)
-         DeleteButton {
-            taskEditViewModel.onDeleteButtonPress(navController)
+   Navigation(
+      content = { padding ->
+         Column(modifier = Modifier.padding(padding)) {
+            Spacer(modifier = Modifier.padding(8.dp))
+            TaskEdit(taskEditViewModel)
+            DeleteButton {
+               taskEditViewModel.onDeleteButtonPress(navController)
+            }
+            UpdateButton {
+               taskEditViewModel.onUpdateButtonPress(navController)
+            }
          }
-         UpdateButton {
-            taskEditViewModel.onUpdateButtonPress(navController)
+
+         val errorMessage: String? by taskEditViewModel.errorMessage.observeAsState(null)
+
+         if (errorMessage != null) {
+            ErrorDialog(errorMessage = errorMessage) {
+               taskEditViewModel.onErrorDismissed()
+            }
          }
-      }
 
-      val errorMessage: String? by taskEditViewModel.errorMessage.observeAsState(null)
-
-      if (errorMessage != null) {
-         ErrorDialog(errorMessage = errorMessage) {
-            taskEditViewModel.onErrorDismissed()
-         }
-      }
-
-   }, navController, "Edit Task")
+      },
+      navController,
+      "Edit Task",
+      navigationIcon = { BackIconButton(onClick = { navController.popBackStack() }) }
+   )
 }
 
 @Composable

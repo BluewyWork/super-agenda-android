@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Home
@@ -132,16 +131,6 @@ fun BottomBar(navController: NavController) {
             Icon(
                imageVector = Icons.Outlined.Home,
                contentDescription = "Tasks Overview",
-            )
-         }
-      )
-      NavigationBarItem(
-         selected = false,
-         onClick = { navController.navigate("new_task") },
-         icon = {
-            Icon(
-               imageVector = Icons.Outlined.Add,
-               contentDescription = "New Task",
             )
          }
       )

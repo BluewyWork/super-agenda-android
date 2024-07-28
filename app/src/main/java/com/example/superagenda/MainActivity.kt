@@ -9,7 +9,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.superagenda.core.NotificationService
-import com.example.superagenda.core.navigations.NavigationHost
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
@@ -17,10 +16,10 @@ import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewViewModel
+import com.example.superagenda.presentation.screens.tasks.TasksScreen
 import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
 import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
 import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingViewModel
-import com.example.superagenda.ui.theme.SuperAgendaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,22 +42,23 @@ class MainActivity : ComponentActivity() {
       val service = NotificationService(applicationContext)
 
       setContent {
-         SuperAgendaTheme {
-            NavigationHost(
-               service = service,
-               registerViewModel = registerViewModel,
-               loginViewModel = loginViewModel,
-               profileViewModel = profileViewModel,
-               tasksNotStartedViewModel = tasksNotStartedViewModel,
-               tasksOngoingViewModel = tasksOngoingViewModel,
-               tasksCompletedViewModel = tasksCompletedViewModel,
-               taskEditViewModel = taskEditViewModel,
-               newTaskViewModel = newTaskViewModel,
-               tasksOverviewViewModel = tasksOverviewViewModel,
-               filterScreenViewModel = filterScreenViewModel
-            )
-
-         }
+//         SuperAgendaTheme {
+//            NavigationHost(
+//               service = service,
+//               registerViewModel = registerViewModel,
+//               loginViewModel = loginViewModel,
+//               profileViewModel = profileViewModel,
+//               tasksNotStartedViewModel = tasksNotStartedViewModel,
+//               tasksOngoingViewModel = tasksOngoingViewModel,
+//               tasksCompletedViewModel = tasksCompletedViewModel,
+//               taskEditViewModel = taskEditViewModel,
+//               newTaskViewModel = newTaskViewModel,
+//               tasksOverviewViewModel = tasksOverviewViewModel,
+//               filterScreenViewModel = filterScreenViewModel
+//            )
+//
+//         }
+         TasksScreen()
       }
    }
 
