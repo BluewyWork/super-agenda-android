@@ -47,7 +47,8 @@ fun Navigation(
    topBarTitle: String,
    floatingActionButton: @Composable () -> Unit = {},
    navigationIcon: @Composable () -> Unit = {},
-) {
+)
+{
    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
    val scope = rememberCoroutineScope()
 
@@ -74,7 +75,8 @@ fun Navigation(
 }
 
 @Composable
-fun DrawerContent(navController: NavController, scope: CoroutineScope, drawerState: DrawerState) {
+fun DrawerContent(navController: NavController, scope: CoroutineScope, drawerState: DrawerState)
+{
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       Button(onClick = {
          navController.navigate(Destinations.Profile.route)
@@ -93,8 +95,9 @@ fun TopBar(
    scope: CoroutineScope,
    drawerState: DrawerState,
    topBarTitle: String,
-   navigationIcon: @Composable () -> Unit
-) {
+   navigationIcon: @Composable () -> Unit,
+)
+{
    CenterAlignedTopAppBar(
       title = { Text(topBarTitle) },
       navigationIcon = navigationIcon,
@@ -117,7 +120,8 @@ fun TopBar(
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(navController: NavController)
+{
    androidx.compose.material3.NavigationBar(
       modifier = Modifier
          .height(50.dp),

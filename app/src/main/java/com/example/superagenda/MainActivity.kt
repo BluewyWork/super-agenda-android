@@ -23,7 +23,8 @@ import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingVie
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity()
+{
    private val registerViewModel: RegisterViewModel by viewModels()
    private val loginViewModel: LoginViewModel by viewModels()
    private val profileViewModel: ProfileViewModel by viewModels()
@@ -35,7 +36,8 @@ class MainActivity : ComponentActivity() {
    private val tasksOverviewViewModel: TasksOverviewViewModel by viewModels()
    private val filterScreenViewModel: FilterScreenViewModel by viewModels()
 
-   override fun onCreate(savedInstanceState: Bundle?) {
+   override fun onCreate(savedInstanceState: Bundle?)
+   {
       createNotificationChannel()
       super.onCreate(savedInstanceState)
 
@@ -62,8 +64,10 @@ class MainActivity : ComponentActivity() {
       }
    }
 
-   private fun createNotificationChannel() {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+   private fun createNotificationChannel()
+   {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+      {
          val channel = NotificationChannel(
             NotificationService.CHANNEL_ID,
             "Random Name",

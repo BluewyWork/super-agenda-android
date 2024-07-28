@@ -27,8 +27,9 @@ import com.example.superagenda.presentation.screens.profile.composables.Username
 fun ProfileScreen(
    profileViewModel: ProfileViewModel,
    navController: NavController,
-   service: NotificationService
-) {
+   service: NotificationService,
+)
+{
    Navigation(content = { padding ->
       Profile(profileViewModel, navController, service, padding)
    }, navController, "Profile")
@@ -39,8 +40,9 @@ fun Profile(
    profileViewModel: ProfileViewModel,
    navController: NavController,
    service: NotificationService,
-   padding: PaddingValues
-) {
+   padding: PaddingValues,
+)
+{
    val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
    LazyColumn(

@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BeautifulTitle(title: String) {
+fun BeautifulTitle(title: String)
+{
    Column(
       modifier = Modifier
          .fillMaxWidth()

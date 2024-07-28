@@ -21,8 +21,9 @@ import com.example.superagenda.domain.models.TaskStatus
 @Composable
 fun TaskStatusDropDown(
    taskStatus: TaskStatus,
-   onStatusChange: (TaskStatus) -> Unit
-) {
+   onStatusChange: (TaskStatus) -> Unit,
+)
+{
    val context = LocalContext.current
    val taskStatuses = TaskStatus.values()
 

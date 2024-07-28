@@ -9,10 +9,11 @@ data class Task(
    val description: String,
    val status: TaskStatus,
    val startDateTime: LocalDateTime,
-   val endDateTime: LocalDateTime
+   val endDateTime: LocalDateTime,
 )
 
-enum class TaskStatus {
+enum class TaskStatus
+{
    NotStarted,
    Ongoing,
    Completed

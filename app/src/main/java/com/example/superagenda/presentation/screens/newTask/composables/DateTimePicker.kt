@@ -27,8 +27,9 @@ import java.util.Calendar
 @Composable
 fun DateTimePicker(
    initialDateTime: LocalDateTime,
-   onDateTimeSelected: (LocalDateTime) -> Unit
-) {
+   onDateTimeSelected: (LocalDateTime) -> Unit,
+)
+{
    var selectedDateTime by remember { mutableStateOf(initialDateTime) }
 
    val context = LocalContext.current

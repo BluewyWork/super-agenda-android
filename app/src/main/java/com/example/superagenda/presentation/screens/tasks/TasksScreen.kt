@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TasksScreen() {
+fun TasksScreen()
+{
    val pagerState = rememberPagerState { 3 }
 
    var selectedTab by remember {
@@ -35,12 +36,14 @@ fun TasksScreen() {
 
    Column {
       TabRow(selectedTabIndex = selectedTab) {
-         for (index in 0 until pagerState.pageCount) {
+         for (index in 0 until pagerState.pageCount)
+         {
             Tab(
                selected = true,
                onClick = { selectedTab = index }
             ) {
-               when (index) {
+               when (index)
+               {
                   0 -> Text("Not Started")
                   1 -> Text("Ongoing")
                   2 -> Text("Completed")
@@ -49,8 +52,12 @@ fun TasksScreen() {
          }
       }
 
-      HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { currentPage ->
-         when (currentPage) {
+      HorizontalPager(
+         state = pagerState,
+         modifier = Modifier.fillMaxSize()
+      ) { currentPage ->
+         when (currentPage)
+         {
             0 -> TasksNotStarted()
             1 -> TasksOngoing()
             2 -> TasksCompleted()
@@ -60,16 +67,19 @@ fun TasksScreen() {
 }
 
 @Composable
-fun TasksNotStarted() {
+fun TasksNotStarted()
+{
    Text("test1")
 }
 
 @Composable
-fun TasksOngoing() {
+fun TasksOngoing()
+{
    Text("test2")
 }
 
 @Composable
-fun TasksCompleted() {
+fun TasksCompleted()
+{
    Text("test3")
 }

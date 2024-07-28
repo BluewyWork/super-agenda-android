@@ -18,8 +18,9 @@ import com.example.superagenda.presentation.composables.TaskCard
 @Composable
 fun TasksCompletedScreen(
    tasksCompletedViewModel: TasksCompletedViewModel,
-   navController: NavController
-) {
+   navController: NavController,
+)
+{
    Navigation(content = { padding ->
       TaskCompleted(tasksCompletedViewModel, navController, padding)
    }, navController, "Completed Tasks")
@@ -29,8 +30,9 @@ fun TasksCompletedScreen(
 fun TaskCompleted(
    tasksCompletedViewModel: TasksCompletedViewModel,
    navController: NavController,
-   padding: PaddingValues
-) {
+   padding: PaddingValues,
+)
+{
    val completedTaskList: List<Task>? by tasksCompletedViewModel.completedTaskList.observeAsState()
 
    LazyColumn(
@@ -40,14 +42,18 @@ fun TaskCompleted(
    ) {
       item {
          completedTaskList.let {
-            if (it != null) {
-               for (task in it) {
+            if (it != null)
+            {
+               for (task in it)
+               {
                   TaskCard(task) {
                      tasksCompletedViewModel.onEditClick(task)
                      navController.navigate(Destinations.TaskEdit.route)
                   }
                }
-            } else {
+            }
+            else
+            {
                Text("Either no tasks or no internet connection...")
             }
          }

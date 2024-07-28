@@ -18,14 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun ImportTaskList(onFileChosen: (ContentResolver, String) -> Unit) {
+fun ImportTaskList(onFileChosen: (ContentResolver, String) -> Unit)
+{
    var chosenFile by remember { mutableStateOf<String?>(null) }
    val context = LocalContext.current
 
    val fileChooserLauncher = rememberLauncherForActivityResult(
       contract = ActivityResultContracts.StartActivityForResult()
    ) { result ->
-      if (result.resultCode == Activity.RESULT_OK) {
+      if (result.resultCode == Activity.RESULT_OK)
+      {
          val data: Intent? = result.data
          val filePath = data?.dataString
          filePath?.let { path ->

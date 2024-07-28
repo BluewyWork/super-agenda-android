@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTaskViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-) : ViewModel() {
+) : ViewModel()
+{
    private val _title = MutableLiveData<String>()
    val title = _title
 
@@ -36,15 +37,18 @@ class NewTaskViewModel @Inject constructor(
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
-   fun onError(message: String) {
+   fun onError(message: String)
+   {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed() {
+   fun onErrorDismissed()
+   {
       _errorMessage.postValue(null)
    }
 
-   fun onShow() {
+   fun onShow()
+   {
       _title.postValue("")
       _description.postValue("")
       _taskStatus.postValue(TaskStatus.NotStarted)
@@ -52,7 +56,8 @@ class NewTaskViewModel @Inject constructor(
       _endDateTime.postValue(LocalDateTime.now())
    }
 
-   fun onCreateButtonPress(navController: NavController) {
+   fun onCreateButtonPress(navController: NavController)
+   {
       viewModelScope.launch {
          val task = _title.value?.let {
             _description.value?.let { it1 ->
@@ -73,11 +78,13 @@ class NewTaskViewModel @Inject constructor(
             }
          }
 
-         if (task == null) {
+         if (task == null)
+         {
             return@launch
          }
 
-         if (!taskUseCase.definitiveCreateOrUpdateTask(task)) {
+         if (!taskUseCase.definitiveCreateOrUpdateTask(task))
+         {
             // do something here
             onError("Well, this is certainly super rare to happen...")
          }
@@ -86,7 +93,8 @@ class NewTaskViewModel @Inject constructor(
 //                onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
 //            }
 
-         if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
+         if (!taskUseCase.definitiveSynchronizeUpTaskList())
+         {
             // do something here
             onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
          }
@@ -95,23 +103,28 @@ class NewTaskViewModel @Inject constructor(
       }
    }
 
-   fun onTitleChange(title: String) {
+   fun onTitleChange(title: String)
+   {
       _title.postValue(title)
    }
 
-   fun onDescriptionChange(description: String) {
+   fun onDescriptionChange(description: String)
+   {
       _description.postValue(description)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus) {
+   fun onTaskStatusChange(taskStatus: TaskStatus)
+   {
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime)
+   {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime)
+   {
       _endDateTime.postValue(endDateTime)
    }
 }

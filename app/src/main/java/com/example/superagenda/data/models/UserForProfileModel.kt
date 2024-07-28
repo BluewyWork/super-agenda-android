@@ -4,7 +4,7 @@ import com.example.superagenda.domain.models.UserForProfile
 import com.google.gson.annotations.SerializedName
 
 data class UserForProfileModel(
-   @SerializedName("username") val username: String
+   @SerializedName("username") val username: String,
 )
 
 fun UserForProfile.toData() = UserForProfileModel(

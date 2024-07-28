@@ -19,8 +19,9 @@ import com.example.superagenda.presentation.composables.TaskCard
 @Composable
 fun TasksNotStartedScreen(
    tasksNotStartedViewModel: TasksNotStartedViewModel,
-   navController: NavController
-) {
+   navController: NavController,
+)
+{
    Navigation(
       content = { padding ->
          TasksNotStarted(tasksNotStartedViewModel, navController, padding)
@@ -41,25 +42,30 @@ fun TasksNotStartedScreen(
 fun TasksNotStarted(
    tasksNotStartedViewModel: TasksNotStartedViewModel,
    navController: NavController,
-   padding: PaddingValues
-) {
+   padding: PaddingValues,
+)
+{
    val notStartedTaskList: List<Task>? by tasksNotStartedViewModel.notStartedTaskList.observeAsState()
 
    LazyColumn(
       modifier = Modifier
-          .fillMaxWidth()
-          .padding(padding)
+         .fillMaxWidth()
+         .padding(padding)
    ) {
       item {
          notStartedTaskList.let {
-            if (it != null) {
-               for (task in it) {
+            if (it != null)
+            {
+               for (task in it)
+               {
                   TaskCard(task) {
                      tasksNotStartedViewModel.onEditClick(task)
                      navController.navigate(Destinations.TaskEdit.route)
                   }
                }
-            } else {
+            }
+            else
+            {
                Text("Either no tasks or no internet connection...")
             }
          }

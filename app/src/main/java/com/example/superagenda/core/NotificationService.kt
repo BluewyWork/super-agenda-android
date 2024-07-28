@@ -10,16 +10,19 @@ import com.example.superagenda.MainActivity
 import com.example.superagenda.R
 
 class NotificationService(
-   private val context: Context
-) {
+   private val context: Context,
+)
+{
    private val notificationManager =
       context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-   companion object {
+   companion object
+   {
       const val CHANNEL_ID = "channel_1"
    }
 
-   fun showNotification(title: String, description: String) {
+   fun showNotification(title: String, description: String)
+   {
       val activityIntent = Intent(context, MainActivity::class.java)
 
       val activityPendingIntent = PendingIntent.getActivity(

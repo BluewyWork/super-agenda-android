@@ -12,7 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UsernameTextField(username: String, onTextChange: (String) -> Unit) {
+fun UsernameTextField(username: String, onTextChange: (String) -> Unit)
+{
    TextField(
       modifier = Modifier
          .fillMaxWidth()

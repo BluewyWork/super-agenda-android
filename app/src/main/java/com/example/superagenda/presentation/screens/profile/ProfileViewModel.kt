@@ -28,11 +28,13 @@ class ProfileViewModel @Inject constructor(
    private val selfUseCase: SelfUseCase,
    private val taskUseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
-) : ViewModel() {
+) : ViewModel()
+{
    private val _userForProfile = MutableLiveData<UserForProfile?>()
    val userForProfile: LiveData<UserForProfile?> = _userForProfile
 
-   fun onShow() {
+   fun onShow()
+   {
       viewModelScope.launch {
          val userProfile = selfUseCase.retrieveUserForProfile()
 
@@ -40,9 +42,11 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   fun onDeleteButtonPressButton(navController: NavController) {
+   fun onDeleteButtonPressButton(navController: NavController)
+   {
       viewModelScope.launch {
-         if (!selfUseCase.deleteProfile()) {
+         if (!selfUseCase.deleteProfile())
+         {
             return@launch
          }
 
@@ -50,18 +54,21 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   fun onBackupButtonPress() {
+   fun onBackupButtonPress()
+   {
       viewModelScope.launch {
          taskUseCase.saveTaskListToLocalStorage()
       }
    }
 
-   fun onImportButtonPress(contentResolver: ContentResolver, filePath: String) {
+   fun onImportButtonPress(contentResolver: ContentResolver, filePath: String)
+   {
       viewModelScope.launch {
          Log.d("LOOK AT ME", "CHOSEN FILE: ${printFileContents(contentResolver, filePath)}")
          val taskList = deserializeTasksFromJson(contentResolver, filePath)
 
-         for (task in taskList) {
+         for (task in taskList)
+         {
             Log.d("LOOK AT ME", "ITS WORKING: $task")
          }
 
@@ -70,9 +77,11 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   fun onLogoutPress(navController: NavController) {
+   fun onLogoutPress(navController: NavController)
+   {
       viewModelScope.launch {
-         if (!loginUseCase.logout()) {
+         if (!loginUseCase.logout())
+         {
             return@launch
          }
 
@@ -81,12 +90,14 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   private fun printFileContents(contentResolver: ContentResolver, filePath: String) {
+   private fun printFileContents(contentResolver: ContentResolver, filePath: String)
+   {
       val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
       val reader = BufferedReader(InputStreamReader(inputStream))
       val stringBuilder = StringBuilder()
       var line: String? = reader.readLine()
-      while (line != null) {
+      while (line != null)
+      {
          stringBuilder.append(line).append('\n')
          line = reader.readLine()
       }
@@ -99,8 +110,9 @@ class ProfileViewModel @Inject constructor(
 
    private fun deserializeTasksFromJson(
       contentResolver: ContentResolver,
-      filePath: String
-   ): List<Task> {
+      filePath: String,
+   ): List<Task>
+   {
       val gson = Gson()
       val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
       val reader = BufferedReader(InputStreamReader(inputStream))

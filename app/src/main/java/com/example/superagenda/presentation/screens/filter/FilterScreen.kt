@@ -22,7 +22,8 @@ import com.example.superagenda.presentation.screens.filter.composables.TitleText
 import java.time.LocalDateTime
 
 @Composable
-fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
+fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: NavController)
+{
    Navigation(content = { padding ->
       Column(modifier = Modifier.padding(padding)) {
          Filter(filterScreenViewModel, navController)
@@ -31,7 +32,8 @@ fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: Na
 }
 
 @Composable
-fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
+fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavController)
+{
    val title: String by filterScreenViewModel.title.observeAsState("")
    val taskStatus: TaskStatus? by filterScreenViewModel.taskStatus.observeAsState()
    val startDateTime: LocalDateTime? by filterScreenViewModel.startDateTime.observeAsState()
@@ -45,7 +47,8 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          }
 
          TaskStatusDropDown(null) {
-            if (it != null) {
+            if (it != null)
+            {
                filterScreenViewModel.onTaskStatusChange(it)
             }
          }
@@ -55,7 +58,8 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          Text(text = "START DATETIME")
 
          DateTimePicker(initialDateTime = null) { it2 ->
-            if (it2 != null) {
+            if (it2 != null)
+            {
                filterScreenViewModel.onStartDateTimeChange(it2)
             }
          }
@@ -64,7 +68,8 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          Text(text = "END DATETIME")
 
          DateTimePicker(initialDateTime = null) { it2 ->
-            if (it2 != null) {
+            if (it2 != null)
+            {
                filterScreenViewModel.onEndDateTimeChange(it2)
             }
          }
@@ -73,9 +78,12 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
             filterScreenViewModel.onFilter(navController)
          }
 
-         if (filteredTaskList.isNullOrEmpty()) {
+         if (filteredTaskList.isNullOrEmpty())
+         {
             Text(text = "No tasks found.")
-         } else {
+         }
+         else
+         {
             filteredTaskList?.forEach {
                TaskCard(task = it) {
                }

@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.example.superagenda.domain.models.Task
 
 @Composable
-fun TaskCard(task: Task, onClick: () -> Unit) {
+fun TaskCard(task: Task, onClick: () -> Unit)
+{
    Card(
       modifier = Modifier
          .fillMaxWidth()

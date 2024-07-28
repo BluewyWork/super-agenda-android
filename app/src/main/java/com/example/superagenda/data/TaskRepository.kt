@@ -24,14 +24,18 @@ import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
    private val taskApi: TaskApi,
-   private val taskDao: TaskDao
-) {
-   suspend fun retrieveTaskList(token: String): List<Task>? {
+   private val taskDao: TaskDao,
+)
+{
+   suspend fun retrieveTaskList(token: String): List<Task>?
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskList = taskApi.retrieveTaskList(token).data
 
-            if (taskList.isEmpty()) {
+            if (taskList.isEmpty())
+            {
                return@withContext null
             }
 
@@ -41,7 +45,9 @@ class TaskRepository @Inject constructor(
             val taskListDomain = taskList.map { it.toDomain() }
 
             taskListDomain
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -49,9 +55,11 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun updateTask(token: String, task: Task): Boolean {
+   suspend fun updateTask(token: String, task: Task): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskModel = task.toData()
 
             Log.d("LOOK AT ME", "UP: $taskModel")
@@ -67,7 +75,9 @@ class TaskRepository @Inject constructor(
             val apiResponse = taskApi.updateTask(token, taskModel)
 
             apiResponse.ok
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -75,15 +85,19 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun updateTaskList(token: String, taskList: List<Task>): Boolean {
+   suspend fun updateTaskList(token: String, taskList: List<Task>): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskModelList = taskList.map { it.toData() }
 
             taskApi.updateTaskList(token, taskModelList)
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -91,15 +105,19 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun createTask(token: String, task: Task): Boolean {
+   suspend fun createTask(token: String, task: Task): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskModel = task.toData()
 
             val response = taskApi.createTask(token, taskModel)
 
             return@withContext response.ok
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -107,13 +125,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun deleteTask(token: String, taskId: String): Boolean {
+   suspend fun deleteTask(token: String, taskId: String): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val response = taskApi.deleteTask(token, taskId)
 
             response.ok
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -121,9 +143,11 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun writeFileToLocalStorage(token: String) {
+   suspend fun writeFileToLocalStorage(token: String)
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskList = taskApi.retrieveTaskList(token).data
 
             val gson = Gson()
@@ -132,7 +156,8 @@ class TaskRepository @Inject constructor(
             val directory =
                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
-            if (!directory.exists()) {
+            if (!directory.exists())
+            {
                directory.mkdirs()
             }
 
@@ -144,23 +169,30 @@ class TaskRepository @Inject constructor(
             val outputStream = FileOutputStream(file)
             outputStream.write(taskListJson.toByteArray())
             outputStream.close()
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
          }
       }
    }
 
-   suspend fun saveTaskListToLocalDatabase(taskList: List<Task>): Boolean {
+   suspend fun saveTaskListToLocalDatabase(taskList: List<Task>): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskModelList = taskList.map { it.toData() }
 
-            for (task in taskModelList) {
+            for (task in taskModelList)
+            {
                taskDao.insertOrUpdate(task.toDatabase())
             }
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -168,15 +200,19 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun updateOrInsertTaskToLocalDatabase(task: Task): Boolean {
+   suspend fun updateOrInsertTaskToLocalDatabase(task: Task): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskEntity = task.toData().toDatabase()
 
             taskDao.insertOrUpdate(taskEntity)
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -184,13 +220,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun clearTaskListFromLocalDatabase(): Boolean {
+   suspend fun clearTaskListFromLocalDatabase(): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             taskDao.deleteAll()
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -198,13 +238,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun retrieveTaskListFromLocalDatabase(): List<Task>? {
+   suspend fun retrieveTaskListFromLocalDatabase(): List<Task>?
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskList = taskDao.selectAll()
 
             taskList.map { it.toData().toDomain() }
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -212,13 +256,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun cleanLogout(): Boolean {
+   suspend fun cleanLogout(): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val taskList = taskDao.deleteAll()
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -226,13 +274,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun defCreateOrUpdateTask(task: Task): Boolean {
+   suspend fun defCreateOrUpdateTask(task: Task): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             taskDao.insertOrUpdate(task.toData().toDatabase())
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -241,13 +293,17 @@ class TaskRepository @Inject constructor(
    }
 
 
-   suspend fun defCreateOrUpdateTaskList(taskList: List<Task>): Boolean {
+   suspend fun defCreateOrUpdateTaskList(taskList: List<Task>): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             taskDao.insertOrUpdateMany(taskList.map { it.toData().toDatabase() })
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -255,13 +311,17 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun defDeleteTask(task_id: String): Boolean {
+   suspend fun defDeleteTask(task_id: String): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             taskDao.deleteById(task_id)
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false

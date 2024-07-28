@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UserForLoginModel(
    @SerializedName("username") val username: String,
-   @SerializedName("password") val password: String
+   @SerializedName("password") val password: String,
 )
 
 fun UserForLogin.toData() = UserForLoginModel(

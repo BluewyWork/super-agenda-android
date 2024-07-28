@@ -14,8 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksOverviewViewModel @Inject constructor(
    private val globalVariables: GlobalVariables,
-   private val taskUseCase: TaskUseCase
-) : ViewModel() {
+   private val taskUseCase: TaskUseCase,
+) : ViewModel()
+{
    private val _tasksNotStarted = MutableLiveData<List<Task>?>()
    val tasksNotStarted: LiveData<List<Task>?> = _tasksNotStarted
 
@@ -25,7 +26,8 @@ class TasksOverviewViewModel @Inject constructor(
    private val _tasksCompleted = MutableLiveData<List<Task>?>()
    val taskCompleted: LiveData<List<Task>?> = _tasksCompleted
 
-   fun onShow() {
+   fun onShow()
+   {
       viewModelScope.launch {
          val tasksNotStarted = taskUseCase.retrieveNotStartedTaskList2()
 
@@ -60,7 +62,8 @@ class TasksOverviewViewModel @Inject constructor(
    }
 
 
-   fun onEditClick(task: Task) {
+   fun onEditClick(task: Task)
+   {
       globalVariables.setTaskToEdit(task)
    }
 }

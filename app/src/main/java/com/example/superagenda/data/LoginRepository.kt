@@ -12,16 +12,21 @@ import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
    private val loginApi: LoginApi,
-   private val tokenDao: TokenDao
-) {
-   suspend fun retrieveTokenFromApi(userForLogin: UserForLogin): String? {
+   private val tokenDao: TokenDao,
+)
+{
+   suspend fun retrieveTokenFromApi(userForLogin: UserForLogin): String?
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val userForLoginModel = userForLogin.toData()
             val apiResponse = loginApi.login(userForLoginModel)
 
             apiResponse.data.token
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -29,14 +34,18 @@ class LoginRepository @Inject constructor(
       }
    }
 
-   suspend fun saveTokenToLocalStorage(token: String): Boolean {
+   suspend fun saveTokenToLocalStorage(token: String): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val tokenEntity = TokenEntity(token)
             tokenDao.insert(tokenEntity)
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -44,11 +53,15 @@ class LoginRepository @Inject constructor(
       }
    }
 
-   suspend fun retrieveTokenFromLocalStorage(): String? {
+   suspend fun retrieveTokenFromLocalStorage(): String?
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             tokenDao.retrieve().token
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -56,13 +69,17 @@ class LoginRepository @Inject constructor(
       }
    }
 
-   suspend fun wipeAllTokensFromLocalStorage(): Boolean {
+   suspend fun wipeAllTokensFromLocalStorage(): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             tokenDao.deleteAll()
 
             true
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false

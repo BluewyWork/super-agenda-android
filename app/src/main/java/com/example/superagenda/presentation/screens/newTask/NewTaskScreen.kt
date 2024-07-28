@@ -21,10 +21,12 @@ import com.example.superagenda.presentation.screens.newTask.composables.UpdateBu
 import java.time.LocalDateTime
 
 @Composable
-fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController) {
+fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController)
+{
    val errorMessage: String? by newTaskViewModel.errorMessage.observeAsState(null)
 
-   if (errorMessage != null) {
+   if (errorMessage != null)
+   {
       ErrorDialog(errorMessage = errorMessage) {
          newTaskViewModel.onErrorDismissed()
       }
@@ -43,7 +45,8 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
 }
 
 @Composable
-fun NewTask(newTaskViewModel: NewTaskViewModel) {
+fun NewTask(newTaskViewModel: NewTaskViewModel)
+{
    val title: String by newTaskViewModel.title.observeAsState("")
    val description: String by newTaskViewModel.description.observeAsState("")
    val taskStatus: TaskStatus? by newTaskViewModel.taskStatus.observeAsState()

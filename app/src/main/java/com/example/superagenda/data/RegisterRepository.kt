@@ -9,17 +9,22 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RegisterRepository @Inject constructor(
-   private val registerApi: RegisterApi
-) {
-   suspend fun register(userForRegister: UserForRegister): Boolean {
+   private val registerApi: RegisterApi,
+)
+{
+   suspend fun register(userForRegister: UserForRegister): Boolean
+   {
       return withContext(Dispatchers.IO) {
-         try {
+         try
+         {
             val userForRegisterModel = userForRegister.toData()
 
             val response = registerApi.register(userForRegisterModel)
 
             response.ok
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "${e.message}")
 
             false

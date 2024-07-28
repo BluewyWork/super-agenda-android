@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "token_table")
 data class TokenEntity(
    @PrimaryKey(autoGenerate = false)
-   @ColumnInfo(name = "token") val token: String
+   @ColumnInfo(name = "token") val token: String,
 )

@@ -6,7 +6,8 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 
-interface SelfApi {
+interface SelfApi
+{
    @GET(Endpoints.GET_PROFILE)
    suspend fun retrieveUserProfile(@Header("Authorization") token: String): ApiResponse<UserForProfileModel>
 

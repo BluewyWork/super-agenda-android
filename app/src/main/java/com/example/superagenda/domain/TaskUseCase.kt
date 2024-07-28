@@ -15,10 +15,13 @@ import javax.inject.Inject
 class TaskUseCase @Inject constructor(
    private val loginRepository: LoginRepository,
    private val taskRepository: TaskRepository,
-) {
-   suspend fun deleteTask(task: Task): Boolean {
+)
+{
+   suspend fun deleteTask(task: Task): Boolean
+   {
       val token = loginRepository.retrieveTokenFromLocalStorage()
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 
@@ -27,14 +30,17 @@ class TaskUseCase @Inject constructor(
       return taskRepository.deleteTask(token, task._id.toHexString())
    }
 
-   suspend fun synchronizeApiToLocalDatabase(): Boolean {
+   suspend fun synchronizeApiToLocalDatabase(): Boolean
+   {
       val token = loginRepository.retrieveTokenFromLocalStorage()
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 
       val remoteTaskList = taskRepository.retrieveTaskList(token)
-      if (remoteTaskList.isNullOrEmpty()) {
+      if (remoteTaskList.isNullOrEmpty())
+      {
          return false
       }
 
@@ -42,19 +48,23 @@ class TaskUseCase @Inject constructor(
       return taskRepository.saveTaskListToLocalDatabase(remoteTaskList)
    }
 
-   suspend fun retrieveTaskList2(): List<Task>? {
+   suspend fun retrieveTaskList2(): List<Task>?
+   {
       val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase()
-      if (!localTaskList.isNullOrEmpty()) {
+      if (!localTaskList.isNullOrEmpty())
+      {
          return localTaskList
       }
 
       val token = loginRepository.retrieveTokenFromLocalStorage()
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return null
       }
 
       val remoteTaskList = taskRepository.retrieveTaskList(token)
-      if (remoteTaskList.isNullOrEmpty()) {
+      if (remoteTaskList.isNullOrEmpty())
+      {
          return null
       }
 
@@ -63,11 +73,14 @@ class TaskUseCase @Inject constructor(
    }
 
 
-   suspend fun retrieveNotStartedTaskList2(): List<Task>? {
+   suspend fun retrieveNotStartedTaskList2(): List<Task>?
+   {
       val notStartedTaskList: MutableList<Task> = mutableListOf()
 
-      for (task in retrieveTaskList2() ?: return null) {
-         if (task.status == TaskStatus.NotStarted) {
+      for (task in retrieveTaskList2() ?: return null)
+      {
+         if (task.status == TaskStatus.NotStarted)
+         {
             notStartedTaskList.add(task)
          }
       }
@@ -76,11 +89,14 @@ class TaskUseCase @Inject constructor(
    }
 
 
-   suspend fun retrieveOnGoingTaskList2(): List<Task>? {
+   suspend fun retrieveOnGoingTaskList2(): List<Task>?
+   {
       val onGoingTaskList: MutableList<Task> = mutableListOf()
 
-      for (task in retrieveTaskList2() ?: return null) {
-         if (task.status == TaskStatus.Ongoing) {
+      for (task in retrieveTaskList2() ?: return null)
+      {
+         if (task.status == TaskStatus.Ongoing)
+         {
             onGoingTaskList.add(task)
          }
       }
@@ -89,11 +105,14 @@ class TaskUseCase @Inject constructor(
    }
 
 
-   suspend fun retrieveCompletedTaskList2(): List<Task>? {
+   suspend fun retrieveCompletedTaskList2(): List<Task>?
+   {
       val completedTaskList: MutableList<Task> = mutableListOf()
 
-      for (task in retrieveTaskList2() ?: return null) {
-         if (task.status == TaskStatus.Completed) {
+      for (task in retrieveTaskList2() ?: return null)
+      {
+         if (task.status == TaskStatus.Completed)
+         {
             completedTaskList.add(task)
          }
       }
@@ -102,55 +121,66 @@ class TaskUseCase @Inject constructor(
    }
 
 
-   suspend fun updateTask2(task: Task): Boolean {
+   suspend fun updateTask2(task: Task): Boolean
+   {
       return taskRepository.updateOrInsertTaskToLocalDatabase(task)
    }
 
-   suspend fun createTask2(task: Task): Boolean {
+   suspend fun createTask2(task: Task): Boolean
+   {
       return taskRepository.updateOrInsertTaskToLocalDatabase(task)
    }
 
-   suspend fun createTask3(task: Task): Boolean {
+   suspend fun createTask3(task: Task): Boolean
+   {
       val token = loginRepository.retrieveTokenFromLocalStorage()
 
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 
       return taskRepository.createTask(token, task)
    }
 
-   suspend fun synchronizeTaskListToApi(): Boolean {
+   suspend fun synchronizeTaskListToApi(): Boolean
+   {
       val taskList = taskRepository.retrieveTaskListFromLocalDatabase()
 
-      if (taskList.isNullOrEmpty()) {
+      if (taskList.isNullOrEmpty())
+      {
          return false
       }
 
       val token = loginRepository.retrieveTokenFromLocalStorage()
 
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 
       return taskRepository.updateTaskList(token, taskList)
    }
 
-   suspend fun saveTaskListToLocalStorage() {
+   suspend fun saveTaskListToLocalStorage()
+   {
       val token = loginRepository.retrieveTokenFromLocalStorage()
 
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return
       }
 
       taskRepository.writeFileToLocalStorage(token)
    }
 
-   suspend fun importTaskListFromLocalStorage(taskList: List<Task>) {
+   suspend fun importTaskListFromLocalStorage(taskList: List<Task>)
+   {
       taskRepository.defCreateOrUpdateTaskList(taskList)
    }
 
-   suspend fun test() {
+   suspend fun test()
+   {
       return withContext(Dispatchers.IO) {
          val directory =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -162,7 +192,8 @@ class TaskUseCase @Inject constructor(
 
          val file = File(directory, fileName)
 
-         try {
+         try
+         {
             directory.mkdirs() // create directories if they don't exist
             file.createNewFile()
             file.writeText(fileContent)
@@ -170,13 +201,16 @@ class TaskUseCase @Inject constructor(
                "LOOK AT ME",
                "File '$fileName' created successfully in directory '$directory'."
             )
-         } catch (e: Exception) {
+         }
+         catch (e: Exception)
+         {
             Log.e("LOOK AT ME", "An error occurred: ${e.message}")
          }
       }
    }
 
-   suspend fun showTaskNotification(service: NotificationService) {
+   suspend fun showTaskNotification(service: NotificationService)
+   {
       val list = retrieveNotStartedTaskList2()
 
       val size = list ?: return
@@ -187,37 +221,46 @@ class TaskUseCase @Inject constructor(
    }
 
 
-   suspend fun logoutTask() {
+   suspend fun logoutTask()
+   {
       taskRepository.cleanLogout()
    }
 
    //
 
-   suspend fun definitiveCreateOrUpdateTask(task: Task): Boolean {
+   suspend fun definitiveCreateOrUpdateTask(task: Task): Boolean
+   {
       return taskRepository.defCreateOrUpdateTask(task)
    }
 
-   suspend fun definitiveDeleteTask(task_id: String): Boolean {
+   suspend fun definitiveDeleteTask(task_id: String): Boolean
+   {
       return taskRepository.defDeleteTask(task_id)
    }
 
    // save to online as backup
-   suspend fun definitiveSynchronizeUpTaskList(): Boolean {
+   suspend fun definitiveSynchronizeUpTaskList(): Boolean
+   {
       val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase() ?: return false
 
       val token = loginRepository.retrieveTokenFromLocalStorage()
 
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 
       val remoteTaskList = taskRepository.retrieveTaskList(token)
       val remoteTaskListIDs = remoteTaskList?.map { it._id }?.toSet() ?: emptySet()
 
-      for (localTask in localTaskList) {
-         if (!remoteTaskListIDs.contains(localTask._id)) {
+      for (localTask in localTaskList)
+      {
+         if (!remoteTaskListIDs.contains(localTask._id))
+         {
             taskRepository.createTask(token, localTask)
-         } else {
+         }
+         else
+         {
             taskRepository.updateTask(token, localTask)
          }
       }
@@ -226,10 +269,12 @@ class TaskUseCase @Inject constructor(
    }
 
    // probably only used when first time login
-   suspend fun definitiveSynchronizeDownTaskList(): Boolean {
+   suspend fun definitiveSynchronizeDownTaskList(): Boolean
+   {
       val token = loginRepository.retrieveTokenFromLocalStorage()
 
-      if (token.isNullOrBlank()) {
+      if (token.isNullOrBlank())
+      {
          return false
       }
 

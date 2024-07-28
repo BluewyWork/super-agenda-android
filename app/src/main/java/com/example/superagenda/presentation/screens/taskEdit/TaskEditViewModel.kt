@@ -18,8 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val globalVariables: GlobalVariables
-) : ViewModel() {
+   private val globalVariables: GlobalVariables,
+) : ViewModel()
+{
    val taskToEdit = globalVariables.getTaskToEdit()
 
    private val _title = MutableLiveData<String>()
@@ -40,15 +41,18 @@ class TaskEditViewModel @Inject constructor(
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
-   fun onError(message: String) {
+   fun onError(message: String)
+   {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed() {
+   fun onErrorDismissed()
+   {
       _errorMessage.postValue(null)
    }
 
-   fun onShow() {
+   fun onShow()
+   {
       _title.postValue(taskToEdit.value?.title ?: return)
       _description.postValue(taskToEdit.value?.description ?: return)
       _taskStatus.postValue(taskToEdit.value?.status ?: return)
@@ -57,7 +61,8 @@ class TaskEditViewModel @Inject constructor(
       _endDateTime.postValue(taskToEdit.value?.endDateTime ?: return)
    }
 
-   fun onUpdateButtonPress(navController: NavController) {
+   fun onUpdateButtonPress(navController: NavController)
+   {
       viewModelScope.launch {
 
          val taskToUpdate = taskToEdit.value?.let {
@@ -81,17 +86,20 @@ class TaskEditViewModel @Inject constructor(
             }
          }
 
-         if (taskToUpdate == null) {
+         if (taskToUpdate == null)
+         {
             return@launch
          }
 
-         if (!taskUseCase.definitiveCreateOrUpdateTask(taskToUpdate)) {
+         if (!taskUseCase.definitiveCreateOrUpdateTask(taskToUpdate))
+         {
             onError("Failed for local database to insert task... HOW?")
 
             return@launch
          }
 
-         if (!taskUseCase.definitiveSynchronizeUpTaskList()) {
+         if (!taskUseCase.definitiveSynchronizeUpTaskList())
+         {
             onError("Failed for API to update task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
 
             return@launch
@@ -101,17 +109,20 @@ class TaskEditViewModel @Inject constructor(
       }
    }
 
-   fun onDeleteButtonPress(navController: NavController) {
+   fun onDeleteButtonPress(navController: NavController)
+   {
       viewModelScope.launch {
          val taskToEdit = taskToEdit.value ?: return@launch
 
-         if (!taskUseCase.deleteTask(taskToEdit)) {
+         if (!taskUseCase.deleteTask(taskToEdit))
+         {
             onError("Failed for API to delete task...\nMaybe check your internet connection?")
 
             return@launch
          }
 
-         if (!taskUseCase.definitiveDeleteTask(taskToEdit._id.toHexString())) {
+         if (!taskUseCase.definitiveDeleteTask(taskToEdit._id.toHexString()))
+         {
             onError("Failed for local database to delete task... HOW?")
 
             return@launch
@@ -121,24 +132,29 @@ class TaskEditViewModel @Inject constructor(
       }
    }
 
-   fun onTitleChange(title: String) {
+   fun onTitleChange(title: String)
+   {
       _title.postValue(title)
    }
 
-   fun onDescriptionChange(description: String) {
+   fun onDescriptionChange(description: String)
+   {
       _description.postValue(description)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus) {
+   fun onTaskStatusChange(taskStatus: TaskStatus)
+   {
       Log.d("LOOK AT ME", "ON task status change: $taskStatus")
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime)
+   {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime)
+   {
       _endDateTime.postValue(endDateTime)
    }
 }

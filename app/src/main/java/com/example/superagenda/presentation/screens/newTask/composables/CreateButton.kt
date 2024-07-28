@@ -9,7 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UpdateButton(onClick: () -> Unit) {
+fun UpdateButton(onClick: () -> Unit)
+{
    Button(
       onClick = onClick,
       modifier = Modifier

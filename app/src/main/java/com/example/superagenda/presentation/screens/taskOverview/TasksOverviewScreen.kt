@@ -25,8 +25,9 @@ import com.example.superagenda.presentation.composables.Navigation
 @Composable
 fun TasksOverviewScreen(
    tasksOverviewViewModel: TasksOverviewViewModel,
-   navController: NavController
-) {
+   navController: NavController,
+)
+{
    Navigation(content = { padding ->
       Column(
          modifier = Modifier
@@ -39,7 +40,8 @@ fun TasksOverviewScreen(
 }
 
 @Composable
-fun TasksOverview(tasksOverviewViewModel: TasksOverviewViewModel, navController: NavController) {
+fun TasksOverview(tasksOverviewViewModel: TasksOverviewViewModel, navController: NavController)
+{
    val tasksNotStarted by tasksOverviewViewModel.tasksNotStarted.observeAsState()
    val tasksOngoing by tasksOverviewViewModel.tasksOngoing.observeAsState()
    val tasksCompleted by tasksOverviewViewModel.taskCompleted.observeAsState()
@@ -114,7 +116,8 @@ fun TasksOverview(tasksOverviewViewModel: TasksOverviewViewModel, navController:
 }
 
 @Composable
-fun SmallTaskCard(task: Task, onClick: () -> Unit) {
+fun SmallTaskCard(task: Task, onClick: () -> Unit)
+{
    Card(
       shape = RoundedCornerShape(8.dp),
       modifier = Modifier

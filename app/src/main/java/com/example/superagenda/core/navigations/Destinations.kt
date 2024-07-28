@@ -1,8 +1,9 @@
 package com.example.superagenda.core.navigations
 
 sealed class Destinations(
-   val route: String
-) {
+   val route: String,
+)
+{
    object Register : Destinations("register")
    object Login : Destinations("login")
    object Profile : Destinations("profile")
