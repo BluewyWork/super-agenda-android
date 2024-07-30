@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DescriptionTextField(description: String, onTextChange: (String) -> Unit)
-{
+fun DescriptionTextField(description: String, onTextChange: (String) -> Unit) {
    TextField(
       value = description,
       onValueChange = onTextChange,

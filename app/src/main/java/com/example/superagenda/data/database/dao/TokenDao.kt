@@ -7,8 +7,7 @@ import androidx.room.Query
 import com.example.superagenda.data.database.entities.TokenEntity
 
 @Dao
-interface TokenDao
-{
+interface TokenDao {
    @Query("SELECT * FROM token_table")
    fun retrieve(): TokenEntity
 

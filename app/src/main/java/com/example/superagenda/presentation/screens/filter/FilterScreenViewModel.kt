@@ -1,6 +1,5 @@
 package com.example.superagenda.presentation.screens.filter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
-import com.example.superagenda.presentation.screens.GlobalVariables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -18,10 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FilterScreenViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val globalVariables: GlobalVariables,
-) : ViewModel()
-{
-   private val _loadedTaskList = MutableLiveData<List<Task>>()
+) : ViewModel() {
    private val _filteredTaskList = MutableLiveData<List<Task>>()
    val filteredTaskList: LiveData<List<Task>> = _filteredTaskList
 
@@ -37,73 +32,88 @@ class FilterScreenViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   private val _errorMessage = MutableLiveData<String?>()
-   val errorMessage: LiveData<String?> = _errorMessage
+   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
+   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
 
-   fun onError(message: String)
-   {
-      _errorMessage.postValue(message)
+   private val _taskToEdit = MutableLiveData<Task>()
+   val taskToEdit: LiveData<Task> = _taskToEdit
+
+   fun setTaskToEdit(task: Task) {
+      _taskToEdit.postValue(task)
    }
 
-   fun onErrorDismissed()
-   {
-      _errorMessage.postValue(null)
+   fun enqueuePopup(title: String, message: String) {
+      _popupsQueue.value =
+         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
+            Pair(
+               title,
+               message
+            )
+         )
    }
 
-   fun onShow()
-   {
-      viewModelScope.launch {
-         val taskList: List<Task> = taskUseCase.retrieveTaskList2() ?: return@launch
-         _loadedTaskList.postValue(taskList)
+   fun dismissPopup() {
+      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+   }
+
+   fun waitForPopup(code: () -> Unit) {
+      popupsQueue.observeForever { queue ->
+         if (queue.isNullOrEmpty()) {
+            code()
+            popupsQueue.removeObserver { this }
+         }
       }
    }
 
-   fun onFilter(navController: NavController)
-   {
+   // redundant
+   fun onShow() {
       viewModelScope.launch {
-         val title = _title.value
-         val taskStatus = _taskStatus.value
-         val startDateTime = _startDateTime.value
-         val endDateTime = _endDateTime.value
 
-         val filteredList = _loadedTaskList.value?.filter { task ->
-            val matchesTitle =
-               title.isNullOrEmpty() || task.title.contains(title, ignoreCase = true)
-            val matchesStatus = taskStatus == null || task.status == taskStatus
-            val matchesStartDateTime =
-               startDateTime == null || task.startDateTime.isEqual(startDateTime) || task.startDateTime.isAfter(
-                  startDateTime
-               )
-            val matchesEndDateTime =
-               endDateTime == null || task.endDateTime.isEqual(endDateTime) || task.endDateTime.isBefore(
-                  endDateTime
-               )
-
-            matchesTitle && matchesStatus && matchesStartDateTime && matchesEndDateTime
-         } ?: emptyList()
-
-         _filteredTaskList.postValue(filteredList)
       }
    }
 
-   fun onTitleChange(title: String)
-   {
+   fun onFilterPress(navController: NavController) {
+      viewModelScope.launch {
+         val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
+
+         if (tasks == null) {
+            enqueuePopup("ERROR", "Failed to retrieve tasks from local storage...")
+
+            return@launch
+         }
+
+         val filteredTasks = tasks
+            .filter { task ->
+               val start = _startDateTime.value ?: LocalDateTime.MIN
+               val end = _endDateTime.value ?: LocalDateTime.MAX
+               task.startDateTime >= start && task.endDateTime <= end
+            }
+            .filter { task ->
+               val status = _taskStatus.value
+               status == null || task.status == status
+            }
+            .filter { task ->
+               val titleFilter = _title.value?.trim().orEmpty()
+               titleFilter.isEmpty() || task.title.contains(titleFilter, ignoreCase = true)
+            }
+
+         _filteredTaskList.postValue(filteredTasks)
+      }
+   }
+
+   fun onTitleChange(title: String) {
       _title.postValue(title)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus)
-   {
-      Log.d("LOOK AT ME", "ON task status change: $taskStatus")
+   fun onTaskStatusChange(taskStatus: TaskStatus) {
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime)
-   {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime)
-   {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
       _endDateTime.postValue(endDateTime)
    }
 }

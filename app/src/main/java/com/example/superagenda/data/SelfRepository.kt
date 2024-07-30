@@ -10,17 +10,12 @@ import javax.inject.Inject
 
 class SelfRepository @Inject constructor(
    private val selfApi: SelfApi,
-)
-{
-   suspend fun retrieveUserProfile(token: String): UserForProfile?
-   {
+) {
+   suspend fun retrieveProfileFromAPI(token: String): UserForProfile? {
       return withContext(Dispatchers.IO) {
-         try
-         {
+         try {
             selfApi.retrieveUserProfile(token).data.toDomain()
-         }
-         catch (e: Exception)
-         {
+         } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -28,17 +23,13 @@ class SelfRepository @Inject constructor(
       }
    }
 
-   suspend fun deleteProfile(token: String): Boolean
-   {
+   suspend fun deleteProfileFromApi(token: String): Boolean {
       return withContext(Dispatchers.IO) {
-         try
-         {
+         try {
             val response = selfApi.deleteProfile(token)
 
             return@withContext response.ok
-         }
-         catch (e: Exception)
-         {
+         } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
             false

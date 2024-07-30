@@ -12,8 +12,7 @@ data class Task(
    val endDateTime: LocalDateTime,
 )
 
-enum class TaskStatus
-{
+enum class TaskStatus {
    NotStarted,
    Ongoing,
    Completed

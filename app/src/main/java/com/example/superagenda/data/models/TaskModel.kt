@@ -29,8 +29,7 @@ data class TaskModel(
    @SerializedName("end_date_time") val endDateTime: BsonDateTime,
 )
 
-enum class TaskStatusModel
-{
+enum class TaskStatusModel {
    NotStarted,
    Ongoing,
    Completed
@@ -40,8 +39,7 @@ fun TaskModel.toDomain() = Task(
    _id = _id,
    title = title,
    description = description,
-   status = when (status)
-   {
+   status = when (status) {
       TaskStatusModel.NotStarted -> TaskStatus.NotStarted
       TaskStatusModel.Ongoing -> TaskStatus.Ongoing
       TaskStatusModel.Completed -> TaskStatus.Completed
@@ -54,8 +52,7 @@ fun Task.toData() = TaskModel(
    _id = _id,
    title = title,
    description = description,
-   status = when (status)
-   {
+   status = when (status) {
       TaskStatus.NotStarted -> TaskStatusModel.NotStarted
       TaskStatus.Ongoing -> TaskStatusModel.Ongoing
       TaskStatus.Completed -> TaskStatusModel.Completed
@@ -74,20 +71,15 @@ fun TaskModel.toDatabase() = TaskEntity(
    endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!
 )
 
-class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId>
-{
+class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {
    override fun serialize(
       src: ObjectId?,
       typeOfSrc: Type?,
       context: JsonSerializationContext?,
-   ): JsonElement
-   {
-      return if (src == null)
-      {
+   ): JsonElement {
+      return if (src == null) {
          JsonNull.INSTANCE
-      }
-      else
-      {
+      } else {
          JsonObject().apply {
             addProperty("\$oid", src.toHexString())
          }
@@ -98,37 +90,27 @@ class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId>
       json: JsonElement?,
       typeOfT: Type?,
       context: JsonDeserializationContext?,
-   ): ObjectId?
-   {
-      if (json == null || json.isJsonNull)
-      {
+   ): ObjectId? {
+      if (json == null || json.isJsonNull) {
          return null
       }
-      return if (json.isJsonObject && json.asJsonObject.has("\$oid"))
-      {
+      return if (json.isJsonObject && json.asJsonObject.has("\$oid")) {
          ObjectId(json.asJsonObject.get("\$oid").asString)
-      }
-      else
-      {
+      } else {
          ObjectId(json.asString)
       }
    }
 }
 
-class BsonDateTimeConverter : JsonSerializer<BsonDateTime>, JsonDeserializer<BsonDateTime>
-{
+class BsonDateTimeConverter : JsonSerializer<BsonDateTime>, JsonDeserializer<BsonDateTime> {
    override fun serialize(
       src: BsonDateTime?,
       typeOfSrc: Type?,
       context: JsonSerializationContext?,
-   ): JsonElement
-   {
-      return if (src == null)
-      {
+   ): JsonElement {
+      return if (src == null) {
          JsonNull.INSTANCE
-      }
-      else
-      {
+      } else {
          JsonObject().apply {
             add("\$date", JsonObject().apply {
                add("\$numberLong", JsonPrimitive(src.value.toString()))
@@ -141,8 +123,7 @@ class BsonDateTimeConverter : JsonSerializer<BsonDateTime>, JsonDeserializer<Bso
       json: JsonElement?,
       typeOfT: Type?,
       context: JsonDeserializationContext?,
-   ): BsonDateTime
-   {
+   ): BsonDateTime {
       val longValue = json?.asJsonObject?.getAsJsonObject("\$date")?.get("\$numberLong")?.asLong
       return BsonDateTime(longValue ?: 0)
    }

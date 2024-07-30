@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -16,17 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTaskViewModel @Inject constructor(
-   private val taskUseCase: TaskUseCase,
-) : ViewModel()
-{
+   private val task2UseCase: TaskUseCase,
+   private val loginUseCase: LoginUseCase,
+) : ViewModel() {
    private val _title = MutableLiveData<String>()
-   val title = _title
+   val title: LiveData<String> = _title
 
    private val _description = MutableLiveData<String>()
-   val description = _description
+   val description: LiveData<String> = _description
 
    private val _taskStatus = MutableLiveData<TaskStatus>()
-   val taskStatus = _taskStatus
+   val taskStatus: LiveData<TaskStatus> = _taskStatus
 
    private val _startDateTime = MutableLiveData<LocalDateTime>()
    val startDateTime: LiveData<LocalDateTime> = _startDateTime
@@ -34,21 +35,30 @@ class NewTaskViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   private val _errorMessage = MutableLiveData<String?>()
-   val errorMessage: LiveData<String?> = _errorMessage
+   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
+   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
 
-   fun onError(message: String)
-   {
-      _errorMessage.postValue(message)
+   fun onTitleChange(title: String) {
+      _title.postValue(title)
    }
 
-   fun onErrorDismissed()
-   {
-      _errorMessage.postValue(null)
+   fun onDescriptionChange(description: String) {
+      _description.postValue(description)
    }
 
-   fun onShow()
-   {
+   fun onTaskStatusChange(taskStatus: TaskStatus) {
+      _taskStatus.postValue(taskStatus)
+   }
+
+   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
+      _startDateTime.postValue(startDatetime)
+   }
+
+   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
+      _endDateTime.postValue(endDateTime)
+   }
+
+   fun onShow() {
       _title.postValue("")
       _description.postValue("")
       _taskStatus.postValue(TaskStatus.NotStarted)
@@ -56,75 +66,88 @@ class NewTaskViewModel @Inject constructor(
       _endDateTime.postValue(LocalDateTime.now())
    }
 
-   fun onCreateButtonPress(navController: NavController)
-   {
-      viewModelScope.launch {
-         val task = _title.value?.let {
-            _description.value?.let { it1 ->
-               _taskStatus.value?.let { it2 ->
-                  _startDateTime.value?.let { it3 ->
-                     _endDateTime.value?.let { it4 ->
-                        Task(
-                           _id = ObjectId(),
-                           title = it,
-                           description = it1,
-                           status = it2,
-                           startDateTime = it3,
-                           endDateTime = it4
-                        )
-                     }
-                  }
-               }
-            }
+   fun enqueuePopup(title: String, message: String) {
+      _popupsQueue.value =
+         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
+            Pair(
+               title,
+               message
+            )
+         )
+   }
+
+   fun dismissPopup() {
+      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+   }
+
+   fun waitForPopup(code: () -> Unit) {
+      popupsQueue.observeForever { queue ->
+         if (queue.isNullOrEmpty()) {
+            code()
+            popupsQueue.removeObserver { this }
          }
-
-         if (task == null)
-         {
-            return@launch
-         }
-
-         if (!taskUseCase.definitiveCreateOrUpdateTask(task))
-         {
-            // do something here
-            onError("Well, this is certainly super rare to happen...")
-         }
-
-//            if (!taskUseCase.createTask3(task)) {
-//                onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
-//            }
-
-         if (!taskUseCase.definitiveSynchronizeUpTaskList())
-         {
-            // do something here
-            onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
-         }
-
-         onShow()
       }
    }
 
-   fun onTitleChange(title: String)
-   {
-      _title.postValue(title)
-   }
+   fun onCreateButtonPress(navController: NavController) {
+      viewModelScope.launch {
+         val title = title.value
+         if (title.isNullOrBlank()) {
+            enqueuePopup("ERROR", "Title can not be empty...")
+            return@launch
+         }
 
-   fun onDescriptionChange(description: String)
-   {
-      _description.postValue(description)
-   }
+         val description = description.value
+         if (description.isNullOrBlank()) {
+            enqueuePopup("ERROR", "Description can not be empty...")
+            return@launch
+         }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus)
-   {
-      _taskStatus.postValue(taskStatus)
-   }
+         val taskStatus = taskStatus.value ?: run {
+            enqueuePopup("ERROR", "A status for the task must be selected...")
+            return@launch
+         }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime)
-   {
-      _startDateTime.postValue(startDatetime)
-   }
+         val startDatetime = startDateTime.value ?: run {
+            enqueuePopup("ERROR", "Must have a start time...")
+            return@launch
+         }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime)
-   {
-      _endDateTime.postValue(endDateTime)
+         val endDateTime = endDateTime.value ?: run {
+            enqueuePopup("ERROR", "Must have an end time...")
+            return@launch
+         }
+
+         val task = Task(
+            _id = ObjectId(),
+            title = title,
+            description = description,
+            status = taskStatus,
+            startDateTime = startDatetime,
+            endDateTime = endDateTime
+         )
+
+         if (task2UseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
+            enqueuePopup("INFO", "Successfully created task locally!")
+
+            if (loginUseCase.isLoggedIn()) {
+               if (task2UseCase.createTaskAtAPI(task)) {
+                  enqueuePopup("INFO", "Successfully created task at API!")
+               } else {
+                  enqueuePopup("ERROR", "Failed to create task at API...")
+               }
+            }
+
+            waitForPopup {
+               navController.navigateUp()
+            }
+         } else {
+            enqueuePopup("ERROR", "Failed to create task locally...")
+
+            waitForPopup {
+               navController.navigateUp()
+            }
+         }
+      }
    }
 }

@@ -1,65 +1,107 @@
 package com.example.superagenda.presentation.screens.register
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.ErrorDialog
-import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
-import com.example.superagenda.presentation.screens.register.composables.PasswordTextField
-import com.example.superagenda.presentation.screens.register.composables.RegisterButton
-import com.example.superagenda.presentation.screens.register.composables.UsernameTextField
+import com.example.superagenda.core.navigations.Destinations
+import com.example.superagenda.presentation.composables.BackIconButton
+import com.example.superagenda.presentation.composables.PopupDialog
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController)
-{
-   Scaffold { innerPadding ->
+fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
+   val popupsQueue: List<Pair<String, String>> by registerViewModel.popupsQueue.observeAsState(
+      listOf()
+   )
+   if (popupsQueue.isNotEmpty()) {
+      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+         registerViewModel.dismissPopup()
+      }
+   }
+
+   Scaffold(
+      topBar = {
+         CenterAlignedTopAppBar(
+            title = { Text("Register Screen") },
+            navigationIcon = {
+               BackIconButton {
+                  navController.navigate(Destinations.Tasks.route)
+               }
+            }
+         )
+      }
+   ) { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)) {
          Register(registerViewModel, navController)
-      }
-
-      val errorMessage: String? by registerViewModel.errorMessage.observeAsState(null)
-
-      if (errorMessage != null)
-      {
-         ErrorDialog(errorMessage = errorMessage) {
-            registerViewModel.onErrorDismissed()
-         }
       }
    }
 }
 
 @Composable
-fun Register(registerViewModel: RegisterViewModel, navController: NavController)
-{
+fun Register(registerViewModel: RegisterViewModel, navController: NavController) {
    val username: String by registerViewModel.username.observeAsState("")
    val password: String by registerViewModel.password.observeAsState("")
 
+   OutlinedTextField(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+      value = username,
+      onValueChange = { registerViewModel.onUsernameChange(it) },
+      label = { Text(text = "Username") },
+      leadingIcon = { Icon(Icons.Default.Person, null) }
+   )
+
+   OutlinedTextField(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+
+      value = password,
+      visualTransformation = PasswordVisualTransformation(),
+      onValueChange = { registerViewModel.onPasswordChange(it) },
+      singleLine = true,
+      label = { Text(text = "Password") },
+      leadingIcon = { Icon(Icons.Filled.Lock, null) }
+   )
 
    Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
 
-   UsernameTextField(username) {
-      registerViewModel.onUsernameChange(it)
+   Button(
+      onClick = { registerViewModel.onRegisterButtonPress(navController) },
+      modifier = Modifier.fillMaxWidth()
+   ) {
+      Text("Register")
    }
-   PasswordTextField(password) {
-      registerViewModel.onPasswordChange(it)
-   }
 
-   Spacer(modifier = Modifier.padding(16.dp))
-
-   RegisterButton {
-      registerViewModel.onRegisterButtonPress(navController)
-   }
-   GoToLoginScreen(navController)
+   Text(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(top = 5.dp)
+         .clickable { navController.navigate(Destinations.Login.route) },
+      text = "Haz click aqui para logearte!",
+      style = TextStyle(textAlign = TextAlign.Right)
+   )
 }

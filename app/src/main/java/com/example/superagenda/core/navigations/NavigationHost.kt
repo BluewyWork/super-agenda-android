@@ -5,27 +5,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.core.NotificationService
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
-import com.example.superagenda.presentation.screens.noInternet.NoInternetScreen
+import com.example.superagenda.presentation.screens.other.OtherScreen
+import com.example.superagenda.presentation.screens.other.OtherViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
-import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewScreen
-import com.example.superagenda.presentation.screens.taskOverview.TasksOverviewViewModel
-import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedScreen
-import com.example.superagenda.presentation.screens.tasksCompleted.TasksCompletedViewModel
-import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedScreen
-import com.example.superagenda.presentation.screens.tasksNotStarted.TasksNotStartedViewModel
-import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingScreen
-import com.example.superagenda.presentation.screens.tasksOnGoing.TasksOngoingViewModel
+import com.example.superagenda.presentation.screens.tasks.TasksScreen
+import com.example.superagenda.presentation.screens.tasks.TasksViewModel
 
 @Composable
 fun NavigationHost(
@@ -33,61 +29,65 @@ fun NavigationHost(
    registerViewModel: RegisterViewModel,
    loginViewModel: LoginViewModel,
    profileViewModel: ProfileViewModel,
-   tasksNotStartedViewModel: TasksNotStartedViewModel,
-   tasksOngoingViewModel: TasksOngoingViewModel,
-   tasksCompletedViewModel: TasksCompletedViewModel,
+   tasksViewModel: TasksViewModel,
    taskEditViewModel: TaskEditViewModel,
    newTaskViewModel: NewTaskViewModel,
-   tasksOverviewViewModel: TasksOverviewViewModel,
-   filterScreenViewModel: FilterScreenViewModel,
-)
-{
+   filterViewModel: FilterScreenViewModel,
+   navigationViewModel: NavigationViewModel,
+   otherViewModel: OtherViewModel,
+) {
    val navController = rememberNavController()
+
    NavHost(
       navController = navController,
-      startDestination = Destinations.Login.route
+      startDestination = Destinations.Tasks.route
    ) {
-      composable(Destinations.Register.route) {
-         RegisterScreen(registerViewModel, navController)
-      }
       composable(Destinations.Login.route) {
          loginViewModel.onShow(navController)
          LoginScreen(loginViewModel, navController)
       }
+      composable(Destinations.Register.route) {
+         RegisterScreen(registerViewModel, navController)
+      }
       composable(Destinations.Profile.route) {
          profileViewModel.onShow()
-         ProfileScreen(profileViewModel, navController, service)
-      }
-      composable(Destinations.TasksNotStarted.route) {
-         tasksNotStartedViewModel.onShow(service)
-         TasksNotStartedScreen(tasksNotStartedViewModel, navController)
-      }
-      composable(Destinations.TasksOngoing.route) {
-         tasksOngoingViewModel.onShow()
-         TasksOngoingScreen(tasksOngoingViewModel, navController)
-      }
-      composable(Destinations.TasksCompleted.route) {
-         tasksCompletedViewModel.onShow()
-         TasksCompletedScreen(tasksCompletedViewModel, navController)
+         ProfileScreen(profileViewModel, navController, navigationViewModel)
       }
       composable(Destinations.TaskEdit.route) {
-         taskEditViewModel.onShow()
-         TaskEditScreen(taskEditViewModel, navController)
+         val task = tasksViewModel.taskToEdit.value
+         if (task == null) {
+            navController.navigateUp()
+            return@composable
+         }
+
+         taskEditViewModel.setTaskToEdit(task)
+         taskEditViewModel.onShow(navController)
+         TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
+      }
+      composable(Destinations.TaskEdit.route + "2") {
+         val task = filterViewModel.taskToEdit.value
+         if (task == null) {
+            navController.navigateUp()
+            return@composable
+         }
+
+         taskEditViewModel.setTaskToEdit(task)
+         taskEditViewModel.onShow(navController)
+         TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
       }
       composable(Destinations.NewTask.route) {
          newTaskViewModel.onShow()
-         NewTaskScreen(newTaskViewModel, navController)
-      }
-      composable(Destinations.NoInternet.route) {
-         NoInternetScreen()
-      }
-      composable(Destinations.TasksOverview.route) {
-         tasksOverviewViewModel.onShow()
-         TasksOverviewScreen(tasksOverviewViewModel, navController)
+         NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
       }
       composable(Destinations.Filter.route) {
-         filterScreenViewModel.onShow()
-         FilterScreen(filterScreenViewModel, navController)
+         filterViewModel.onShow()
+         FilterScreen(filterViewModel, navController, navigationViewModel)
+      }
+      composable(Destinations.Tasks.route) {
+         TasksScreen(tasksViewModel, navController, navigationViewModel)
+      }
+      composable(Destinations.Other.route) {
+         OtherScreen(otherViewModel, navController, navigationViewModel)
       }
    }
 }
