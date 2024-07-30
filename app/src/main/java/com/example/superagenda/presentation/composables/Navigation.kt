@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerState
@@ -78,12 +76,25 @@ fun Navigation(
 fun DrawerContent(navController: NavController, scope: CoroutineScope, drawerState: DrawerState)
 {
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      Button(onClick = {
-         navController.navigate(Destinations.Profile.route)
-         scope.launch { drawerState.close() }
-      }, modifier = Modifier.fillMaxWidth()) {
-         Icon(imageVector = Icons.Filled.Person, contentDescription = "profile")
-         Text("Profile")
+      if (false)
+      {
+         Button(onClick = {
+            navController.navigate(Destinations.Login.route)
+            scope.launch { drawerState.close() }
+         }, modifier = Modifier.fillMaxWidth()) {
+            Text(text = "Authentication")
+            Icon(imageVector = Icons.Filled.Lock, contentDescription = "auth")
+         }
+      }
+      else
+      {
+         Button(onClick = {
+            navController.navigate(Destinations.Profile.route)
+            scope.launch { drawerState.close() }
+         }, modifier = Modifier.fillMaxWidth()) {
+            Text("Profile")
+            Icon(imageVector = Icons.Filled.Person, contentDescription = "profile")
+         }
       }
       HorizontalDivider()
    }
@@ -130,41 +141,11 @@ fun BottomBar(navController: NavController)
    ) {
       NavigationBarItem(
          selected = false,
-         onClick = { navController.navigate("tasks_overview") },
+         onClick = { navController.navigate(Destinations.Tasks.route) },
          icon = {
             Icon(
                imageVector = Icons.Outlined.Home,
                contentDescription = "Tasks Overview",
-            )
-         }
-      )
-      NavigationBarItem(
-         selected = false,
-         onClick = { navController.navigate("tasks_not_started") },
-         icon = {
-            Icon(
-               imageVector = Icons.Outlined.Star,
-               contentDescription = "Home",
-            )
-         }
-      )
-      NavigationBarItem(
-         selected = false,
-         onClick = { navController.navigate("tasks_ongoing") },
-         icon = {
-            Icon(
-               imageVector = Icons.Outlined.Build,
-               contentDescription = "Home",
-            )
-         }
-      )
-      NavigationBarItem(
-         selected = false,
-         onClick = { navController.navigate("tasks_completed") },
-         icon = {
-            Icon(
-               imageVector = Icons.Outlined.Check,
-               contentDescription = "Home",
             )
          }
       )

@@ -7,7 +7,6 @@ sealed class Destinations(
    object Register : Destinations("register")
    object Login : Destinations("login")
    object Profile : Destinations("profile")
-   object Tasks : Destinations("tasks")
    object TasksNotStarted : Destinations("tasks_not_started")
    object TasksOngoing : Destinations("tasks_ongoing")
    object TasksCompleted : Destinations("tasks_completed")
@@ -16,4 +15,5 @@ sealed class Destinations(
    object NoInternet : Destinations("no_internet")
    object TasksOverview : Destinations("tasks_overview")
    object Filter : Destinations("filter")
+   object Tasks: Destinations("tasks")
 }

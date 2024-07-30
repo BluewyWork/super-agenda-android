@@ -11,7 +11,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.ErrorDialog
@@ -52,14 +51,13 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
       },
       navController,
       "Edit Task",
-      navigationIcon = { BackIconButton(onClick = { navController.popBackStack() }) }
+      navigationIcon = { BackIconButton(onClick = { navController.popBackStack() }) },
    )
 }
 
 @Composable
 fun TaskEdit(taskEditViewModel: TaskEditViewModel)
 {
-   val taskToEdit: Task? by taskEditViewModel.taskToEdit.observeAsState()
    val title: String by taskEditViewModel.title.observeAsState("")
    val description: String by taskEditViewModel.description.observeAsState("")
    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
@@ -68,32 +66,30 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel)
 
    LazyColumn {
       item {
-         taskToEdit?.let {
-            TitleTextField(title) {
-               taskEditViewModel.onTitleChange(it)
+         TitleTextField(title) {
+            taskEditViewModel.onTitleChange(it)
+         }
+         DescriptionTextField(description) {
+            taskEditViewModel.onDescriptionChange(it)
+         }
+         taskStatus?.let { it1 ->
+            TaskStatusDropDown(it1) {
+               taskEditViewModel.onTaskStatusChange(it)
             }
-            DescriptionTextField(description) {
-               taskEditViewModel.onDescriptionChange(it)
+         }
+         Spacer(modifier = Modifier.padding(8.dp))
+         Text(text = "START DATETIME")
+         startDateTime?.let { it3 ->
+            DateTimePicker(initialDateTime = it3) { it2 ->
+               taskEditViewModel.onStartDateTimeChange(it2)
             }
-            taskStatus?.let { it1 ->
-               TaskStatusDropDown(it1) {
-                  taskEditViewModel.onTaskStatusChange(it)
-               }
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "START DATETIME")
-            startDateTime?.let { it3 ->
-               DateTimePicker(initialDateTime = it3) { it2 ->
-                  taskEditViewModel.onStartDateTimeChange(it2)
-               }
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "END DATETIME")
-            endDateTime?.let { it5 ->
-               DateTimePicker(initialDateTime = it5) { it2 ->
-                  taskEditViewModel.onEndDateTimeChange(it2)
+         }
+         Spacer(modifier = Modifier.padding(8.dp))
+         Text(text = "END DATETIME")
+         endDateTime?.let { it5 ->
+            DateTimePicker(initialDateTime = it5) { it2 ->
+               taskEditViewModel.onEndDateTimeChange(it2)
 
-               }
             }
          }
       }

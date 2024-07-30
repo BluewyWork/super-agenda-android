@@ -53,7 +53,10 @@ class TaskUseCase @Inject constructor(
       val localTaskList = taskRepository.retrieveTaskListFromLocalDatabase()
       if (!localTaskList.isNullOrEmpty())
       {
-         return localTaskList
+         // have to hack around this
+         // return empty list instead of null
+         // to distinguish between api/internet error and local database
+         return emptyList()
       }
 
       val token = loginRepository.retrieveTokenFromLocalStorage()
