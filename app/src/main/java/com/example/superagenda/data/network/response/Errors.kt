@@ -1,6 +1,7 @@
 package com.example.superagenda.data.network.response
 
-enum class Error {
+enum class Error
+{
    USERNAME_TOO_SHORT,
    PASSWORD_TOO_SHORT,
    INVALID_CREDENTIALS,

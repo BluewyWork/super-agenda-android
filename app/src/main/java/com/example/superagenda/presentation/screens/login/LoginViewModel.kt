@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.TaskUseCase
-import com.example.superagenda.domain.models.UserForLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
-   private val taskUseCase: TaskUseCase,
 ) : ViewModel()
 {
    private val _username = MutableLiveData<String>()
@@ -67,34 +64,7 @@ class LoginViewModel @Inject constructor(
    fun onLoginButtonPress(navController: NavController)
    {
       viewModelScope.launch {
-         val username = _username.value
-         val password = _password.value
 
-         if (username.isNullOrBlank() || password.isNullOrBlank())
-         {
-            return@launch
-         }
-
-         val userForLogin = UserForLogin(username, password)
-         val userAuthenticated = loginUseCase.login(userForLogin)
-
-         if (!userAuthenticated)
-         {
-            // warn user of wrong credentials
-            onError("Either invalid credentials or no internet connection...")
-         }
-         else
-         {
-            val ok = taskUseCase.definitiveSynchronizeDownTaskList()
-
-            if (!ok)
-            {
-               // do something
-               onError("Was the internet disconnected?")
-            }
-
-            navController.navigate(Destinations.TasksNotStarted.route)
-         }
       }
    }
 }

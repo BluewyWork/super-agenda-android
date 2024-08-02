@@ -12,6 +12,6 @@ class RegisterUseCase @Inject constructor(
 
    suspend fun register(userForRegister: UserForRegister): Boolean
    {
-      return registerRepository.register(userForRegister)
+      return registerRepository.registerAtAPI(userForRegister)
    }
 }

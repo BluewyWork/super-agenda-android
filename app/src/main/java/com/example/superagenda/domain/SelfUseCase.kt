@@ -19,7 +19,7 @@ class SelfUseCase @Inject constructor(
          return null
       }
 
-      return selfRepository.retrieveUserProfile(token)
+      return selfRepository.retrieveProfileFromAPI(token)
    }
 
    suspend fun deleteProfile(): Boolean
@@ -31,7 +31,7 @@ class SelfUseCase @Inject constructor(
          return false
       }
 
-      if (!selfRepository.deleteProfile(token) || !loginRepository.wipeAllTokensFromLocalStorage())
+      if (!selfRepository.deleteProfileFromApi(token) || !loginRepository.clearTokensFromLocalStorage())
       {
          return false
       }

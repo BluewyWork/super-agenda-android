@@ -63,7 +63,7 @@ fun NavigationHost(
          FilterScreen(filterScreenViewModel, navController)
       }
       composable(Destinations.Tasks.route) {
-         TasksScreen(tasksViewModel,navController)
+         TasksScreen(tasksViewModel, navController)
       }
    }
 }

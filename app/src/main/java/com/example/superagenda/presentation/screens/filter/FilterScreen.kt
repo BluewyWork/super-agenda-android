@@ -75,7 +75,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          }
 
          FilterButton {
-            filterScreenViewModel.onFilter(navController)
+            filterScreenViewModel.onFilterPress(navController)
          }
 
          if (filteredTaskList.isNullOrEmpty())

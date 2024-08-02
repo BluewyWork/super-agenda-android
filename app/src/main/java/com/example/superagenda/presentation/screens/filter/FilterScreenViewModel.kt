@@ -1,15 +1,12 @@
 package com.example.superagenda.presentation.screens.filter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
-import com.example.superagenda.presentation.screens.GlobalVariables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -17,8 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilterScreenViewModel @Inject constructor(
-   private val taskUseCase: TaskUseCase,
-   private val globalVariables: GlobalVariables,
 ) : ViewModel()
 {
    private val _loadedTaskList = MutableLiveData<List<Task>>()
@@ -53,36 +48,14 @@ class FilterScreenViewModel @Inject constructor(
    fun onShow()
    {
       viewModelScope.launch {
-         val taskList: List<Task> = taskUseCase.retrieveTaskList2() ?: return@launch
-         _loadedTaskList.postValue(taskList)
+
       }
    }
 
-   fun onFilter(navController: NavController)
+   fun onFilterPress(navController: NavController)
    {
       viewModelScope.launch {
-         val title = _title.value
-         val taskStatus = _taskStatus.value
-         val startDateTime = _startDateTime.value
-         val endDateTime = _endDateTime.value
 
-         val filteredList = _loadedTaskList.value?.filter { task ->
-            val matchesTitle =
-               title.isNullOrEmpty() || task.title.contains(title, ignoreCase = true)
-            val matchesStatus = taskStatus == null || task.status == taskStatus
-            val matchesStartDateTime =
-               startDateTime == null || task.startDateTime.isEqual(startDateTime) || task.startDateTime.isAfter(
-                  startDateTime
-               )
-            val matchesEndDateTime =
-               endDateTime == null || task.endDateTime.isEqual(endDateTime) || task.endDateTime.isBefore(
-                  endDateTime
-               )
-
-            matchesTitle && matchesStatus && matchesStartDateTime && matchesEndDateTime
-         } ?: emptyList()
-
-         _filteredTaskList.postValue(filteredList)
       }
    }
 
@@ -93,7 +66,6 @@ class FilterScreenViewModel @Inject constructor(
 
    fun onTaskStatusChange(taskStatus: TaskStatus)
    {
-      Log.d("LOOK AT ME", "ON task status change: $taskStatus")
       _taskStatus.postValue(taskStatus)
    }
 

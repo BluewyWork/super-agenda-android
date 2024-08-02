@@ -15,7 +15,7 @@ class LoginRepository @Inject constructor(
    private val tokenDao: TokenDao,
 )
 {
-   suspend fun retrieveTokenFromApi(userForLogin: UserForLogin): String?
+   suspend fun retrieveTokenFromAPI(userForLogin: UserForLogin): String?
    {
       return withContext(Dispatchers.IO) {
          try
@@ -34,7 +34,7 @@ class LoginRepository @Inject constructor(
       }
    }
 
-   suspend fun saveTokenToLocalStorage(token: String): Boolean
+   suspend fun insertTokenToLocalDatabase(token: String): Boolean
    {
       return withContext(Dispatchers.IO) {
          try
@@ -69,7 +69,7 @@ class LoginRepository @Inject constructor(
       }
    }
 
-   suspend fun wipeAllTokensFromLocalStorage(): Boolean
+   suspend fun clearTokensFromLocalStorage(): Boolean
    {
       return withContext(Dispatchers.IO) {
          try

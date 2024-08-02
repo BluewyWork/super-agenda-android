@@ -74,11 +74,20 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
                0 ->
                {
                   tasksViewModel.loadTasksNotStarted()
-                  TasksNotStarted(tasksViewModel)
+                  TasksNotStarted(tasksViewModel, navController)
                }
 
-               1 -> TasksOngoing()
-               2 -> TasksCompleted()
+               1 ->
+               {
+                  tasksViewModel.loadTasksOngoing()
+                  TasksOngoing(tasksViewModel, navController)
+               }
+
+               2 ->
+               {
+                  tasksViewModel.loadTasksCompleted()
+                  TasksCompleted(tasksViewModel)
+               }
             }
          }
       }
@@ -92,11 +101,11 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
 }
 
 @Composable
-fun TasksNotStarted(tasksViewModel: TasksViewModel)
+fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController)
 {
    val tasksNotStarted: List<Task>? by tasksViewModel.tasksNotStarted.observeAsState()
 
-   LazyColumn {
+   LazyColumn(modifier = Modifier.fillMaxSize()) {
       item {
          if (tasksNotStarted == null)
          {
@@ -114,7 +123,8 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel)
             for (task in tasksNotStarted!!)
             {
                TaskCard(task) {
-                  // TODO
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
                }
             }
          }
@@ -124,13 +134,66 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel)
 }
 
 @Composable
-fun TasksOngoing()
+fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController)
 {
-   Text("test2")
+   val taskOngoing: List<Task>? by tasksViewModel.tasksOngoing.observeAsState()
+
+   LazyColumn(modifier = Modifier.fillMaxSize()) {
+      item {
+         if (taskOngoing == null)
+         {
+            EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
+         }
+         else if (taskOngoing!!.isEmpty())
+         {
+            EmptyState(
+               message = "Empty and so quiet...",
+               iconId = R.drawable.ic_launcher_foreground
+            )
+         }
+         else
+         {
+            for (task in taskOngoing!!)
+            {
+               TaskCard(task) {
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
+               }
+            }
+         }
+
+      }
+   }
 }
 
 @Composable
-fun TasksCompleted()
+fun TasksCompleted(tasksViewModel: TasksViewModel)
 {
-   Text("test3")
+   val tasksCompleted: List<Task>? by tasksViewModel.tasksCompleted.observeAsState()
+
+   LazyColumn(modifier = Modifier.fillMaxSize()) {
+      item {
+         if (tasksCompleted == null)
+         {
+            EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
+         }
+         else if (tasksCompleted!!.isEmpty())
+         {
+            EmptyState(
+               message = "Empty and so quiet...",
+               iconId = R.drawable.ic_launcher_foreground
+            )
+         }
+         else
+         {
+            for (task in tasksCompleted!!)
+            {
+               TaskCard(task) {
+                  // TODO
+               }
+            }
+         }
+
+      }
+   }
 }

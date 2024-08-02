@@ -58,36 +58,46 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
 @Composable
 fun TaskEdit(taskEditViewModel: TaskEditViewModel)
 {
-   val title: String by taskEditViewModel.title.observeAsState("")
-   val description: String by taskEditViewModel.description.observeAsState("")
+   val title: String? by taskEditViewModel.title.observeAsState()
+   val description: String? by taskEditViewModel.description.observeAsState()
    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
    val startDateTime: LocalDateTime? by taskEditViewModel.startDateTime.observeAsState()
    val endDateTime: LocalDateTime? by taskEditViewModel.endDateTime.observeAsState()
 
    LazyColumn {
       item {
-         TitleTextField(title) {
-            taskEditViewModel.onTitleChange(it)
+         title?.let { it ->
+            TitleTextField(it) {
+               taskEditViewModel.onTitleChange(it)
+            }
          }
-         DescriptionTextField(description) {
-            taskEditViewModel.onDescriptionChange(it)
+
+         description?.let { it ->
+            DescriptionTextField(it) {
+               taskEditViewModel.onDescriptionChange(it)
+            }
          }
-         taskStatus?.let { it1 ->
-            TaskStatusDropDown(it1) {
+
+         taskStatus?.let { it ->
+            TaskStatusDropDown(it) {
                taskEditViewModel.onTaskStatusChange(it)
             }
          }
+
          Spacer(modifier = Modifier.padding(8.dp))
          Text(text = "START DATETIME")
-         startDateTime?.let { it3 ->
-            DateTimePicker(initialDateTime = it3) { it2 ->
+
+         startDateTime?.let {
+            DateTimePicker(initialDateTime = it) { it2 ->
                taskEditViewModel.onStartDateTimeChange(it2)
             }
          }
+
          Spacer(modifier = Modifier.padding(8.dp))
          Text(text = "END DATETIME")
-         endDateTime?.let { it5 ->
-            DateTimePicker(initialDateTime = it5) { it2 ->
+
+         endDateTime?.let {
+            DateTimePicker(initialDateTime = it) { it2 ->
                taskEditViewModel.onEndDateTimeChange(it2)
 
             }

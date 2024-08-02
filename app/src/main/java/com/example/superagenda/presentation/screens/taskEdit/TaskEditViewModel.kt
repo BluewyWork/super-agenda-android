@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.screens.GlobalVariables
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
-   private val taskUseCase: TaskUseCase,
    private val globalVariables: GlobalVariables,
 ) : ViewModel()
 {
@@ -41,16 +39,22 @@ class TaskEditViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   fun setTaskToEdit(task: Task?) {
-      _taskToEdit2.postValue(task)
+   fun setTaskToEdit(task: Task?)
+   {
+      viewModelScope.launch {
+         _taskToEdit2.postValue(task)
+      }
    }
 
-   fun onShow() {
-      _title.postValue(taskToEdit2.value?.title)
-      _description.postValue(taskToEdit2.value?.description)
-      _taskStatus.postValue(taskToEdit2.value?.status)
-      _startDateTime.postValue(taskToEdit2.value?.startDateTime)
-      _endDateTime.postValue(taskToEdit2.value?.endDateTime)
+   fun onShow()
+   {
+      viewModelScope.launch {
+         _title.postValue(taskToEdit2.value?.title)
+         _description.postValue(taskToEdit2.value?.description)
+         _taskStatus.postValue(taskToEdit2.value?.status)
+         _startDateTime.postValue(taskToEdit2.value?.startDateTime)
+         _endDateTime.postValue(taskToEdit2.value?.endDateTime)
+      }
    }
 
    fun onError(message: String)

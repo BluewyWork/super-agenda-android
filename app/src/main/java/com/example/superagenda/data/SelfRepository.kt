@@ -12,7 +12,7 @@ class SelfRepository @Inject constructor(
    private val selfApi: SelfApi,
 )
 {
-   suspend fun retrieveUserProfile(token: String): UserForProfile?
+   suspend fun retrieveProfileFromAPI(token: String): UserForProfile?
    {
       return withContext(Dispatchers.IO) {
          try
@@ -28,7 +28,7 @@ class SelfRepository @Inject constructor(
       }
    }
 
-   suspend fun deleteProfile(token: String): Boolean
+   suspend fun deleteProfileFromApi(token: String): Boolean
    {
       return withContext(Dispatchers.IO) {
          try

@@ -12,7 +12,7 @@ class RegisterRepository @Inject constructor(
    private val registerApi: RegisterApi,
 )
 {
-   suspend fun register(userForRegister: UserForRegister): Boolean
+   suspend fun registerAtAPI(userForRegister: UserForRegister): Boolean
    {
       return withContext(Dispatchers.IO) {
          try

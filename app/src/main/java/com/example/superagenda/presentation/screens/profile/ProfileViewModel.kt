@@ -13,7 +13,6 @@ import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.SelfUseCase
-import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.UserForProfile
 import com.google.gson.Gson
@@ -26,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
    private val selfUseCase: SelfUseCase,
-   private val taskUseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
 ) : ViewModel()
 {
@@ -57,36 +55,21 @@ class ProfileViewModel @Inject constructor(
    fun onBackupButtonPress()
    {
       viewModelScope.launch {
-         taskUseCase.saveTaskListToLocalStorage()
+
       }
    }
 
    fun onImportButtonPress(contentResolver: ContentResolver, filePath: String)
    {
       viewModelScope.launch {
-         Log.d("LOOK AT ME", "CHOSEN FILE: ${printFileContents(contentResolver, filePath)}")
-         val taskList = deserializeTasksFromJson(contentResolver, filePath)
 
-         for (task in taskList)
-         {
-            Log.d("LOOK AT ME", "ITS WORKING: $task")
-         }
-
-         taskUseCase.importTaskListFromLocalStorage(taskList)
-         taskUseCase.definitiveSynchronizeUpTaskList()
       }
    }
 
    fun onLogoutPress(navController: NavController)
    {
       viewModelScope.launch {
-         if (!loginUseCase.logout())
-         {
-            return@launch
-         }
 
-         taskUseCase.logoutTask()
-         navController.navigate(Destinations.Login.route)
       }
    }
 

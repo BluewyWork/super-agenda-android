@@ -10,15 +10,15 @@ class LoginUseCase @Inject constructor(
 {
    suspend fun login(userForLogin: UserForLogin): Boolean
    {
-      val token = loginRepository.retrieveTokenFromApi(userForLogin)
+      val token = loginRepository.retrieveTokenFromAPI(userForLogin)
 
       if (token.isNullOrBlank())
       {
          return false
       }
 
-      loginRepository.wipeAllTokensFromLocalStorage()
-      val tokenInserted = loginRepository.saveTokenToLocalStorage(token)
+      loginRepository.clearTokensFromLocalStorage()
+      val tokenInserted = loginRepository.insertTokenToLocalDatabase(token)
 
       return tokenInserted
    }
@@ -32,6 +32,6 @@ class LoginUseCase @Inject constructor(
 
    suspend fun logout(): Boolean
    {
-      return loginRepository.wipeAllTokensFromLocalStorage()
+      return loginRepository.clearTokensFromLocalStorage()
    }
 }

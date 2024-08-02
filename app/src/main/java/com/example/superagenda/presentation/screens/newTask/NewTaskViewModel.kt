@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.Task2UseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,17 +16,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTaskViewModel @Inject constructor(
-   private val taskUseCase: TaskUseCase,
+   private val task2UseCase: Task2UseCase,
 ) : ViewModel()
 {
    private val _title = MutableLiveData<String>()
-   val title = _title
+   val title: LiveData<String> = _title
 
    private val _description = MutableLiveData<String>()
-   val description = _description
+   val description: LiveData<String> = _description
 
    private val _taskStatus = MutableLiveData<TaskStatus>()
-   val taskStatus = _taskStatus
+   val taskStatus: LiveData<TaskStatus> = _taskStatus
 
    private val _startDateTime = MutableLiveData<LocalDateTime>()
    val startDateTime: LiveData<LocalDateTime> = _startDateTime
@@ -59,47 +59,28 @@ class NewTaskViewModel @Inject constructor(
    fun onCreateButtonPress(navController: NavController)
    {
       viewModelScope.launch {
-         val task = _title.value?.let {
-            _description.value?.let { it1 ->
-               _taskStatus.value?.let { it2 ->
-                  _startDateTime.value?.let { it3 ->
-                     _endDateTime.value?.let { it4 ->
-                        Task(
-                           _id = ObjectId(),
-                           title = it,
-                           description = it1,
-                           status = it2,
-                           startDateTime = it3,
-                           endDateTime = it4
-                        )
-                     }
-                  }
-               }
-            }
-         }
+         // TODO: improve error handling
+         // maybe popup?
+         val title = title.value ?: return@launch
+         val description = description.value ?: return@launch
+         val taskStatus = taskStatus.value ?: return@launch
+         val startDatetime = startDateTime.value ?: return@launch
+         val endDateTime = endDateTime.value ?: return@launch
 
-         if (task == null)
+         val task = Task(
+            _id = ObjectId(),
+            title = title,
+            description = description,
+            status = taskStatus,
+            startDateTime = startDatetime,
+            endDateTime = endDateTime
+         )
+
+         if (!task2UseCase.createOrUpdateTask(task))
          {
-            return@launch
+            // do something if bad
+
          }
-
-         if (!taskUseCase.definitiveCreateOrUpdateTask(task))
-         {
-            // do something here
-            onError("Well, this is certainly super rare to happen...")
-         }
-
-//            if (!taskUseCase.createTask3(task)) {
-//                onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
-//            }
-
-         if (!taskUseCase.definitiveSynchronizeUpTaskList())
-         {
-            // do something here
-            onError("Failed sending task..\n\nMaybe check your internet connection?\n\nSynchronization will happen on the next successful action.")
-         }
-
-         onShow()
       }
    }
 

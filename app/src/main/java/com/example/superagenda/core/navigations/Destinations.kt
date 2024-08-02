@@ -15,5 +15,5 @@ sealed class Destinations(
    object NoInternet : Destinations("no_internet")
    object TasksOverview : Destinations("tasks_overview")
    object Filter : Destinations("filter")
-   object Tasks: Destinations("tasks")
+   object Tasks : Destinations("tasks")
 }
