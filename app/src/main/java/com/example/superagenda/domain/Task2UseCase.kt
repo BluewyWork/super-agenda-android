@@ -10,7 +10,7 @@ class Task2UseCase @Inject constructor(
    private val taskRepository: TaskRepository,
 )
 {
-   suspend fun retrieveTasks(): List<Task>?
+   suspend fun retrieveTasksFromLocalDatabase(): List<Task>?
    {
       // dao always returns a list
       // null only if there has been an exception
@@ -19,8 +19,21 @@ class Task2UseCase @Inject constructor(
       return tasks
    }
 
-   suspend fun createOrUpdateTask(task: Task): Boolean
+   suspend fun insertOrUpdateTaskToLocalDatabase(task: Task): Boolean
    {
-      return taskRepository.insertOrUpdateToLocalDatabase(task)
+      return taskRepository.insertOrUpdateTaskToLocalDatabase(task)
+   }
+
+   // honestly with this setup we can't tell what type of error we have here
+   // maybe throws ... should be better because that is how its done in kotlin
+   suspend fun createTaskAtAPI(task: Task): Boolean
+   {
+      val token = loginRepository.retrieveTokenFromLocalStorage()
+
+      if (token.isNullOrBlank()) {
+         return false
+      }
+
+      return taskRepository.createTaskAtAPI(task, token)
    }
 }

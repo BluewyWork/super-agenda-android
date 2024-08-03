@@ -10,7 +10,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.screens.login.composables.GoToRegisterScreen
 import com.example.superagenda.presentation.screens.login.composables.LoginButton
 import com.example.superagenda.presentation.screens.login.composables.PasswordTextField
@@ -26,12 +25,12 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController)
 
       val errorMessage: String? by loginViewModel.errorMessage.observeAsState(null)
 
-      if (errorMessage != null)
-      {
-         ErrorDialog(errorMessage = errorMessage) {
-            loginViewModel.onErrorDismissed()
-         }
-      }
+//      if (errorMessage != null)
+//      {
+//         PopupDialog(message = errorMessage) {
+//            loginViewModel.onErrorDismissed()
+//         }
+//      }
    }
 }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.Task2UseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTaskViewModel @Inject constructor(
    private val task2UseCase: Task2UseCase,
+   private val loginUseCase: LoginUseCase
 ) : ViewModel()
 {
    private val _title = MutableLiveData<String>()
@@ -34,17 +36,25 @@ class NewTaskViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   private val _errorMessage = MutableLiveData<String?>()
-   val errorMessage: LiveData<String?> = _errorMessage
+   private val _showPopup = MutableLiveData<Boolean>()
+   val showPopup: LiveData<Boolean> = _showPopup
 
-   fun onError(message: String)
+   private val _popupTitle = MutableLiveData<String>()
+   val popupTitle: LiveData<String> = _popupTitle
+
+   private val _popupMessage = MutableLiveData<String>()
+   val popupMessage: LiveData<String> = _popupMessage
+
+   fun showPopup(title: String, message: String)
    {
-      _errorMessage.postValue(message)
+      _popupTitle.postValue(title)
+      _popupMessage.postValue(message)
+      _showPopup.postValue(true)
    }
 
-   fun onErrorDismissed()
+   fun dismissPopup()
    {
-      _errorMessage.postValue(null)
+      _showPopup.postValue(false)
    }
 
    fun onShow()
@@ -76,10 +86,19 @@ class NewTaskViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (!task2UseCase.createOrUpdateTask(task))
+         if (!task2UseCase.insertOrUpdateTaskToLocalDatabase(task))
          {
-            // do something if bad
+            showPopup("ERROR","Failed to create task...")
+         }
 
+         showPopup("INFO","Task has been created!")
+
+         if (!loginUseCase.isLoggedIn()) {
+            return@launch
+         }
+
+         if(!task2UseCase.createTaskAtAPI(task)) {
+            showPopup("ERROR","Failed to sync to api...")
          }
       }
    }

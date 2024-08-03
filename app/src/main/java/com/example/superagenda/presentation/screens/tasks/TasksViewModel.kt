@@ -45,7 +45,7 @@ class TasksViewModel @Inject constructor(
       // after that it is just pushing to mongodb
 
       viewModelScope.launch {
-         val tasks = task2UseCase.retrieveTasks() ?: return@launch
+         val tasks = task2UseCase.retrieveTasksFromLocalDatabase() ?: return@launch
 
          val filtered = tasks.filter { it.status == TaskStatus.NotStarted }
 
@@ -56,7 +56,7 @@ class TasksViewModel @Inject constructor(
    fun loadTasksOngoing()
    {
       viewModelScope.launch {
-         val tasks = task2UseCase.retrieveTasks() ?: return@launch
+         val tasks = task2UseCase.retrieveTasksFromLocalDatabase() ?: return@launch
 
          val filtered = tasks.filter { it.status == TaskStatus.Ongoing }
 
@@ -67,7 +67,7 @@ class TasksViewModel @Inject constructor(
    fun loadTasksCompleted()
    {
       viewModelScope.launch {
-         val tasks = task2UseCase.retrieveTasks() ?: return@launch
+         val tasks = task2UseCase.retrieveTasksFromLocalDatabase() ?: return@launch
 
          val filtered = tasks.filter { it.status == TaskStatus.Completed }
 

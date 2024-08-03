@@ -35,7 +35,7 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun insertOrUpdateToLocalDatabase(task: Task): Boolean
+   suspend fun insertOrUpdateTaskToLocalDatabase(task: Task): Boolean
    {
       return withContext(Dispatchers.IO) {
          try
@@ -46,6 +46,21 @@ class TaskRepository @Inject constructor(
          }
          catch (e: Exception)
          {
+            Log.e("LOOK AT ME", "${e.message}")
+
+            false
+         }
+      }
+   }
+
+   suspend fun createTaskAtAPI(task: Task, token: String): Boolean
+   {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskApi.createTask(token, task.toData())
+
+            true
+         } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
             false

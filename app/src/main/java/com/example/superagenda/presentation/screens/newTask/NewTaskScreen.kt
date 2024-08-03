@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.newTask.composables.DescriptionTextField
 import com.example.superagenda.presentation.screens.newTask.composables.TaskStatusDropDown
@@ -23,12 +23,14 @@ import java.time.LocalDateTime
 @Composable
 fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController)
 {
-   val errorMessage: String? by newTaskViewModel.errorMessage.observeAsState(null)
+   val showPopup: Boolean by newTaskViewModel.showPopup.observeAsState(initial = false)
+   val popupTitle: String by newTaskViewModel.popupTitle.observeAsState(initial = "")
+   val popupMessage: String by newTaskViewModel.popupMessage.observeAsState(initial = "")
 
-   if (errorMessage != null)
+   if (showPopup)
    {
-      ErrorDialog(errorMessage = errorMessage) {
-         newTaskViewModel.onErrorDismissed()
+      PopupDialog(popupTitle, popupMessage) {
+         newTaskViewModel.dismissPopup()
       }
    }
 

@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.ErrorDialog
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
@@ -41,12 +40,12 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
 
          val errorMessage: String? by taskEditViewModel.errorMessage.observeAsState(null)
 
-         if (errorMessage != null)
-         {
-            ErrorDialog(errorMessage = errorMessage) {
-               taskEditViewModel.onErrorDismissed()
-            }
-         }
+//         if (errorMessage != null)
+//         {
+//            PopupDialog(message = errorMessage) {
+//               taskEditViewModel.onErrorDismissed()
+//            }
+//         }
 
       },
       navController,
