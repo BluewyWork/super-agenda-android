@@ -16,8 +16,7 @@ import javax.inject.Inject
 class TasksViewModel @Inject constructor(
    private val task2UseCase: Task2UseCase,
    private val loginUseCase: LoginUseCase,
-) : ViewModel()
-{
+) : ViewModel() {
    private val _tasksNotStarted = MutableLiveData<List<Task>?>()
    val tasksNotStarted: LiveData<List<Task>?> = _tasksNotStarted
 
@@ -30,13 +29,11 @@ class TasksViewModel @Inject constructor(
    private val _taskToEdit = MutableLiveData<Task?>()
    val taskToEdit: LiveData<Task?> = _taskToEdit
 
-   fun setTaskToEdit(task: Task)
-   {
+   fun setTaskToEdit(task: Task) {
       _taskToEdit.postValue(task)
    }
 
-   fun loadTasksNotStarted()
-   {
+   fun loadTasksNotStarted() {
       // okay -> empty list no tasks created
       // -> null error
       // local tasks has priority
@@ -53,8 +50,7 @@ class TasksViewModel @Inject constructor(
       }
    }
 
-   fun loadTasksOngoing()
-   {
+   fun loadTasksOngoing() {
       viewModelScope.launch {
          val tasks = task2UseCase.retrieveTasksFromLocalDatabase() ?: return@launch
 
@@ -64,8 +60,7 @@ class TasksViewModel @Inject constructor(
       }
    }
 
-   fun loadTasksCompleted()
-   {
+   fun loadTasksCompleted() {
       viewModelScope.launch {
          val tasks = task2UseCase.retrieveTasksFromLocalDatabase() ?: return@launch
 

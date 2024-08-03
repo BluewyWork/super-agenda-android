@@ -9,8 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface TaskApi
-{
+interface TaskApi {
    @GET(Endpoints.GET_TASK_LIST)
    suspend fun retrieveTaskList(@Header("Authorization") token: String): ApiResponse<List<TaskModel>>
 

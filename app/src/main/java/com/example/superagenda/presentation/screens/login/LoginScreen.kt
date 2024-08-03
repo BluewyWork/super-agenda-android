@@ -16,8 +16,7 @@ import com.example.superagenda.presentation.screens.login.composables.PasswordTe
 import com.example.superagenda.presentation.screens.login.composables.UsernameTextField
 
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController)
-{
+fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
    Scaffold { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)) {
          Login(loginViewModel, navController)
@@ -35,8 +34,7 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController)
 }
 
 @Composable
-fun Login(loginViewModel: LoginViewModel, navController: NavController)
-{
+fun Login(loginViewModel: LoginViewModel, navController: NavController) {
    val email: String by loginViewModel.username.observeAsState("")
    val password: String by loginViewModel.password.observeAsState("")
 

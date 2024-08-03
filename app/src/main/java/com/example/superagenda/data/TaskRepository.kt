@@ -15,19 +15,14 @@ import javax.inject.Inject
 class TaskRepository @Inject constructor(
    private val taskApi: TaskApi,
    private val taskDao: TaskDao,
-)
-{
-   suspend fun retrieveTasksFromLocalDatabase(): List<Task>?
-   {
+) {
+   suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
       return withContext(Dispatchers.IO) {
-         try
-         {
+         try {
             val taskList = taskDao.selectAll()
 
             taskList.map { it.toData().toDomain() }
-         }
-         catch (e: Exception)
-         {
+         } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
             null
@@ -35,17 +30,13 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun insertOrUpdateTaskToLocalDatabase(task: Task): Boolean
-   {
+   suspend fun insertOrUpdateTaskToLocalDatabase(task: Task): Boolean {
       return withContext(Dispatchers.IO) {
-         try
-         {
+         try {
             taskDao.insertOrUpdate(task.toData().toDatabase())
 
             true
-         }
-         catch (e: Exception)
-         {
+         } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
             false
@@ -53,8 +44,7 @@ class TaskRepository @Inject constructor(
       }
    }
 
-   suspend fun createTaskAtAPI(task: Task, token: String): Boolean
-   {
+   suspend fun createTaskAtAPI(task: Task, token: String): Boolean {
       return withContext(Dispatchers.IO) {
          try {
             taskApi.createTask(token, task.toData())

@@ -28,8 +28,7 @@ fun ProfileScreen(
    profileViewModel: ProfileViewModel,
    navController: NavController,
    service: NotificationService,
-)
-{
+) {
    Navigation(content = { padding ->
       Profile(profileViewModel, navController, service, padding)
    }, navController, "Profile")
@@ -41,8 +40,7 @@ fun Profile(
    navController: NavController,
    service: NotificationService,
    padding: PaddingValues,
-)
-{
+) {
    val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
    LazyColumn(

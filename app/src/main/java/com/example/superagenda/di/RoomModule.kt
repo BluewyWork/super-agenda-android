@@ -12,8 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RoomModule
-{
+object RoomModule {
    private const val SUPER_AGENDA_DATABASE_NAME = "SuperAgenda"
 
    @Singleton

@@ -7,8 +7,7 @@ import androidx.room.Query
 import com.example.superagenda.data.database.entities.TaskEntity
 
 @Dao
-interface TaskDao
-{
+interface TaskDao {
    @Query("SELECT * FROM task_table")
    fun selectAll(): List<TaskEntity>
 

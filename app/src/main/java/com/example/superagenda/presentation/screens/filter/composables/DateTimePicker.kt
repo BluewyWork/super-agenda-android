@@ -28,8 +28,7 @@ import java.util.Calendar
 fun DateTimePicker(
    initialDateTime: LocalDateTime? = null,
    onDateTimeSelected: (LocalDateTime?) -> Unit,
-)
-{
+) {
    var selectedDateTime by remember { mutableStateOf(initialDateTime) }
 
    val context = LocalContext.current

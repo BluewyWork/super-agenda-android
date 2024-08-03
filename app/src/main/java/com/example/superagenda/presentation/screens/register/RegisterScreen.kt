@@ -16,8 +16,7 @@ import com.example.superagenda.presentation.screens.register.composables.Registe
 import com.example.superagenda.presentation.screens.register.composables.UsernameTextField
 
 @Composable
-fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController)
-{
+fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
    Scaffold { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)) {
          Register(registerViewModel, navController)
@@ -35,8 +34,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
 }
 
 @Composable
-fun Register(registerViewModel: RegisterViewModel, navController: NavController)
-{
+fun Register(registerViewModel: RegisterViewModel, navController: NavController) {
    val username: String by registerViewModel.username.observeAsState("")
    val password: String by registerViewModel.password.observeAsState("")
 

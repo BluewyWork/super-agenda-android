@@ -12,8 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun GoToRegisterScreen(navController: NavController)
-{
+fun GoToRegisterScreen(navController: NavController) {
    Text(
       modifier = Modifier
          .padding(top = 5.dp)

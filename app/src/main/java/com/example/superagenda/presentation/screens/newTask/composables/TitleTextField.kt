@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun TitleTextField(title: String, onTextChange: (String) -> Unit)
-{
+fun TitleTextField(title: String, onTextChange: (String) -> Unit) {
    TextField(
       value = title,
       onValueChange = onTextChange,

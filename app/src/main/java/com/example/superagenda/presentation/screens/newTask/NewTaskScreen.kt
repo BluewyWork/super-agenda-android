@@ -21,14 +21,12 @@ import com.example.superagenda.presentation.screens.newTask.composables.UpdateBu
 import java.time.LocalDateTime
 
 @Composable
-fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController)
-{
+fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController) {
    val showPopup: Boolean by newTaskViewModel.showPopup.observeAsState(initial = false)
    val popupTitle: String by newTaskViewModel.popupTitle.observeAsState(initial = "")
    val popupMessage: String by newTaskViewModel.popupMessage.observeAsState(initial = "")
 
-   if (showPopup)
-   {
+   if (showPopup) {
       PopupDialog(popupTitle, popupMessage) {
          newTaskViewModel.dismissPopup()
       }
@@ -47,8 +45,7 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
 }
 
 @Composable
-fun NewTask(newTaskViewModel: NewTaskViewModel)
-{
+fun NewTask(newTaskViewModel: NewTaskViewModel) {
    val title: String by newTaskViewModel.title.observeAsState("")
    val description: String by newTaskViewModel.description.observeAsState("")
    val taskStatus: TaskStatus? by newTaskViewModel.taskStatus.observeAsState()

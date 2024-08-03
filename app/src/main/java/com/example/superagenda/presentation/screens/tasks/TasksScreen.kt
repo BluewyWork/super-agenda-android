@@ -29,8 +29,7 @@ import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
-{
+fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController) {
    Navigation(content = { padding ->
 
       val pagerState = rememberPagerState { 3 }
@@ -49,14 +48,12 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
 
       Column(modifier = Modifier.padding(padding)) {
          TabRow(selectedTabIndex = selectedTab) {
-            for (index in 0 until pagerState.pageCount)
-            {
+            for (index in 0 until pagerState.pageCount) {
                Tab(
                   selected = true,
                   onClick = { selectedTab = index }
                ) {
-                  when (index)
-                  {
+                  when (index) {
                      0 -> Text("Not Started")
                      1 -> Text("Ongoing")
                      2 -> Text("Completed")
@@ -69,22 +66,18 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
             state = pagerState,
             modifier = Modifier.fillMaxSize()
          ) { currentPage ->
-            when (currentPage)
-            {
-               0 ->
-               {
+            when (currentPage) {
+               0 -> {
                   tasksViewModel.loadTasksNotStarted()
                   TasksNotStarted(tasksViewModel, navController)
                }
 
-               1 ->
-               {
+               1 -> {
                   tasksViewModel.loadTasksOngoing()
                   TasksOngoing(tasksViewModel, navController)
                }
 
-               2 ->
-               {
+               2 -> {
                   tasksViewModel.loadTasksCompleted()
                   TasksCompleted(tasksViewModel)
                }
@@ -101,27 +94,20 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController)
 }
 
 @Composable
-fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController)
-{
+fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController) {
    val tasksNotStarted: List<Task>? by tasksViewModel.tasksNotStarted.observeAsState()
 
    LazyColumn(modifier = Modifier.fillMaxSize()) {
       item {
-         if (tasksNotStarted == null)
-         {
+         if (tasksNotStarted == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         }
-         else if (tasksNotStarted!!.isEmpty())
-         {
+         } else if (tasksNotStarted!!.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         }
-         else
-         {
-            for (task in tasksNotStarted!!)
-            {
+         } else {
+            for (task in tasksNotStarted!!) {
                TaskCard(task) {
                   tasksViewModel.setTaskToEdit(task)
                   navController.navigate(Destinations.TaskEdit.route)
@@ -134,27 +120,20 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
 }
 
 @Composable
-fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController)
-{
+fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
    val taskOngoing: List<Task>? by tasksViewModel.tasksOngoing.observeAsState()
 
    LazyColumn(modifier = Modifier.fillMaxSize()) {
       item {
-         if (taskOngoing == null)
-         {
+         if (taskOngoing == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         }
-         else if (taskOngoing!!.isEmpty())
-         {
+         } else if (taskOngoing!!.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         }
-         else
-         {
-            for (task in taskOngoing!!)
-            {
+         } else {
+            for (task in taskOngoing!!) {
                TaskCard(task) {
                   tasksViewModel.setTaskToEdit(task)
                   navController.navigate(Destinations.TaskEdit.route)
@@ -167,27 +146,20 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController)
 }
 
 @Composable
-fun TasksCompleted(tasksViewModel: TasksViewModel)
-{
+fun TasksCompleted(tasksViewModel: TasksViewModel) {
    val tasksCompleted: List<Task>? by tasksViewModel.tasksCompleted.observeAsState()
 
    LazyColumn(modifier = Modifier.fillMaxSize()) {
       item {
-         if (tasksCompleted == null)
-         {
+         if (tasksCompleted == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         }
-         else if (tasksCompleted!!.isEmpty())
-         {
+         } else if (tasksCompleted!!.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         }
-         else
-         {
-            for (task in tasksCompleted!!)
-            {
+         } else {
+            for (task in tasksCompleted!!) {
                TaskCard(task) {
                   // TODO
                }

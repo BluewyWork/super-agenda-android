@@ -6,14 +6,11 @@ import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
    private val loginRepository: LoginRepository,
-)
-{
-   suspend fun login(userForLogin: UserForLogin): Boolean
-   {
+) {
+   suspend fun login(userForLogin: UserForLogin): Boolean {
       val token = loginRepository.retrieveTokenFromAPI(userForLogin)
 
-      if (token.isNullOrBlank())
-      {
+      if (token.isNullOrBlank()) {
          return false
       }
 
@@ -23,15 +20,13 @@ class LoginUseCase @Inject constructor(
       return tokenInserted
    }
 
-   suspend fun isLoggedIn(): Boolean
-   {
+   suspend fun isLoggedIn(): Boolean {
       val haveToken = loginRepository.retrieveTokenFromLocalStorage()
 
       return !haveToken.isNullOrBlank()
    }
 
-   suspend fun logout(): Boolean
-   {
+   suspend fun logout(): Boolean {
       return loginRepository.clearTokensFromLocalStorage()
    }
 }

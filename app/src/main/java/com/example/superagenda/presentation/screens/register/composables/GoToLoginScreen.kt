@@ -12,8 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun GoToLoginScreen(navController: NavController)
-{
+fun GoToLoginScreen(navController: NavController) {
    Text(
       modifier = Modifier
          .fillMaxWidth()

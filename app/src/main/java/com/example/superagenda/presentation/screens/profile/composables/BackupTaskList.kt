@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun BackupTaskList(onClick: () -> Unit)
-{
+fun BackupTaskList(onClick: () -> Unit) {
    Button(onClick, modifier = Modifier.fillMaxWidth()) {
       Text("Backup Task List")
    }

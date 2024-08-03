@@ -7,11 +7,9 @@ import javax.inject.Inject
 class RegisterUseCase @Inject constructor(
    private val registerRepository: RegisterRepository,
    private val loginUseCase: LoginUseCase,
-)
-{
+) {
 
-   suspend fun register(userForRegister: UserForRegister): Boolean
-   {
+   suspend fun register(userForRegister: UserForRegister): Boolean {
       return registerRepository.registerAtAPI(userForRegister)
    }
 }

@@ -23,8 +23,7 @@ import com.example.superagenda.presentation.screens.taskEdit.composables.UpdateB
 import java.time.LocalDateTime
 
 @Composable
-fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController)
-{
+fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
    Navigation(
       content = { padding ->
          Column(modifier = Modifier.padding(padding)) {
@@ -55,8 +54,7 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
 }
 
 @Composable
-fun TaskEdit(taskEditViewModel: TaskEditViewModel)
-{
+fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
    val title: String? by taskEditViewModel.title.observeAsState()
    val description: String? by taskEditViewModel.description.observeAsState()
    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()

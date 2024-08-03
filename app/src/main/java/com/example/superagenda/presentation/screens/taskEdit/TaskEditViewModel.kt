@@ -16,8 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
    private val globalVariables: GlobalVariables,
-) : ViewModel()
-{
+) : ViewModel() {
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
@@ -39,15 +38,13 @@ class TaskEditViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   fun setTaskToEdit(task: Task?)
-   {
+   fun setTaskToEdit(task: Task?) {
       viewModelScope.launch {
          _taskToEdit2.postValue(task)
       }
    }
 
-   fun onShow()
-   {
+   fun onShow() {
       viewModelScope.launch {
          _title.postValue(taskToEdit2.value?.title)
          _description.postValue(taskToEdit2.value?.description)
@@ -57,52 +54,43 @@ class TaskEditViewModel @Inject constructor(
       }
    }
 
-   fun onError(message: String)
-   {
+   fun onError(message: String) {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed()
-   {
+   fun onErrorDismissed() {
       _errorMessage.postValue(null)
    }
 
-   fun onUpdateButtonPress(navController: NavController)
-   {
+   fun onUpdateButtonPress(navController: NavController) {
       viewModelScope.launch {
 
       }
    }
 
-   fun onDeleteButtonPress(navController: NavController)
-   {
+   fun onDeleteButtonPress(navController: NavController) {
       viewModelScope.launch {
 
       }
    }
 
-   fun onTitleChange(title: String)
-   {
+   fun onTitleChange(title: String) {
       _title.postValue(title)
    }
 
-   fun onDescriptionChange(description: String)
-   {
+   fun onDescriptionChange(description: String) {
       _description.postValue(description)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus)
-   {
+   fun onTaskStatusChange(taskStatus: TaskStatus) {
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime)
-   {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime)
-   {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
       _endDateTime.postValue(endDateTime)
    }
 }

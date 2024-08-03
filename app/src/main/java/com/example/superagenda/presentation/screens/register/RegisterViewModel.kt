@@ -18,8 +18,7 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
    private val registerUseCase: RegisterUseCase,
    private val loginUseCase: LoginUseCase,
-) : ViewModel()
-{
+) : ViewModel() {
    private val _username = MutableLiveData<String>()
    val username: LiveData<String> = _username
 
@@ -30,18 +29,15 @@ class RegisterViewModel @Inject constructor(
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
-   fun onError(message: String)
-   {
+   fun onError(message: String) {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed()
-   {
+   fun onErrorDismissed() {
       _errorMessage.postValue(null)
    }
 
-   fun onRegisterButtonPress(navController: NavController)
-   {
+   fun onRegisterButtonPress(navController: NavController) {
       viewModelScope.launch {
          val userForRegister = _username.value?.let {
             _password.value?.let { it1 ->
@@ -52,12 +48,10 @@ class RegisterViewModel @Inject constructor(
             }
          }
 
-         if (userForRegister != null)
-         {
+         if (userForRegister != null) {
             val ok = registerUseCase.register(userForRegister)
 
-            if (!ok)
-            {
+            if (!ok) {
                onError("Either invalid credentials or something else...")
 
                return@launch
@@ -70,8 +64,7 @@ class RegisterViewModel @Inject constructor(
 
             val ok2 = loginUseCase.login(userForLogin)
 
-            if (!ok2)
-            {
+            if (!ok2) {
                // do something here
                return@launch
             }
@@ -81,13 +74,11 @@ class RegisterViewModel @Inject constructor(
       }
    }
 
-   fun onUsernameChange(username: String)
-   {
+   fun onUsernameChange(username: String) {
       _username.postValue(username)
    }
 
-   fun onPasswordChange(password: String)
-   {
+   fun onPasswordChange(password: String) {
       _password.postValue(password)
    }
 }

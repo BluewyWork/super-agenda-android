@@ -14,8 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
-) : ViewModel()
-{
+) : ViewModel() {
    private val _username = MutableLiveData<String>()
    val username: LiveData<String> = _username
 
@@ -26,33 +25,27 @@ class LoginViewModel @Inject constructor(
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
-   fun onError(message: String)
-   {
+   fun onError(message: String) {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed()
-   {
+   fun onErrorDismissed() {
       _errorMessage.postValue(null)
    }
 
-   fun onUsernameChange(username: String)
-   {
+   fun onUsernameChange(username: String) {
       _username.postValue(username)
    }
 
-   fun onPasswordChange(password: String)
-   {
+   fun onPasswordChange(password: String) {
       _password.postValue(password)
    }
 
-   fun onShow(navController: NavController)
-   {
+   fun onShow(navController: NavController) {
       viewModelScope.launch {
          val isLoggedIn = loginUseCase.isLoggedIn()
 
-         if (!isLoggedIn)
-         {
+         if (!isLoggedIn) {
             return@launch
          }
 
@@ -61,8 +54,7 @@ class LoginViewModel @Inject constructor(
       }
    }
 
-   fun onLoginButtonPress(navController: NavController)
-   {
+   fun onLoginButtonPress(navController: NavController) {
       viewModelScope.launch {
 
       }

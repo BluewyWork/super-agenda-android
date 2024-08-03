@@ -30,8 +30,7 @@ fun NavigationHost(
    taskEditViewModel: TaskEditViewModel,
    newTaskViewModel: NewTaskViewModel,
    filterScreenViewModel: FilterScreenViewModel,
-)
-{
+) {
    val navController = rememberNavController()
 
    NavHost(

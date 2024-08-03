@@ -14,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilterScreenViewModel @Inject constructor(
-) : ViewModel()
-{
+) : ViewModel() {
    private val _loadedTaskList = MutableLiveData<List<Task>>()
    private val _filteredTaskList = MutableLiveData<List<Task>>()
    val filteredTaskList: LiveData<List<Task>> = _filteredTaskList
@@ -35,47 +34,39 @@ class FilterScreenViewModel @Inject constructor(
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 
-   fun onError(message: String)
-   {
+   fun onError(message: String) {
       _errorMessage.postValue(message)
    }
 
-   fun onErrorDismissed()
-   {
+   fun onErrorDismissed() {
       _errorMessage.postValue(null)
    }
 
-   fun onShow()
-   {
+   fun onShow() {
       viewModelScope.launch {
 
       }
    }
 
-   fun onFilterPress(navController: NavController)
-   {
+   fun onFilterPress(navController: NavController) {
       viewModelScope.launch {
 
       }
    }
 
-   fun onTitleChange(title: String)
-   {
+   fun onTitleChange(title: String) {
       _title.postValue(title)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus)
-   {
+   fun onTaskStatusChange(taskStatus: TaskStatus) {
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime)
-   {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime)
-   {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
       _endDateTime.postValue(endDateTime)
    }
 }

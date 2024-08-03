@@ -26,13 +26,11 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
    private val selfUseCase: SelfUseCase,
    private val loginUseCase: LoginUseCase,
-) : ViewModel()
-{
+) : ViewModel() {
    private val _userForProfile = MutableLiveData<UserForProfile?>()
    val userForProfile: LiveData<UserForProfile?> = _userForProfile
 
-   fun onShow()
-   {
+   fun onShow() {
       viewModelScope.launch {
          val userProfile = selfUseCase.retrieveUserForProfile()
 
@@ -40,11 +38,9 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   fun onDeleteButtonPressButton(navController: NavController)
-   {
+   fun onDeleteButtonPressButton(navController: NavController) {
       viewModelScope.launch {
-         if (!selfUseCase.deleteProfile())
-         {
+         if (!selfUseCase.deleteProfile()) {
             return@launch
          }
 
@@ -52,35 +48,30 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
-   fun onBackupButtonPress()
-   {
+   fun onBackupButtonPress() {
       viewModelScope.launch {
 
       }
    }
 
-   fun onImportButtonPress(contentResolver: ContentResolver, filePath: String)
-   {
+   fun onImportButtonPress(contentResolver: ContentResolver, filePath: String) {
       viewModelScope.launch {
 
       }
    }
 
-   fun onLogoutPress(navController: NavController)
-   {
+   fun onLogoutPress(navController: NavController) {
       viewModelScope.launch {
 
       }
    }
 
-   private fun printFileContents(contentResolver: ContentResolver, filePath: String)
-   {
+   private fun printFileContents(contentResolver: ContentResolver, filePath: String) {
       val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
       val reader = BufferedReader(InputStreamReader(inputStream))
       val stringBuilder = StringBuilder()
       var line: String? = reader.readLine()
-      while (line != null)
-      {
+      while (line != null) {
          stringBuilder.append(line).append('\n')
          line = reader.readLine()
       }
@@ -94,8 +85,7 @@ class ProfileViewModel @Inject constructor(
    private fun deserializeTasksFromJson(
       contentResolver: ContentResolver,
       filePath: String,
-   ): List<Task>
-   {
+   ): List<Task> {
       val gson = Gson()
       val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
       val reader = BufferedReader(InputStreamReader(inputStream))

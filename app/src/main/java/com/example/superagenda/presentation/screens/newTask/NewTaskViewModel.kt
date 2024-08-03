@@ -19,8 +19,7 @@ import javax.inject.Inject
 class NewTaskViewModel @Inject constructor(
    private val task2UseCase: Task2UseCase,
    private val loginUseCase: LoginUseCase
-) : ViewModel()
-{
+) : ViewModel() {
    private val _title = MutableLiveData<String>()
    val title: LiveData<String> = _title
 
@@ -45,20 +44,17 @@ class NewTaskViewModel @Inject constructor(
    private val _popupMessage = MutableLiveData<String>()
    val popupMessage: LiveData<String> = _popupMessage
 
-   fun showPopup(title: String, message: String)
-   {
+   fun showPopup(title: String, message: String) {
       _popupTitle.postValue(title)
       _popupMessage.postValue(message)
       _showPopup.postValue(true)
    }
 
-   fun dismissPopup()
-   {
+   fun dismissPopup() {
       _showPopup.postValue(false)
    }
 
-   fun onShow()
-   {
+   fun onShow() {
       _title.postValue("")
       _description.postValue("")
       _taskStatus.postValue(TaskStatus.NotStarted)
@@ -66,8 +62,7 @@ class NewTaskViewModel @Inject constructor(
       _endDateTime.postValue(LocalDateTime.now())
    }
 
-   fun onCreateButtonPress(navController: NavController)
-   {
+   fun onCreateButtonPress(navController: NavController) {
       viewModelScope.launch {
          // TODO: improve error handling
          // maybe popup?
@@ -86,45 +81,39 @@ class NewTaskViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (!task2UseCase.insertOrUpdateTaskToLocalDatabase(task))
-         {
-            showPopup("ERROR","Failed to create task...")
+         if (!task2UseCase.insertOrUpdateTaskToLocalDatabase(task)) {
+            showPopup("ERROR", "Failed to create task...")
          }
 
-         showPopup("INFO","Task has been created!")
+         showPopup("INFO", "Task has been created!")
 
          if (!loginUseCase.isLoggedIn()) {
             return@launch
          }
 
-         if(!task2UseCase.createTaskAtAPI(task)) {
-            showPopup("ERROR","Failed to sync to api...")
+         if (!task2UseCase.createTaskAtAPI(task)) {
+            showPopup("ERROR", "Failed to sync to api...")
          }
       }
    }
 
-   fun onTitleChange(title: String)
-   {
+   fun onTitleChange(title: String) {
       _title.postValue(title)
    }
 
-   fun onDescriptionChange(description: String)
-   {
+   fun onDescriptionChange(description: String) {
       _description.postValue(description)
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus)
-   {
+   fun onTaskStatusChange(taskStatus: TaskStatus) {
       _taskStatus.postValue(taskStatus)
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime)
-   {
+   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
       _startDateTime.postValue(startDatetime)
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime)
-   {
+   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
       _endDateTime.postValue(endDateTime)
    }
 }

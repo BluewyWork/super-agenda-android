@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DeleteButton(onClick: () -> Unit)
-{
+fun DeleteButton(onClick: () -> Unit) {
    Button(onClick, modifier = Modifier.fillMaxWidth()) {
       Text("Delete")
    }

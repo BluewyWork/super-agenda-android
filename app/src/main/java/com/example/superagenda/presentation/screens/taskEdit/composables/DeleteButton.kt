@@ -9,8 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DeleteButton(onClick: () -> Unit)
-{
+fun DeleteButton(onClick: () -> Unit) {
    Button(
       onClick = onClick,
       modifier = Modifier
