@@ -31,7 +31,6 @@ import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 @Composable
 fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController) {
    Navigation(content = { padding ->
-
       val pagerState = rememberPagerState { 3 }
 
       var selectedTab by remember {

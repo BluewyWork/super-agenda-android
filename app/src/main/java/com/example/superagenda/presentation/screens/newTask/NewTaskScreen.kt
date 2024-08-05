@@ -22,12 +22,10 @@ import java.time.LocalDateTime
 
 @Composable
 fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController) {
-   val showPopup: Boolean by newTaskViewModel.showPopup.observeAsState(initial = false)
-   val popupTitle: String by newTaskViewModel.popupTitle.observeAsState(initial = "")
-   val popupMessage: String by newTaskViewModel.popupMessage.observeAsState(initial = "")
+   val popupsQueue: List<Pair<String, String>> by newTaskViewModel.popupsQueue.observeAsState(listOf())
 
-   if (showPopup) {
-      PopupDialog(popupTitle, popupMessage) {
+   if (popupsQueue.isNotEmpty()) {
+      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
          newTaskViewModel.dismissPopup()
       }
    }
@@ -40,7 +38,7 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
          }
       }
    }, navController, "New Task",
-      navigationIcon = { BackIconButton(onClick = { navController.popBackStack() }) }
+      navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) }
    )
 }
 

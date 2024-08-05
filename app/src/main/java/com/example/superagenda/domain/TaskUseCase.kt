@@ -5,7 +5,7 @@ import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.domain.models.Task
 import javax.inject.Inject
 
-class Task2UseCase @Inject constructor(
+class TaskUseCase @Inject constructor(
    private val loginRepository: LoginRepository,
    private val taskRepository: TaskRepository,
 ) {
@@ -17,8 +17,8 @@ class Task2UseCase @Inject constructor(
       return tasks
    }
 
-   suspend fun insertOrUpdateTaskToLocalDatabase(task: Task): Boolean {
-      return taskRepository.insertOrUpdateTaskToLocalDatabase(task)
+   suspend fun insertOrUpdateTaskAtLocalDatabase(task: Task): Boolean {
+      return taskRepository.insertOrUpdateTaskAtLocalDatabase(task)
    }
 
    // honestly with this setup we can't tell what type of error we have here
@@ -31,5 +31,15 @@ class Task2UseCase @Inject constructor(
       }
 
       return taskRepository.createTaskAtAPI(task, token)
+   }
+
+   suspend fun updateTaskAtAPI(task: Task): Boolean {
+     val token = loginRepository.retrieveTokenFromLocalStorage()
+
+      if (token.isNullOrBlank()) {
+         return false
+      }
+
+      return taskRepository.updateTaskAtAPI(task, token)
    }
 }

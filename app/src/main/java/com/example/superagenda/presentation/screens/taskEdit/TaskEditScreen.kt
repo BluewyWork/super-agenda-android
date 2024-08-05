@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.taskEdit.composables.DescriptionTextField
@@ -24,6 +25,14 @@ import java.time.LocalDateTime
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
+   val popupsQueue: List<Pair<String, String>> by taskEditViewModel.popupsQueue.observeAsState(listOf())
+
+   if (popupsQueue.isNotEmpty()) {
+      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+         taskEditViewModel.dismissPopup()
+      }
+   }
+
    Navigation(
       content = { padding ->
          Column(modifier = Modifier.padding(padding)) {
@@ -36,20 +45,10 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
                taskEditViewModel.onUpdateButtonPress(navController)
             }
          }
-
-         val errorMessage: String? by taskEditViewModel.errorMessage.observeAsState(null)
-
-//         if (errorMessage != null)
-//         {
-//            PopupDialog(message = errorMessage) {
-//               taskEditViewModel.onErrorDismissed()
-//            }
-//         }
-
       },
       navController,
       "Edit Task",
-      navigationIcon = { BackIconButton(onClick = { navController.popBackStack() }) },
+      navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
    )
 }
 

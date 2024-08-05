@@ -49,8 +49,14 @@ fun NavigationHost(
          ProfileScreen(profileViewModel, navController, service)
       }
       composable(Destinations.TaskEdit.route) {
-         taskEditViewModel.setTaskToEdit(tasksViewModel.taskToEdit.value)
-         taskEditViewModel.onShow()
+         val task = tasksViewModel.taskToEdit.value
+         if (task == null) {
+            navController.navigateUp()
+            return@composable
+         }
+
+         taskEditViewModel.setTaskToEdit(task)
+         taskEditViewModel.onShow(navController)
          TaskEditScreen(taskEditViewModel, navController)
       }
       composable(Destinations.NewTask.route) {

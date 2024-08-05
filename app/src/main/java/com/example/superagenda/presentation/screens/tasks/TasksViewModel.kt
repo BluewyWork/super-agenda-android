@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.Task2UseCase
+import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
-   private val task2UseCase: Task2UseCase,
-   private val loginUseCase: LoginUseCase,
+   private val task2UseCase: TaskUseCase,
 ) : ViewModel() {
    private val _tasksNotStarted = MutableLiveData<List<Task>?>()
    val tasksNotStarted: LiveData<List<Task>?> = _tasksNotStarted
@@ -26,8 +24,8 @@ class TasksViewModel @Inject constructor(
    private val _tasksCompleted = MutableLiveData<List<Task>?>()
    val tasksCompleted: LiveData<List<Task>?> = _tasksCompleted
 
-   private val _taskToEdit = MutableLiveData<Task?>()
-   val taskToEdit: LiveData<Task?> = _taskToEdit
+   private val _taskToEdit = MutableLiveData<Task>()
+   val taskToEdit: LiveData<Task> = _taskToEdit
 
    fun setTaskToEdit(task: Task) {
       _taskToEdit.postValue(task)
