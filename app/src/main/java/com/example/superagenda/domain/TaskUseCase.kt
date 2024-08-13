@@ -3,6 +3,7 @@ package com.example.superagenda.domain
 import com.example.superagenda.data.LoginRepository
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.domain.models.Task
+import org.bson.types.ObjectId
 import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
@@ -19,6 +20,10 @@ class TaskUseCase @Inject constructor(
 
    suspend fun insertOrUpdateTaskAtLocalDatabase(task: Task): Boolean {
       return taskRepository.insertOrUpdateTaskAtLocalDatabase(task)
+   }
+
+   suspend fun deleteTaskAtLocalDatabase(taskID: ObjectId): Boolean {
+      return taskRepository.deleteTaskAtLocalDatabase(taskID)
    }
 
    // honestly with this setup we can't tell what type of error we have here
@@ -41,5 +46,16 @@ class TaskUseCase @Inject constructor(
       }
 
       return taskRepository.updateTaskAtAPI(task, token)
+   }
+
+   suspend fun deleteTaskAtAPI(taskID: ObjectId): Boolean {
+      val token = loginRepository.retrieveTokenFromLocalStorage()
+
+      // need to change to result type for more detailed errors
+      if (token.isNullOrBlank()) {
+         return false
+      }
+
+      return taskRepository.deleteTaskAtApi(taskID, token)
    }
 }

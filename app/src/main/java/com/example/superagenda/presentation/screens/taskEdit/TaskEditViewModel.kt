@@ -93,6 +93,15 @@ class TaskEditViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
+   fun waitForPopup(code: () -> Unit) {
+      popupsQueue.observeForever { queue ->
+         if (queue.isNullOrEmpty()) {
+            code()
+            popupsQueue.removeObserver { this }
+         }
+      }
+   }
+
    fun onUpdateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value
@@ -138,29 +147,60 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (!taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
-            enqueuePopup("ERROR", "Task Update Failed...")
-            return@launch
-         } else {
-            enqueuePopup("INFO", "Task Updated!")
-         }
+         if (taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
+            enqueuePopup("INFO", "Successfully updated task locally!")
 
-         if (!loginUseCase.isLoggedIn()) {
-            return@launch
-         }
+            if (loginUseCase.isLoggedIn()) {
+               if (taskUseCase.updateTaskAtAPI(task)) {
+                  enqueuePopup("INFO", "Successfully updated task at API!")
+               } else {
+                  enqueuePopup("ERROR", "Failed to update task at API...")
+               }
+            }
 
-         if (!taskUseCase.updateTaskAtAPI(task)) {
-            enqueuePopup("ERROR", "API Sync Failed...")
-            return@launch
+            waitForPopup {
+               navController.navigateUp()
+            }
          } else {
-            enqueuePopup("INFO", "Task Synced!")
+            enqueuePopup("ERROR", "Failed to update task locally...")
+
+            waitForPopup {
+               navController.navigateUp()
+            }
          }
       }
    }
 
    fun onDeleteButtonPress(navController: NavController) {
       viewModelScope.launch {
+         val taskID = taskToEdit.value?._id
 
+         if (taskID == null) {
+            enqueuePopup("ERROR", "Hmmm, taskID null, wtf...")
+            return@launch
+         }
+
+         if (taskUseCase.deleteTaskAtLocalDatabase(taskID)) {
+            enqueuePopup("INFO", "Successfully deleted task locally!")
+
+            if (loginUseCase.isLoggedIn()) {
+               if (taskUseCase.deleteTaskAtAPI(taskID)) {
+                  enqueuePopup("INFO", "Successfully deleted task at API!")
+               } else {
+                  enqueuePopup("ERROR", "Failed to delete task at API...")
+               }
+            }
+
+            waitForPopup {
+               navController.navigateUp()
+            }
+         } else {
+            enqueuePopup("ERROR", "Failed to delete task locally...")
+
+            waitForPopup {
+               navController.navigateUp()
+            }
+         }
       }
    }
 }
