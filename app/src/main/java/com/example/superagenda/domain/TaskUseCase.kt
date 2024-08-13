@@ -39,7 +39,7 @@ class TaskUseCase @Inject constructor(
    }
 
    suspend fun updateTaskAtAPI(task: Task): Boolean {
-     val token = loginRepository.retrieveTokenFromLocalStorage()
+      val token = loginRepository.retrieveTokenFromLocalStorage()
 
       if (token.isNullOrBlank()) {
          return false

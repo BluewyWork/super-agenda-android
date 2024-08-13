@@ -25,7 +25,9 @@ import java.time.LocalDateTime
 
 @Composable
 fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
-   val popupsQueue: List<Pair<String, String>> by taskEditViewModel.popupsQueue.observeAsState(listOf())
+   val popupsQueue: List<Pair<String, String>> by taskEditViewModel.popupsQueue.observeAsState(
+      listOf()
+   )
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
