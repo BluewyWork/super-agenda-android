@@ -80,6 +80,15 @@ class NewTaskViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
+   fun waitForPopup(code: () -> Unit) {
+      popupsQueue.observeForever { queue ->
+         if (queue.isNullOrEmpty()) {
+            code()
+            popupsQueue.removeObserver { this }
+         }
+      }
+   }
+
    fun onCreateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value
@@ -118,22 +127,26 @@ class NewTaskViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (!task2UseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
-            enqueuePopup("ERROR", "Failed to create task...")
-            return@launch
-         }
+         if (task2UseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
+            enqueuePopup("INFO", "Successfully created task locally!")
 
-         enqueuePopup("INFO", "Task has been created!")
-         onShow()
+            if (loginUseCase.isLoggedIn()) {
+               if (task2UseCase.createTaskAtAPI(task)) {
+                  enqueuePopup("INFO", "Successfully created task at API!")
+               } else {
+                  enqueuePopup("ERROR", "Failed to create task at API...")
+               }
+            }
 
-         if (!loginUseCase.isLoggedIn()) {
-            return@launch
-         }
-
-         if (!task2UseCase.createTaskAtAPI(task)) {
-            enqueuePopup("ERROR", "Failed to sync to api...")
+            waitForPopup {
+               navController.navigateUp()
+            }
          } else {
-            enqueuePopup("INFO", "Task Synced!")
+            enqueuePopup("ERROR", "Failed to create task locally...")
+
+            waitForPopup {
+               navController.navigateUp()
+            }
          }
       }
    }
