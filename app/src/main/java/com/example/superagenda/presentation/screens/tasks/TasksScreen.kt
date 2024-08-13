@@ -78,7 +78,7 @@ fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController) {
 
                2 -> {
                   tasksViewModel.loadTasksCompleted()
-                  TasksCompleted(tasksViewModel)
+                  TasksCompleted(tasksViewModel, navController)
                }
             }
          }
@@ -145,7 +145,7 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
 }
 
 @Composable
-fun TasksCompleted(tasksViewModel: TasksViewModel) {
+fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController) {
    val tasksCompleted: List<Task>? by tasksViewModel.tasksCompleted.observeAsState()
 
    LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -160,11 +160,11 @@ fun TasksCompleted(tasksViewModel: TasksViewModel) {
          } else {
             for (task in tasksCompleted!!) {
                TaskCard(task) {
-                  // TODO
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
                }
             }
          }
-
       }
    }
 }
