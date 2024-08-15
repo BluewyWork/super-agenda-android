@@ -26,7 +26,7 @@ class LoginUseCase @Inject constructor(
       return !haveToken.isNullOrBlank()
    }
 
-   suspend fun logout(): Boolean {
+   suspend fun clearTokensAtLocalStorage(): Boolean {
       return loginRepository.clearTokensFromLocalStorage()
    }
 }

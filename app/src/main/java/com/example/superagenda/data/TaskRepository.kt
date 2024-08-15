@@ -57,6 +57,29 @@ class TaskRepository @Inject constructor(
       }
    }
 
+   suspend fun deleteAllTasksAtLocalDatabase(): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            taskDao.deleteAll()
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+            false
+         }
+      }
+   }
+
+   suspend fun retrieveTasksAPI(token: String): List<Task>? {
+      return  withContext(Dispatchers.IO) {
+         try {
+            taskApi.retrieveTaskList(token).data.map {it.toDomain()}
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+            null
+         }
+      }
+   }
+
    suspend fun createTaskAtAPI(task: Task, token: String): Boolean {
       return withContext(Dispatchers.IO) {
          try {

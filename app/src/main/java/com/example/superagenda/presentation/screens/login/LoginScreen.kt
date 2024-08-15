@@ -3,33 +3,49 @@ package com.example.superagenda.presentation.screens.login
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.composables.BackIconButton
+import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.login.composables.GoToRegisterScreen
 import com.example.superagenda.presentation.screens.login.composables.LoginButton
 import com.example.superagenda.presentation.screens.login.composables.PasswordTextField
 import com.example.superagenda.presentation.screens.login.composables.UsernameTextField
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-   Scaffold { innerPadding ->
+   Scaffold(
+      topBar = {
+         CenterAlignedTopAppBar(
+            title = { Text("Login Screen") },
+            navigationIcon = {
+               BackIconButton {
+                  navController.navigateUp()
+               }
+            }
+         )
+      }) { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)) {
          Login(loginViewModel, navController)
       }
 
-      val errorMessage: String? by loginViewModel.errorMessage.observeAsState(null)
-
-//      if (errorMessage != null)
-//      {
-//         PopupDialog(message = errorMessage) {
-//            loginViewModel.onErrorDismissed()
-//         }
-//      }
+      val popupsQueue: List<Pair<String, String>> by loginViewModel.popupsQueue.observeAsState(
+         listOf()
+      )
+      if (popupsQueue.isNotEmpty()) {
+         PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+            loginViewModel.dismissPopup()
+         }
+      }
    }
 }
 

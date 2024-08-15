@@ -8,11 +8,13 @@ import com.example.superagenda.core.NotificationService
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
+import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
+import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
@@ -38,7 +40,11 @@ fun NavigationHost(
       startDestination = Destinations.Tasks.route
    ) {
       composable(Destinations.Login.route) {
-
+         loginViewModel.onShow(navController)
+         LoginScreen(loginViewModel, navController)
+      }
+      composable(Destinations.Register.route) {
+         RegisterScreen(registerViewModel, navController)
       }
       composable(Destinations.Profile.route) {
          profileViewModel.onShow()

@@ -26,6 +26,20 @@ class TaskUseCase @Inject constructor(
       return taskRepository.deleteTaskAtLocalDatabase(taskID)
    }
 
+   suspend fun deleteAllTasksAtLocalDatabase(): Boolean {
+      return taskRepository.deleteAllTasksAtLocalDatabase()
+   }
+
+   suspend fun retrieveTaskAtApi(): List<Task>? {
+      val token = loginRepository.retrieveTokenFromLocalStorage()
+
+      if (token.isNullOrBlank()) {
+         return null
+      }
+
+      return taskRepository.retrieveTasksAPI(token)
+   }
+
    // honestly with this setup we can't tell what type of error we have here
    // maybe throws ... should be better because that is how its done in kotlin
    suspend fun createTaskAtAPI(task: Task): Boolean {

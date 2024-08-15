@@ -89,6 +89,7 @@ fun DrawerContent(
    navigationViewModel: NavigationViewModel
 ) {
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      navigationViewModel.onShow()
       val loggedIn: Boolean by navigationViewModel.isLoggedIn.observeAsState(false)
 
       if (!loggedIn) {

@@ -2,12 +2,14 @@ package com.example.superagenda.domain
 
 import com.example.superagenda.data.LoginRepository
 import com.example.superagenda.data.SelfRepository
+import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.domain.models.UserForProfile
 import javax.inject.Inject
 
 class SelfUseCase @Inject constructor(
    private val selfRepository: SelfRepository,
    private val loginRepository: LoginRepository,
+   private val taskRepository: TaskRepository
 ) {
    suspend fun retrieveUserForProfile(): UserForProfile? {
       val token = loginRepository.retrieveTokenFromLocalStorage()
@@ -26,10 +28,8 @@ class SelfUseCase @Inject constructor(
          return false
       }
 
-      if (!selfRepository.deleteProfileFromApi(token) || !loginRepository.clearTokensFromLocalStorage()) {
-         return false
-      }
+      val isProfileDeletedAtAPI = selfRepository.deleteProfileFromApi(token)
 
-      return true
+      return isProfileDeletedAtAPI
    }
 }
