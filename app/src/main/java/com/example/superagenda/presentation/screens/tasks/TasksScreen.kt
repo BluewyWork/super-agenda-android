@@ -23,72 +23,81 @@ import com.example.superagenda.R
 import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TasksScreen(tasksViewModel: TasksViewModel, navController: NavController) {
-   Navigation(content = { padding ->
-      val pagerState = rememberPagerState { 3 }
+fun TasksScreen(
+   tasksViewModel: TasksViewModel,
+   navController: NavController,
+   navigationViewModel: NavigationViewModel
+) {
+   Navigation(
+      content = { padding ->
+         val pagerState = rememberPagerState { 3 }
 
-      var selectedTab by remember {
-         mutableIntStateOf(pagerState.currentPage)
-      }
+         var selectedTab by remember {
+            mutableIntStateOf(pagerState.currentPage)
+         }
 
-      LaunchedEffect(selectedTab) {
-         pagerState.scrollToPage(selectedTab)
-      }
+         LaunchedEffect(selectedTab) {
+            pagerState.scrollToPage(selectedTab)
+         }
 
-      LaunchedEffect(pagerState.currentPage) {
-         selectedTab = pagerState.currentPage
-      }
+         LaunchedEffect(pagerState.currentPage) {
+            selectedTab = pagerState.currentPage
+         }
 
-      Column(modifier = Modifier.padding(padding)) {
-         TabRow(selectedTabIndex = selectedTab) {
-            for (index in 0 until pagerState.pageCount) {
-               Tab(
-                  selected = true,
-                  onClick = { selectedTab = index }
-               ) {
-                  when (index) {
-                     0 -> Text("Not Started")
-                     1 -> Text("Ongoing")
-                     2 -> Text("Completed")
+         Column(modifier = Modifier.padding(padding)) {
+            TabRow(selectedTabIndex = selectedTab) {
+               for (index in 0 until pagerState.pageCount) {
+                  Tab(
+                     selected = true,
+                     onClick = { selectedTab = index }
+                  ) {
+                     when (index) {
+                        0 -> Text("Not Started")
+                        1 -> Text("Ongoing")
+                        2 -> Text("Completed")
+                     }
+                  }
+               }
+            }
+
+            HorizontalPager(
+               state = pagerState,
+               modifier = Modifier.fillMaxSize()
+            ) { currentPage ->
+               when (currentPage) {
+                  0 -> {
+                     tasksViewModel.loadTasksNotStarted()
+                     TasksNotStarted(tasksViewModel, navController)
+                  }
+
+                  1 -> {
+                     tasksViewModel.loadTasksOngoing()
+                     TasksOngoing(tasksViewModel, navController)
+                  }
+
+                  2 -> {
+                     tasksViewModel.loadTasksCompleted()
+                     TasksCompleted(tasksViewModel, navController)
                   }
                }
             }
          }
-
-         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-         ) { currentPage ->
-            when (currentPage) {
-               0 -> {
-                  tasksViewModel.loadTasksNotStarted()
-                  TasksNotStarted(tasksViewModel, navController)
-               }
-
-               1 -> {
-                  tasksViewModel.loadTasksOngoing()
-                  TasksOngoing(tasksViewModel, navController)
-               }
-
-               2 -> {
-                  tasksViewModel.loadTasksCompleted()
-                  TasksCompleted(tasksViewModel, navController)
-               }
-            }
-         }
-      }
-   }, navController, "Tasks",
+      },
+      navController = navController,
+      topBarTitle = "Tasks",
       floatingActionButton = {
          NewTaskFloatingActionButton {
             navController.navigate(Destinations.NewTask.route)
          }
-      }
+      },
+      navigationViewModel = navigationViewModel
    )
 }
 

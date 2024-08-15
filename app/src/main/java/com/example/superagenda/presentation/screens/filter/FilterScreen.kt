@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.filter.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.filter.composables.FilterButton
@@ -22,12 +23,16 @@ import com.example.superagenda.presentation.screens.filter.composables.TitleText
 import java.time.LocalDateTime
 
 @Composable
-fun FilterScreen(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
+fun FilterScreen(
+   filterScreenViewModel: FilterScreenViewModel,
+   navController: NavController,
+   navigationViewModel: NavigationViewModel
+) {
    Navigation(content = { padding ->
       Column(modifier = Modifier.padding(padding)) {
          Filter(filterScreenViewModel, navController)
       }
-   }, navController, "Find Tasks")
+   }, navController, "Find Tasks", navigationViewModel = navigationViewModel)
 }
 
 @Composable

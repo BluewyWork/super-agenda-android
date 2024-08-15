@@ -5,15 +5,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.core.NotificationService
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
-import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
-import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
@@ -29,7 +28,8 @@ fun NavigationHost(
    tasksViewModel: TasksViewModel,
    taskEditViewModel: TaskEditViewModel,
    newTaskViewModel: NewTaskViewModel,
-   filterScreenViewModel: FilterScreenViewModel,
+   filterViewModel: FilterScreenViewModel,
+   navigationViewModel: NavigationViewModel
 ) {
    val navController = rememberNavController()
 
@@ -37,16 +37,12 @@ fun NavigationHost(
       navController = navController,
       startDestination = Destinations.Tasks.route
    ) {
-      composable(Destinations.Register.route) {
-         RegisterScreen(registerViewModel, navController)
-      }
       composable(Destinations.Login.route) {
-         loginViewModel.onShow(navController)
-         LoginScreen(loginViewModel, navController)
+
       }
       composable(Destinations.Profile.route) {
          profileViewModel.onShow()
-         ProfileScreen(profileViewModel, navController, service)
+         ProfileScreen(profileViewModel, navController, navigationViewModel)
       }
       composable(Destinations.TaskEdit.route) {
          val task = tasksViewModel.taskToEdit.value
@@ -57,18 +53,18 @@ fun NavigationHost(
 
          taskEditViewModel.setTaskToEdit(task)
          taskEditViewModel.onShow(navController)
-         TaskEditScreen(taskEditViewModel, navController)
+         TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
       }
       composable(Destinations.NewTask.route) {
          newTaskViewModel.onShow()
-         NewTaskScreen(newTaskViewModel, navController)
+         NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
       }
       composable(Destinations.Filter.route) {
-         filterScreenViewModel.onShow()
-         FilterScreen(filterScreenViewModel, navController)
+         filterViewModel.onShow()
+         FilterScreen(filterViewModel, navController, navigationViewModel)
       }
       composable(Destinations.Tasks.route) {
-         TasksScreen(tasksViewModel, navController)
+         TasksScreen(tasksViewModel, navController, navigationViewModel)
       }
    }
 }

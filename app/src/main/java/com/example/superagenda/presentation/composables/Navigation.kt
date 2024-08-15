@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -45,6 +47,7 @@ fun Navigation(
    topBarTitle: String,
    floatingActionButton: @Composable () -> Unit = {},
    navigationIcon: @Composable () -> Unit = {},
+   navigationViewModel: NavigationViewModel
 ) {
    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
    val scope = rememberCoroutineScope()
@@ -53,7 +56,14 @@ fun Navigation(
       ModalNavigationDrawer(
          drawerState = drawerState,
          drawerContent = {
-            ModalDrawerSheet { DrawerContent(navController, scope, drawerState) }
+            ModalDrawerSheet {
+               DrawerContent(
+                  navController,
+                  scope,
+                  drawerState,
+                  navigationViewModel
+               )
+            }
          },
       ) {
          CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
@@ -72,9 +82,16 @@ fun Navigation(
 }
 
 @Composable
-fun DrawerContent(navController: NavController, scope: CoroutineScope, drawerState: DrawerState) {
+fun DrawerContent(
+   navController: NavController,
+   scope: CoroutineScope,
+   drawerState: DrawerState,
+   navigationViewModel: NavigationViewModel
+) {
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      if (false) {
+      val loggedIn: Boolean by navigationViewModel.isLoggedIn.observeAsState(false)
+
+      if (!loggedIn) {
          Button(onClick = {
             navController.navigate(Destinations.Login.route)
             scope.launch { drawerState.close() }

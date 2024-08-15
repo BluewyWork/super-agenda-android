@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.superagenda.core.NotificationService
 import com.example.superagenda.core.navigations.NavigationHost
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
@@ -28,7 +29,8 @@ class MainActivity : ComponentActivity() {
    private val tasksViewModel: TasksViewModel by viewModels()
    private val taskEditViewModel: TaskEditViewModel by viewModels()
    private val newTaskViewModel: NewTaskViewModel by viewModels()
-   private val filterScreenViewModel: FilterScreenViewModel by viewModels()
+   private val filterViewModel: FilterScreenViewModel by viewModels()
+   private val navigationViewModel: NavigationViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       createNotificationChannel()
@@ -46,7 +48,8 @@ class MainActivity : ComponentActivity() {
                tasksViewModel = tasksViewModel,
                taskEditViewModel = taskEditViewModel,
                newTaskViewModel = newTaskViewModel,
-               filterScreenViewModel = filterScreenViewModel
+               filterViewModel = filterViewModel,
+               navigationViewModel = navigationViewModel
             )
          }
       }

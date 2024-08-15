@@ -21,7 +21,6 @@ class LoginViewModel @Inject constructor(
    private val _password = MutableLiveData<String>()
    val password: LiveData<String> = _password
 
-
    private val _errorMessage = MutableLiveData<String?>()
    val errorMessage: LiveData<String?> = _errorMessage
 

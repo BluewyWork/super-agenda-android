@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.DateTimePicker
 import com.example.superagenda.presentation.screens.newTask.composables.DescriptionTextField
@@ -21,7 +22,11 @@ import com.example.superagenda.presentation.screens.newTask.composables.UpdateBu
 import java.time.LocalDateTime
 
 @Composable
-fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavController) {
+fun NewTaskScreen(
+   newTaskViewModel: NewTaskViewModel,
+   navController: NavController,
+   navigationViewModel: NavigationViewModel
+) {
    val popupsQueue: List<Pair<String, String>> by newTaskViewModel.popupsQueue.observeAsState(listOf())
 
    if (popupsQueue.isNotEmpty()) {
@@ -30,15 +35,17 @@ fun NewTaskScreen(newTaskViewModel: NewTaskViewModel, navController: NavControll
       }
    }
 
-   Navigation(content = { padding ->
-      Column(modifier = Modifier.padding(padding)) {
-         NewTask(newTaskViewModel)
-         UpdateButton {
-            newTaskViewModel.onCreateButtonPress(navController)
+   Navigation(
+      content = { padding ->
+         Column(modifier = Modifier.padding(padding)) {
+            NewTask(newTaskViewModel)
+            UpdateButton {
+               newTaskViewModel.onCreateButtonPress(navController)
+            }
          }
-      }
-   }, navController, "New Task",
-      navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) }
+      }, navController, "New Task",
+      navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+      navigationViewModel = navigationViewModel
    )
 }
 

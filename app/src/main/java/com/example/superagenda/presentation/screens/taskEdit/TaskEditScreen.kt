@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.Navigation
+import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
@@ -24,7 +25,11 @@ import com.example.superagenda.presentation.screens.taskEdit.composables.UpdateB
 import java.time.LocalDateTime
 
 @Composable
-fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavController) {
+fun TaskEditScreen(
+   taskEditViewModel: TaskEditViewModel,
+   navController: NavController,
+   navigationViewModel: NavigationViewModel
+) {
    val popupsQueue: List<Pair<String, String>> by taskEditViewModel.popupsQueue.observeAsState(
       listOf()
    )
@@ -48,9 +53,10 @@ fun TaskEditScreen(taskEditViewModel: TaskEditViewModel, navController: NavContr
             }
          }
       },
-      navController,
-      "Edit Task",
+      navController = navController,
+      topBarTitle = "Edit Task",
       navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+      navigationViewModel = navigationViewModel
    )
 }
 
