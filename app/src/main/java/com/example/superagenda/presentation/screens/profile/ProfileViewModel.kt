@@ -27,7 +27,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
    private val selfUseCase: SelfUseCase,
    private val loginUseCase: LoginUseCase,
-   private val taskUseCase: TaskUseCase
+   private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
    private val _userForProfile = MutableLiveData<UserForProfile?>()
    val userForProfile: LiveData<UserForProfile?> = _userForProfile

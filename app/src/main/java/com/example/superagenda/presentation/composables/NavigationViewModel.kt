@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
-   private val loginUseCase: LoginUseCase
+   private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
    private val _isLoggedIn = MutableLiveData<Boolean>()
    val isLoggedIn: LiveData<Boolean> = _isLoggedIn

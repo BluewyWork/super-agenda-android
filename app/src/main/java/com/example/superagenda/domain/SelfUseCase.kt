@@ -9,7 +9,7 @@ import javax.inject.Inject
 class SelfUseCase @Inject constructor(
    private val selfRepository: SelfRepository,
    private val loginRepository: LoginRepository,
-   private val taskRepository: TaskRepository
+   private val taskRepository: TaskRepository,
 ) {
    suspend fun retrieveUserForProfile(): UserForProfile? {
       val token = loginRepository.retrieveTokenFromLocalStorage()

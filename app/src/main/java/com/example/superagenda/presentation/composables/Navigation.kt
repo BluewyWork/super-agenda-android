@@ -86,7 +86,7 @@ fun DrawerContent(
    navController: NavController,
    scope: CoroutineScope,
    drawerState: DrawerState,
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
 ) {
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       navigationViewModel.onShow()

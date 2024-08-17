@@ -70,9 +70,9 @@ class TaskRepository @Inject constructor(
    }
 
    suspend fun retrieveTasksAPI(token: String): List<Task>? {
-      return  withContext(Dispatchers.IO) {
+      return withContext(Dispatchers.IO) {
          try {
-            taskApi.retrieveTaskList(token).data.map {it.toDomain()}
+            taskApi.retrieveTaskList(token).data.map { it.toDomain() }
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
             null

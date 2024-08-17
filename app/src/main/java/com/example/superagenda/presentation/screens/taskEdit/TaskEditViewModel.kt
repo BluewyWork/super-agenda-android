@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val loginUseCase: LoginUseCase
+   private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
    private val _title = MutableLiveData<String>()
    val title: LiveData<String> = _title

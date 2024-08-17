@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
-   private val taskUseCase: TaskUseCase
+   private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
    private val _username = MutableLiveData<String>()
    val username: LiveData<String> = _username

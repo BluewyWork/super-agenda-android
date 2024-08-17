@@ -26,13 +26,18 @@ import java.time.LocalDateTime
 fun FilterScreen(
    filterScreenViewModel: FilterScreenViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
 ) {
-   Navigation(content = { padding ->
-      Column(modifier = Modifier.padding(padding)) {
-         Filter(filterScreenViewModel, navController)
-      }
-   }, navController = navController, topBarTitle = "Find Tasks", navigationViewModel = navigationViewModel)
+   Navigation(
+      content = { padding ->
+         Column(modifier = Modifier.padding(padding)) {
+            Filter(filterScreenViewModel, navController)
+         }
+      },
+      navController = navController,
+      topBarTitle = "Find Tasks",
+      navigationViewModel = navigationViewModel
+   )
 }
 
 @Composable

@@ -33,7 +33,7 @@ import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 fun TasksScreen(
    tasksViewModel: TasksViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
 ) {
    Navigation(
       content = { padding ->
