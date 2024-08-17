@@ -2,91 +2,49 @@ package com.example.superagenda.presentation.screens.newTask.composables
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
-
 
 @Composable
 fun DateTimePicker(
+   context: Context,
    initialDateTime: LocalDateTime,
-   onDateTimeSelected: (LocalDateTime) -> Unit,
+   onDateTimePicked: (LocalDateTime) -> Unit
 ) {
-   var selectedDateTime by remember { mutableStateOf(initialDateTime) }
+   val now = Calendar.getInstance()
 
-   val context = LocalContext.current
-   val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-   val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+   // Show DatePicker first
+   DatePickerDialog(
+      context,
+      { _, year, month, dayOfMonth ->
+         // Once a date is picked, update LocalDateTime
+         val updatedDateTime = initialDateTime
+            .withYear(year)
+            .withMonth(month + 1) // Month is 0-indexed
+            .withDayOfMonth(dayOfMonth)
 
-   val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-      selectedDateTime =
-         selectedDateTime.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
-      onDateTimeSelected(selectedDateTime)
-   }
+         // Then show TimePicker
+         TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+               // Once time is picked, update LocalDateTime
+               val finalDateTime = updatedDateTime
+                  .withHour(hourOfDay)
+                  .withMinute(minute)
 
-   val timeListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-      selectedDateTime = selectedDateTime.withHour(hour).withMinute(minute)
-      onDateTimeSelected(selectedDateTime)
-   }
+               // Return the updated LocalDateTime
+               onDateTimePicked(finalDateTime)
+            },
+            now.get(Calendar.HOUR_OF_DAY),
+            now.get(Calendar.MINUTE),
+            true // Use 24-hour format
+         ).show()
 
-   Column(modifier = Modifier.padding(16.dp)) {
-      Row(
-         horizontalArrangement = Arrangement.SpaceBetween,
-         modifier = Modifier.fillMaxWidth()
-      ) {
-         Text(text = "Selected Date: ${selectedDateTime.format(dateFormatter)}")
-
-         Button(onClick = {
-            val now = Calendar.getInstance()
-            DatePickerDialog(
-               context,
-               dateListener,
-               now.get(Calendar.YEAR),
-               now.get(Calendar.MONTH),
-               now.get(Calendar.DAY_OF_MONTH)
-            ).show()
-         }) {
-            Text(text = "Pick Date")
-         }
-      }
-
-      Spacer(modifier = Modifier.height(8.dp))
-
-      Row(
-         horizontalArrangement = Arrangement.SpaceBetween,
-         modifier = Modifier.fillMaxWidth()
-      ) {
-         Text(text = "Selected Time: ${selectedDateTime.format(timeFormatter)}")
-
-         Button(onClick = {
-            val now = Calendar.getInstance()
-            TimePickerDialog(
-               context,
-               timeListener,
-               now.get(Calendar.HOUR_OF_DAY),
-               now.get(Calendar.MINUTE),
-               true
-            ).show()
-         }) {
-            Text(text = "Pick Time")
-         }
-      }
-   }
+      },
+      now.get(Calendar.YEAR),
+      now.get(Calendar.MONTH),
+      now.get(Calendar.DAY_OF_MONTH)
+   ).show()
 }

@@ -1,24 +1,26 @@
 package com.example.superagenda.presentation.screens.newTask
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.newTask.composables.DateTimePicker
-import com.example.superagenda.presentation.screens.newTask.composables.DescriptionTextField
+import com.example.superagenda.presentation.screens.newTask.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.screens.newTask.composables.TaskStatusDropDown
-import com.example.superagenda.presentation.screens.newTask.composables.TitleTextField
-import com.example.superagenda.presentation.screens.newTask.composables.UpdateButton
 import java.time.LocalDateTime
 
 @Composable
@@ -39,11 +41,20 @@ fun NewTaskScreen(
       content = { padding ->
          Column(modifier = Modifier.padding(padding)) {
             NewTask(newTaskViewModel)
-            UpdateButton {
-               newTaskViewModel.onCreateButtonPress(navController)
+
+            Button(
+               onClick = {newTaskViewModel.onCreateButtonPress(navController)},
+               modifier = Modifier
+                  .padding(vertical = 8.dp)
+                  .fillMaxWidth()
+            ) {
+               Text("Create")
             }
          }
-      }, navController, "New Task",
+      },
+
+      navController = navController,
+      topBarTitle = "New Task",
       navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
       navigationViewModel = navigationViewModel
    )
@@ -51,40 +62,58 @@ fun NewTaskScreen(
 
 @Composable
 fun NewTask(newTaskViewModel: NewTaskViewModel) {
-   val title: String by newTaskViewModel.title.observeAsState("")
-   val description: String by newTaskViewModel.description.observeAsState("")
-   val taskStatus: TaskStatus? by newTaskViewModel.taskStatus.observeAsState()
-   val startDateTime: LocalDateTime? by newTaskViewModel.startDateTime.observeAsState()
-   val endDateTime: LocalDateTime? by newTaskViewModel.endDateTime.observeAsState()
+   val title: String by newTaskViewModel.title.observeAsState(initial = "")
+   val description: String by newTaskViewModel.description.observeAsState(initial = "")
+   val taskStatus: TaskStatus by newTaskViewModel.taskStatus.observeAsState(initial = TaskStatus.NotStarted)
+   val startDateTime: LocalDateTime by newTaskViewModel.startDateTime.observeAsState(initial = LocalDateTime.now())
+   val endDateTime: LocalDateTime by newTaskViewModel.endDateTime.observeAsState(initial = LocalDateTime.now())
 
-   LazyColumn {
+   LazyColumn(
+      contentPadding = PaddingValues(
+         start = 8.dp,
+         top = 16.dp,
+         end = 8.dp,
+         bottom = 16.dp
+      )
+   ) {
       item {
-         TitleTextField(title) {
-            newTaskViewModel.onTitleChange(it)
-         }
-         DescriptionTextField(description) {
-            newTaskViewModel.onDescriptionChange(it)
-         }
-         taskStatus?.let { it1 ->
-            TaskStatusDropDown(it1) {
-               newTaskViewModel.onTaskStatusChange(it)
-            }
+         OutlinedTextField(
+            value = title,
+            onValueChange = { newTaskViewModel.onTitleChange(title) },
+            label = { Text("Title") },
+            modifier = Modifier.fillMaxWidth()
+         )
+
+         OutlinedTextField(
+            value = description,
+            onValueChange = { newTaskViewModel.onDescriptionChange(description) },
+            label = { Text("Description") },
+            modifier = Modifier.fillMaxWidth()
+         )
+
+         TaskStatusDropDown(taskStatus) {
+            newTaskViewModel.onTaskStatusChange(taskStatus)
          }
 
-         Text(text = "START DATETIME")
-         startDateTime?.let { it3 ->
-            DateTimePicker(initialDateTime = it3) { it2 ->
-               newTaskViewModel.onStartDateTimeChange(it2)
-            }
-         }
+         LocalDateTimePickerTextField(
+            value = startDateTime,
 
-         Text(text = "END DATETIME")
-         endDateTime?.let { it5 ->
-            DateTimePicker(initialDateTime = it5) { it2 ->
-               newTaskViewModel.onEndDateTimeChange(it2)
+            onLocalDateTimeChange = {
+               newTaskViewModel.onStartDateTimeChange(it)
+            },
 
-            }
-         }
+            label = "Start DateTime"
+         )
+
+         LocalDateTimePickerTextField(
+            value = endDateTime,
+
+            onLocalDateTimeChange = {
+               newTaskViewModel.onEndDateTimeChange(it)
+            },
+
+            label = "End DateTime"
+         )
       }
    }
 }
