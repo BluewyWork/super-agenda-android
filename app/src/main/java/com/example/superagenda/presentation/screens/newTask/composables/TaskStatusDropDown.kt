@@ -14,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.example.superagenda.domain.models.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,43 +22,49 @@ fun TaskStatusDropDown(
    taskStatus: TaskStatus,
    onStatusChange: (TaskStatus) -> Unit,
 ) {
-   val context = LocalContext.current
    val taskStatuses = TaskStatus.values()
 
-   var expanded by remember { mutableStateOf(false) }
-   var selectedStatus by remember { mutableStateOf(taskStatus) }
+   var expanded by remember(calculation = { mutableStateOf(false) })
+   var selectedStatus by remember(calculation = { mutableStateOf(taskStatus) })
 
-   Column(modifier = Modifier.fillMaxWidth()) {
-      ExposedDropdownMenuBox(
-         expanded = expanded,
-         onExpandedChange = { expanded = it },
-         modifier = Modifier.fillMaxWidth()
-      ) {
-         OutlinedTextField(
-            value = selectedStatus.name,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-               .fillMaxWidth()
-               .menuAnchor()
-         )
-
-         ExposedDropdownMenu(
+   Column(
+      modifier = Modifier.fillMaxWidth(),
+      content = {
+         ExposedDropdownMenuBox(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
-         ) {
-            taskStatuses.forEach { status ->
-               DropdownMenuItem(
-                  text = { Text(text = status.name) },
-                  onClick = {
-                     selectedStatus = status
-                     expanded = false
-                     onStatusChange(status)
+            onExpandedChange = { expanded = it },
+            modifier = Modifier.fillMaxWidth(),
+
+            content = {
+               OutlinedTextField(
+                  value = selectedStatus.name,
+                  onValueChange = {},
+                  readOnly = true,
+                  trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                  modifier = Modifier
+                     .fillMaxWidth()
+                     .menuAnchor()
+               )
+
+               ExposedDropdownMenu(
+                  expanded = expanded,
+                  onDismissRequest = { expanded = false },
+
+                  content = {
+                     taskStatuses.forEach { status ->
+                        DropdownMenuItem(
+                           text = { Text(text = status.name) },
+                           onClick = {
+                              selectedStatus = status
+                              expanded = false
+                              onStatusChange(status)
+                           }
+                        )
+                     }
                   }
                )
             }
-         }
+         )
       }
-   }
+   )
 }

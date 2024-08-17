@@ -5,8 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -19,23 +26,23 @@ import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.profile.composables.BackupTaskList
-import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.profile.composables.ImportTaskList
-import com.example.superagenda.presentation.screens.profile.composables.LogoutButton
-import com.example.superagenda.presentation.screens.profile.composables.UsernameTextField
 
 @Composable
 fun ProfileScreen(
    profileViewModel: ProfileViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
 ) {
    val popupsQueue: List<Pair<String, String>> by profileViewModel.popupsQueue.observeAsState(
       listOf()
    )
 
    if (popupsQueue.isNotEmpty()) {
-      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+      PopupDialog(
+         title = popupsQueue.first().first,
+         message = popupsQueue.first().second
+      ) {
          profileViewModel.dismissPopup()
       }
    }
@@ -44,6 +51,7 @@ fun ProfileScreen(
       content = { padding ->
          Profile(profileViewModel, navController, padding)
       },
+
       navController = navController,
       topBarTitle = "Profile",
       navigationViewModel = navigationViewModel
@@ -62,23 +70,41 @@ fun Profile(
       modifier = Modifier
          .padding(padding)
          .fillMaxSize(),
+
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally
-
    ) {
       item {
          userForProfile?.let {
-            UsernameTextField(username = it.username) {}
+            OutlinedTextField(
+               modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(start = 8.dp, end = 8.dp),
+
+               value = it.username,
+               readOnly = true,
+               onValueChange = { it2 -> {} },
+               label = { Text(text = "Username") },
+               leadingIcon = { Icon(Icons.Default.Person, null) }
+            )
+         } ?: run {
+            OutlinedTextField(value = "Failed to communicate with API...", onValueChange = {})
          }
 
          Spacer(modifier = Modifier.padding(16.dp))
 
-         DeleteButton {
-            profileViewModel.onDeleteButtonPressButton(navController)
+         Button(
+            onClick = { profileViewModel.onDeleteButtonPressButton(navController) },
+            modifier = Modifier.fillMaxWidth()
+         ) {
+            Text("Delete Profile")
          }
 
-         LogoutButton {
-            profileViewModel.onLogoutPress(navController)
+         Button(
+            onClick = { profileViewModel.onLogoutPress(navController) },
+            modifier = Modifier.fillMaxWidth()
+         ) {
+            Text("Logout")
          }
 
          Spacer(modifier = Modifier.padding(16.dp))

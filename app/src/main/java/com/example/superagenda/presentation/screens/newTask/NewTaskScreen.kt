@@ -27,30 +27,41 @@ import java.time.LocalDateTime
 fun NewTaskScreen(
    newTaskViewModel: NewTaskViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
 ) {
    val popupsQueue: List<Pair<String, String>> by newTaskViewModel.popupsQueue.observeAsState(listOf())
 
    if (popupsQueue.isNotEmpty()) {
-      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
-         newTaskViewModel.dismissPopup()
-      }
+      PopupDialog(
+         title = popupsQueue.first().first,
+         message = popupsQueue.first().second,
+
+         onDismiss = {
+            newTaskViewModel.dismissPopup()
+         }
+      )
    }
 
    Navigation(
       content = { padding ->
-         Column(modifier = Modifier.padding(padding)) {
-            NewTask(newTaskViewModel)
+         Column(
+            modifier = Modifier.padding(padding),
 
-            Button(
-               onClick = {newTaskViewModel.onCreateButtonPress(navController)},
-               modifier = Modifier
-                  .padding(vertical = 8.dp)
-                  .fillMaxWidth()
-            ) {
-               Text("Create")
+            content = {
+               NewTask(newTaskViewModel)
+
+               Button(
+                  onClick = { newTaskViewModel.onCreateButtonPress(navController) },
+                  modifier = Modifier
+                     .padding(vertical = 8.dp)
+                     .fillMaxWidth(),
+
+                  content = {
+                     Text("Create")
+                  }
+               )
             }
-         }
+         )
       },
 
       navController = navController,
@@ -74,46 +85,48 @@ fun NewTask(newTaskViewModel: NewTaskViewModel) {
          top = 16.dp,
          end = 8.dp,
          bottom = 16.dp
-      )
-   ) {
-      item {
-         OutlinedTextField(
-            value = title,
-            onValueChange = { newTaskViewModel.onTitleChange(title) },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
-         )
+      ),
+      content = {
 
-         OutlinedTextField(
-            value = description,
-            onValueChange = { newTaskViewModel.onDescriptionChange(description) },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-         )
+         item {
+            OutlinedTextField(
+               value = title,
+               onValueChange = { newTaskViewModel.onTitleChange(title) },
+               label = { Text("Title") },
+               modifier = Modifier.fillMaxWidth()
+            )
 
-         TaskStatusDropDown(taskStatus) {
-            newTaskViewModel.onTaskStatusChange(taskStatus)
+            OutlinedTextField(
+               value = description,
+               onValueChange = { newTaskViewModel.onDescriptionChange(description) },
+               label = { Text("Description") },
+               modifier = Modifier.fillMaxWidth()
+            )
+
+            TaskStatusDropDown(taskStatus) {
+               newTaskViewModel.onTaskStatusChange(taskStatus)
+            }
+
+            LocalDateTimePickerTextField(
+               value = startDateTime,
+
+               onLocalDateTimeChange = {
+                  newTaskViewModel.onStartDateTimeChange(it)
+               },
+
+               label = "Start DateTime"
+            )
+
+            LocalDateTimePickerTextField(
+               value = endDateTime,
+
+               onLocalDateTimeChange = {
+                  newTaskViewModel.onEndDateTimeChange(it)
+               },
+
+               label = "End DateTime"
+            )
          }
-
-         LocalDateTimePickerTextField(
-            value = startDateTime,
-
-            onLocalDateTimeChange = {
-               newTaskViewModel.onStartDateTimeChange(it)
-            },
-
-            label = "Start DateTime"
-         )
-
-         LocalDateTimePickerTextField(
-            value = endDateTime,
-
-            onLocalDateTimeChange = {
-               newTaskViewModel.onEndDateTimeChange(it)
-            },
-
-            label = "End DateTime"
-         )
       }
-   }
+   )
 }

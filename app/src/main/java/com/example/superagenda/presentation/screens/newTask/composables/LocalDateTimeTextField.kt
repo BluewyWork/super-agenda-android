@@ -3,8 +3,6 @@ package com.example.superagenda.presentation.screens.newTask.composables
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Button
@@ -16,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,10 +23,10 @@ import java.util.Calendar
 fun LocalDateTimePickerTextField(
    value: LocalDateTime,
    onLocalDateTimeChange: (LocalDateTime) -> Unit,
-   label: String
+   label: String,
 ) {
-   var showDatePicker by remember { mutableStateOf(false) }
-   var showTimePicker by remember { mutableStateOf(false) }
+   var showDatePicker by remember(calculation = { mutableStateOf(false) })
+   var showTimePicker by remember(calculation = { mutableStateOf(false) })
 
    val context = LocalContext.current
 
@@ -58,6 +55,7 @@ fun LocalDateTimePickerTextField(
 
    if (showTimePicker) {
       val now = Calendar.getInstance()
+
       TimePickerDialog(
          context,
          timeListener,
@@ -65,26 +63,32 @@ fun LocalDateTimePickerTextField(
          now.get(Calendar.MINUTE),
          true
       ).show()
+
       showTimePicker = false
    }
 
-   Row {
-      OutlinedTextField(
-         value = value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-         onValueChange = {},
-         label = { Text(text = label) },
-         singleLine = true,
-         readOnly = true,
-      )
-      Button(
-         modifier = Modifier.fillMaxHeight().fillMaxSize(),
-         onClick = {
-            showDatePicker = true
-         }) {
-         Icon(
-            imageVector = Icons.Default.Create,
-            contentDescription = null
+   Row(
+      content = {
+         OutlinedTextField(
+            value = value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+            onValueChange = {},
+            label = { Text(text = label) },
+            singleLine = true,
+            readOnly = true,
+         )
+
+         Button(
+            onClick = {
+               showDatePicker = true
+            },
+
+            content = {
+               Icon(
+                  imageVector = Icons.Default.Create,
+                  contentDescription = null
+               )
+            }
          )
       }
-   }
+   )
 }

@@ -16,8 +16,8 @@ import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DateTimePicker
+import com.example.superagenda.presentation.screens.taskEdit.composables.DeleteButton
 import com.example.superagenda.presentation.screens.taskEdit.composables.DescriptionTextField
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 import com.example.superagenda.presentation.screens.taskEdit.composables.TitleTextField
