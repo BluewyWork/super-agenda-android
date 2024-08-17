@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.newTask.composables
+package com.example.superagenda.presentation.composables
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

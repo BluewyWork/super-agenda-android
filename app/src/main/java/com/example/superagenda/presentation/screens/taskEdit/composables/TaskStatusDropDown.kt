@@ -6,15 +6,14 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.example.superagenda.domain.models.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,7 +22,6 @@ fun TaskStatusDropDown(
    taskStatus: TaskStatus,
    onStatusChange: (TaskStatus) -> Unit,
 ) {
-   val context = LocalContext.current
    val taskStatuses = TaskStatus.values()
 
    var expanded by remember { mutableStateOf(false) }
@@ -35,7 +33,7 @@ fun TaskStatusDropDown(
          onExpandedChange = { expanded = it },
          modifier = Modifier.fillMaxWidth()
       ) {
-         TextField(
+         OutlinedTextField(
             value = taskStatus.name,
             onValueChange = {},
             readOnly = true,

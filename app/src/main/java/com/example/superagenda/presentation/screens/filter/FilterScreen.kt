@@ -32,7 +32,7 @@ fun FilterScreen(
       Column(modifier = Modifier.padding(padding)) {
          Filter(filterScreenViewModel, navController)
       }
-   }, navController, "Find Tasks", navigationViewModel = navigationViewModel)
+   }, navController = navController, topBarTitle = "Find Tasks", navigationViewModel = navigationViewModel)
 }
 
 @Composable

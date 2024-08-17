@@ -42,12 +42,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Navigation(
-   content: @Composable (padding: PaddingValues) -> Unit,
    navController: NavController,
    topBarTitle: String,
    floatingActionButton: @Composable () -> Unit = {},
    navigationIcon: @Composable () -> Unit = {},
-   navigationViewModel: NavigationViewModel
+   navigationViewModel: NavigationViewModel,
+   content: @Composable (padding: PaddingValues) -> Unit,
 ) {
    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
    val scope = rememberCoroutineScope()
