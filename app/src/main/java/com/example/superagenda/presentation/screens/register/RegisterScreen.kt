@@ -13,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.register.composables.GoToLoginScreen
@@ -29,7 +30,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
             title = { Text("Register Screen") },
             navigationIcon = {
                BackIconButton {
-                  navController.navigateUp()
+                  navController.navigate(Destinations.Tasks.route)
                }
             }
          )

@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.profile.composables.BackupTaskList
 import com.example.superagenda.presentation.screens.profile.composables.DeleteButton
 import com.example.superagenda.presentation.screens.profile.composables.ImportTaskList
@@ -29,6 +30,16 @@ fun ProfileScreen(
    navController: NavController,
    navigationViewModel: NavigationViewModel
 ) {
+   val popupsQueue: List<Pair<String, String>> by profileViewModel.popupsQueue.observeAsState(
+      listOf()
+   )
+
+   if (popupsQueue.isNotEmpty()) {
+      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+         profileViewModel.dismissPopup()
+      }
+   }
+
    Navigation(
       content = { padding ->
          Profile(profileViewModel, navController, padding)

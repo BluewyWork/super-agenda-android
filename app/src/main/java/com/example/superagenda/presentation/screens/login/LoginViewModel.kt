@@ -98,30 +98,29 @@ class LoginViewModel @Inject constructor(
             // attempt to save local tasks
             val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
 
-            var i = true
+            var lastResult = true
 
             if (tasks != null) {
                for (task in tasks) {
-                  i = taskUseCase.createTaskAtAPI(task)
+                  lastResult = taskUseCase.createTaskAtAPI(task)
                }
             }
 
-            if (!i) {
+            if (!lastResult) {
                enqueuePopup("ERROR", "Failed to sync tasks created before logged in...")
             }
 
             val remoteTasks = taskUseCase.retrieveTaskAtApi()
 
-            var j = true
+            var lastResult2 = true
 
             if (remoteTasks != null) {
-
                for (task in remoteTasks) {
-                  j = taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)
+                  lastResult2 = taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)
                }
             }
 
-            if (!j) {
+            if (!lastResult2) {
                enqueuePopup("ERROR", "Failed to bring some or all tasks locally...")
             }
 
