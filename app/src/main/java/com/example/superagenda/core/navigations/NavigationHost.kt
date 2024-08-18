@@ -12,6 +12,7 @@ import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
+import com.example.superagenda.presentation.screens.other.OtherScreen
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
@@ -71,6 +72,9 @@ fun NavigationHost(
       }
       composable(Destinations.Tasks.route) {
          TasksScreen(tasksViewModel, navController, navigationViewModel)
+      }
+      composable(Destinations.Other.route) {
+         OtherScreen()
       }
    }
 }

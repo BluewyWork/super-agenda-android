@@ -1,6 +1,7 @@
 package com.example.superagenda.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -31,6 +33,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -88,27 +91,66 @@ fun DrawerContent(
    drawerState: DrawerState,
    navigationViewModel: NavigationViewModel,
 ) {
+   // keep in mind the direction is reversed and reversed and reversed...
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
       navigationViewModel.onShow()
       val loggedIn: Boolean by navigationViewModel.isLoggedIn.observeAsState(false)
 
       if (!loggedIn) {
-         Button(onClick = {
-            navController.navigate(Destinations.Login.route)
-            scope.launch { drawerState.close() }
-         }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Authentication")
-            Icon(imageVector = Icons.Filled.Lock, contentDescription = "auth")
+         Button(
+            onClick = {
+               navController.navigate(Destinations.Login.route)
+               scope.launch { drawerState.close() }
+            }, modifier = Modifier.fillMaxWidth()
+         ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+               Text(text = "Authentication", modifier = Modifier.align(Alignment.Center))
+               Icon(
+                  imageVector = Icons.Filled.Lock,
+                  contentDescription = null,
+                  modifier = Modifier.align(Alignment.CenterEnd)
+               )
+            }
          }
       } else {
-         Button(onClick = {
-            navController.navigate(Destinations.Profile.route)
-            scope.launch { drawerState.close() }
-         }, modifier = Modifier.fillMaxWidth()) {
-            Text("Profile")
-            Icon(imageVector = Icons.Filled.Person, contentDescription = "profile")
+         Button(
+            onClick = {
+               navController.navigate(Destinations.Profile.route)
+               scope.launch { drawerState.close() }
+            }, modifier = Modifier.fillMaxWidth()
+         ) {
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+               Text("Profile", modifier = Modifier.align(Alignment.Center))
+               Icon(
+                  imageVector = Icons.Filled.Person,
+                  contentDescription = null,
+                  modifier = Modifier.align(Alignment.CenterEnd)
+               )
+            }
          }
       }
+
+      Button(
+         modifier = Modifier.fillMaxWidth(),
+         onClick = { navController.navigate(Destinations.Other.route) }
+      ) {
+         Box(
+            modifier = Modifier.fillMaxWidth()
+         ) {
+            Text(
+               text = "Other",
+               modifier = Modifier.align(Alignment.Center)
+            )
+
+            Icon(
+               imageVector = Icons.Outlined.FavoriteBorder,
+               contentDescription = null,
+               modifier = Modifier.align(Alignment.CenterEnd)
+            )
+         }
+      }
+
       HorizontalDivider()
    }
 }

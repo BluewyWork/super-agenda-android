@@ -1,6 +1,5 @@
 package com.example.superagenda.presentation.screens.profile
 
-import BeautifulTitle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +24,6 @@ import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.profile.composables.BackupTaskList
-import com.example.superagenda.presentation.screens.profile.composables.ImportTaskList
 
 @Composable
 fun ProfileScreen(
@@ -71,6 +68,7 @@ fun Profile(
          .padding(padding)
          .fillMaxSize(),
 
+      contentPadding = PaddingValues(8.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally
    ) {
@@ -88,7 +86,16 @@ fun Profile(
                leadingIcon = { Icon(Icons.Default.Person, null) }
             )
          } ?: run {
-            OutlinedTextField(value = "Failed to communicate with API...", onValueChange = {})
+            OutlinedTextField(
+               modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(start = 8.dp, end = 8.dp),
+
+               value = "Failed to retrieve data...",
+               onValueChange = {},
+               label = {Text("Username")},
+               enabled = false
+            )
          }
 
          Spacer(modifier = Modifier.padding(16.dp))
@@ -105,23 +112,6 @@ fun Profile(
             modifier = Modifier.fillMaxWidth()
          ) {
             Text("Logout")
-         }
-
-         Spacer(modifier = Modifier.padding(16.dp))
-         Spacer(modifier = Modifier.padding(16.dp))
-         Spacer(modifier = Modifier.padding(16.dp))
-         Spacer(modifier = Modifier.padding(16.dp))
-         Spacer(modifier = Modifier.padding(16.dp))
-         Spacer(modifier = Modifier.padding(16.dp))
-
-         BeautifulTitle(title = "OTHER")
-
-         BackupTaskList {
-            profileViewModel.onBackupButtonPress()
-         }
-
-         ImportTaskList { contentResolver, filePath ->
-            profileViewModel.onImportButtonPress(contentResolver, filePath)
          }
       }
    }

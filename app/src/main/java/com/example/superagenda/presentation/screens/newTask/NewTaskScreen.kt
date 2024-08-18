@@ -1,10 +1,9 @@
 package com.example.superagenda.presentation.screens.newTask
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -48,7 +47,7 @@ fun NewTaskScreen(
             modifier = Modifier.padding(padding),
 
             content = {
-               NewTask(newTaskViewModel)
+               NewTask(newTaskViewModel, navController)
 
                Button(
                   onClick = { newTaskViewModel.onCreateButtonPress(navController) },
@@ -72,61 +71,60 @@ fun NewTaskScreen(
 }
 
 @Composable
-fun NewTask(newTaskViewModel: NewTaskViewModel) {
+fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
    val title: String by newTaskViewModel.title.observeAsState(initial = "")
    val description: String by newTaskViewModel.description.observeAsState(initial = "")
    val taskStatus: TaskStatus by newTaskViewModel.taskStatus.observeAsState(initial = TaskStatus.NotStarted)
    val startDateTime: LocalDateTime by newTaskViewModel.startDateTime.observeAsState(initial = LocalDateTime.now())
    val endDateTime: LocalDateTime by newTaskViewModel.endDateTime.observeAsState(initial = LocalDateTime.now())
 
-   LazyColumn(
-      contentPadding = PaddingValues(
-         start = 8.dp,
-         top = 16.dp,
-         end = 8.dp,
-         bottom = 16.dp
-      ),
+   Column(
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+
+      modifier = Modifier.fillMaxWidth(),
+
       content = {
+         OutlinedTextField(
+            value = title,
+            onValueChange = { newTaskViewModel.onTitleChange(title) },
+            label = { Text("Title") },
+            modifier = Modifier.fillMaxWidth()
+         )
 
-         item {
-            OutlinedTextField(
-               value = title,
-               onValueChange = { newTaskViewModel.onTitleChange(title) },
-               label = { Text("Title") },
-               modifier = Modifier.fillMaxWidth()
-            )
+         OutlinedTextField(
+            value = description,
+            onValueChange = { newTaskViewModel.onDescriptionChange(description) },
+            label = { Text("Description") },
+            modifier = Modifier.fillMaxWidth()
+         )
 
-            OutlinedTextField(
-               value = description,
-               onValueChange = { newTaskViewModel.onDescriptionChange(description) },
-               label = { Text("Description") },
-               modifier = Modifier.fillMaxWidth()
-            )
-
-            TaskStatusDropDown(taskStatus) {
-               newTaskViewModel.onTaskStatusChange(taskStatus)
-            }
-
-            LocalDateTimePickerTextField(
-               value = startDateTime,
-
-               onLocalDateTimeChange = {
-                  newTaskViewModel.onStartDateTimeChange(it)
-               },
-
-               label = "Start DateTime"
-            )
-
-            LocalDateTimePickerTextField(
-               value = endDateTime,
-
-               onLocalDateTimeChange = {
-                  newTaskViewModel.onEndDateTimeChange(it)
-               },
-
-               label = "End DateTime"
-            )
+         TaskStatusDropDown(taskStatus) {
+            newTaskViewModel.onTaskStatusChange(taskStatus)
          }
+
+         LocalDateTimePickerTextField(
+            value = startDateTime,
+
+            onLocalDateTimeChange = {
+               newTaskViewModel.onStartDateTimeChange(it)
+            },
+
+            modifier = Modifier.fillMaxWidth(),
+
+            label = "Start DateTime"
+         )
+
+         LocalDateTimePickerTextField(
+            value = endDateTime,
+
+            onLocalDateTimeChange = {
+               newTaskViewModel.onEndDateTimeChange(it)
+            },
+
+            modifier = Modifier.fillMaxWidth(),
+
+            label = "End DateTime"
+         )
       }
    )
 }
