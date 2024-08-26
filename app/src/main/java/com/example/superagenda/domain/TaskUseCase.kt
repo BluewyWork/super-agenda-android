@@ -72,4 +72,8 @@ class TaskUseCase @Inject constructor(
 
       return taskRepository.deleteTaskAtApi(taskID, token)
    }
+
+   suspend fun backupTasks(tasks: List<Task>): Boolean {
+      return taskRepository.backupTasksAtLocalStorage(tasks)
+   }
 }

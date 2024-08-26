@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.screens.profile.composables
+package com.example.superagenda.presentation.screens.other.composables
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun ImportTaskList(onFileChosen: (ContentResolver, String) -> Unit) {
+fun ImportTaskList(
+   modifier: Modifier = Modifier,
+   onFileChosen: (ContentResolver, String) -> Unit,
+) {
    var chosenFile by remember { mutableStateOf<String?>(null) }
    val context = LocalContext.current
 
@@ -30,7 +32,7 @@ fun ImportTaskList(onFileChosen: (ContentResolver, String) -> Unit) {
          val filePath = data?.dataString
          filePath?.let { path ->
             chosenFile = path
-            onFileChosen(context.contentResolver, path) // Pass the file path to the callback
+            onFileChosen(context.contentResolver, path)
          }
       }
    }
@@ -43,11 +45,11 @@ fun ImportTaskList(onFileChosen: (ContentResolver, String) -> Unit) {
             }
             fileChooserLauncher.launch(intent)
          },
-         modifier = Modifier
-            .fillMaxWidth()
+         modifier = modifier
       ) {
          Text("Choose File")
       }
+      // TODO: remove this
       chosenFile?.let {
          Text("Chosen File: $it")
       }

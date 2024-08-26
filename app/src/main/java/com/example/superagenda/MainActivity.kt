@@ -14,6 +14,7 @@ import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
+import com.example.superagenda.presentation.screens.other.OtherViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
    private val newTaskViewModel: NewTaskViewModel by viewModels()
    private val filterViewModel: FilterScreenViewModel by viewModels()
    private val navigationViewModel: NavigationViewModel by viewModels()
+   private val otherViewModel: OtherViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       createNotificationChannel()
@@ -49,7 +51,8 @@ class MainActivity : ComponentActivity() {
                taskEditViewModel = taskEditViewModel,
                newTaskViewModel = newTaskViewModel,
                filterViewModel = filterViewModel,
-               navigationViewModel = navigationViewModel
+               navigationViewModel = navigationViewModel,
+               otherViewModel = otherViewModel
             )
          }
       }

@@ -41,7 +41,7 @@ fun TaskStatusDropDown(
                   onValueChange = {},
                   readOnly = true,
                   trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                  label = {Text("Status")},
+                  label = { Text("Status") },
 
                   modifier = Modifier
                      .fillMaxWidth()

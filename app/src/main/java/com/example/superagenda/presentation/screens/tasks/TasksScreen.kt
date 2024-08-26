@@ -90,13 +90,16 @@ fun TasksScreen(
             }
          }
       },
+
       navController = navController,
       topBarTitle = "Tasks",
+
       floatingActionButton = {
          NewTaskFloatingActionButton {
             navController.navigate(Destinations.NewTask.route)
          }
       },
+
       navigationViewModel = navigationViewModel
    )
 }

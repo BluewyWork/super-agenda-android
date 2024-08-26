@@ -93,7 +93,7 @@ fun Profile(
 
                value = "Failed to retrieve data...",
                onValueChange = {},
-               label = {Text("Username")},
+               label = { Text("Username") },
                enabled = false
             )
          }
@@ -102,7 +102,8 @@ fun Profile(
 
          Button(
             onClick = { profileViewModel.onDeleteButtonPressButton(navController) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = userForProfile != null
          ) {
             Text("Delete Profile")
          }

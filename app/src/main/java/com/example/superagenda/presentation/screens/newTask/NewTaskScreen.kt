@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -78,53 +79,62 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
    val startDateTime: LocalDateTime by newTaskViewModel.startDateTime.observeAsState(initial = LocalDateTime.now())
    val endDateTime: LocalDateTime by newTaskViewModel.endDateTime.observeAsState(initial = LocalDateTime.now())
 
-   Column(
+   LazyColumn(
       verticalArrangement = Arrangement.spacedBy(8.dp),
-
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier.padding(8.dp),
 
       content = {
-         OutlinedTextField(
-            value = title,
-            onValueChange = { newTaskViewModel.onTitleChange(title) },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
-         )
-
-         OutlinedTextField(
-            value = description,
-            onValueChange = { newTaskViewModel.onDescriptionChange(description) },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-         )
-
-         TaskStatusDropDown(taskStatus) {
-            newTaskViewModel.onTaskStatusChange(taskStatus)
+         item {
+            OutlinedTextField(
+               value = title,
+               onValueChange = { newTaskViewModel.onTitleChange(it) },
+               label = { Text("Title") },
+               modifier = Modifier.fillMaxWidth()
+            )
          }
 
-         LocalDateTimePickerTextField(
-            value = startDateTime,
+         item {
+            OutlinedTextField(
+               value = description,
+               onValueChange = { newTaskViewModel.onDescriptionChange(it) },
+               label = { Text("Description") },
+               modifier = Modifier.fillMaxWidth()
+            )
+         }
 
-            onLocalDateTimeChange = {
-               newTaskViewModel.onStartDateTimeChange(it)
-            },
+         item {
+            TaskStatusDropDown(taskStatus) {
+               newTaskViewModel.onTaskStatusChange(it)
+            }
+         }
 
-            modifier = Modifier.fillMaxWidth(),
+         item {
+            LocalDateTimePickerTextField(
+               value = startDateTime,
 
-            label = "Start DateTime"
-         )
+               onLocalDateTimeChange = {
+                  newTaskViewModel.onStartDateTimeChange(it)
+               },
 
-         LocalDateTimePickerTextField(
-            value = endDateTime,
+               modifier = Modifier.fillMaxWidth(),
 
-            onLocalDateTimeChange = {
-               newTaskViewModel.onEndDateTimeChange(it)
-            },
+               label = "Start DateTime"
+            )
+         }
 
-            modifier = Modifier.fillMaxWidth(),
+         item {
+            LocalDateTimePickerTextField(
+               value = endDateTime,
 
-            label = "End DateTime"
-         )
+               onLocalDateTimeChange = {
+                  newTaskViewModel.onEndDateTimeChange(it)
+               },
+
+               modifier = Modifier.fillMaxWidth(),
+
+               label = "End DateTime"
+            )
+         }
       }
    )
 }

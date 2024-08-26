@@ -13,6 +13,7 @@ import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.other.OtherScreen
+import com.example.superagenda.presentation.screens.other.OtherViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
@@ -33,6 +34,7 @@ fun NavigationHost(
    newTaskViewModel: NewTaskViewModel,
    filterViewModel: FilterScreenViewModel,
    navigationViewModel: NavigationViewModel,
+   otherViewModel: OtherViewModel,
 ) {
    val navController = rememberNavController()
 
@@ -74,7 +76,7 @@ fun NavigationHost(
          TasksScreen(tasksViewModel, navController, navigationViewModel)
       }
       composable(Destinations.Other.route) {
-         OtherScreen()
+         OtherScreen(otherViewModel, navController, navigationViewModel)
       }
    }
 }

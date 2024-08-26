@@ -25,7 +25,7 @@ fun LocalDateTimePickerTextField(
    value: LocalDateTime,
    onLocalDateTimeChange: (LocalDateTime) -> Unit,
    label: String,
-   modifier: Modifier = Modifier
+   modifier: Modifier = Modifier,
 ) {
    var showDatePicker by remember(calculation = { mutableStateOf(false) })
    var showTimePicker by remember(calculation = { mutableStateOf(false) })

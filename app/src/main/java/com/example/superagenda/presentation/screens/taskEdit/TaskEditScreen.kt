@@ -1,7 +1,7 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,39 +49,23 @@ fun TaskEditScreen(
       navigationViewModel = navigationViewModel
    ) { padding ->
       Column(modifier = Modifier.padding(padding)) {
-         Spacer(modifier = Modifier.padding(8.dp))
-         TaskEdit(taskEditViewModel)
-
-         Button(
-            onClick = { taskEditViewModel.onDeleteButtonPress(navController) },
-            modifier = Modifier
-               .padding(vertical = 8.dp)
-               .fillMaxWidth()
-         ) {
-            Text("Delete")
-         }
-
-         Button(
-            onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
-            modifier = Modifier
-               .padding(vertical = 8.dp)
-               .fillMaxWidth()
-         ) {
-            Text("Update")
-         }
+         TaskEdit(taskEditViewModel, navController)
       }
    }
 }
 
 @Composable
-fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
+fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController) {
    val title: String? by taskEditViewModel.title.observeAsState()
    val description: String? by taskEditViewModel.description.observeAsState()
    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
    val startDateTime: LocalDateTime? by taskEditViewModel.startDateTime.observeAsState()
    val endDateTime: LocalDateTime? by taskEditViewModel.endDateTime.observeAsState()
 
-   LazyColumn {
+   LazyColumn(
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+      modifier = Modifier.padding(8.dp)
+   ) {
       item {
          title?.let {
             OutlinedTextField(
@@ -92,6 +76,9 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
             )
          }
 
+      }
+
+      item {
          description?.let {
             OutlinedTextField(
                value = it,
@@ -100,36 +87,63 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel) {
                modifier = Modifier.fillMaxWidth()
             )
          }
+      }
 
+      item {
          taskStatus?.let {
             TaskStatusDropDown(it) { it2 ->
                taskEditViewModel.onTaskStatusChange(it2)
             }
          }
+      }
 
-
+      item {
          startDateTime?.let {
             LocalDateTimePickerTextField(
+               label = "Start DateTime",
                value = it,
 
                onLocalDateTimeChange = { it2 ->
                   taskEditViewModel.onStartDateTimeChange(it2)
                },
 
-               label = "Start DateTime"
+               modifier = Modifier.fillMaxWidth()
             )
          }
+      }
 
+      item {
          endDateTime?.let {
             LocalDateTimePickerTextField(
+               label = "End DateTime",
                value = it,
 
                onLocalDateTimeChange = { it2 ->
                   taskEditViewModel.onEndDateTimeChange(it2)
                },
 
-               label = "End DateTime"
+               modifier = Modifier.fillMaxWidth()
             )
+         }
+      }
+
+      item {
+         Button(
+            onClick = { taskEditViewModel.onDeleteButtonPress(navController) },
+            modifier = Modifier
+               .fillMaxWidth()
+         ) {
+            Text("Delete")
+         }
+      }
+
+      item {
+         Button(
+            onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
+            modifier = Modifier
+               .fillMaxWidth()
+         ) {
+            Text("Update")
          }
       }
    }

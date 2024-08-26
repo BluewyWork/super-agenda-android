@@ -1,5 +1,6 @@
 package com.example.superagenda.data
 
+import android.os.Environment
 import android.util.Log
 import com.example.superagenda.data.database.dao.TaskDao
 import com.example.superagenda.data.database.entities.toData
@@ -8,9 +9,15 @@ import com.example.superagenda.data.models.toDatabase
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -110,6 +117,36 @@ class TaskRepository @Inject constructor(
       return withContext(Dispatchers.IO) {
          try {
             taskApi.deleteTask(token, taskID.toHexString())
+            true
+         } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
+            false
+         }
+      }
+   }
+
+   suspend fun backupTasksAtLocalStorage(tasks: List<Task>): Boolean {
+      return withContext(Dispatchers.IO) {
+         try {
+            val gson = Gson()
+            val taskListJson = gson.toJson(tasks)
+
+            val directory =
+               Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+            if (!directory.exists()) {
+               directory.mkdirs()
+            }
+
+            val fileName =
+               SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date()) + ".json"
+            val file = File(directory, fileName)
+
+
+            val outputStream = FileOutputStream(file)
+            outputStream.write(taskListJson.toByteArray())
+            outputStream.close()
+
             true
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
