@@ -129,7 +129,7 @@ class TaskRepository @Inject constructor(
       return withContext(Dispatchers.IO) {
          try {
             val gson = Gson()
-            val taskListJson = gson.toJson(tasks)
+            val taskListJson = gson.toJson(tasks.map { it.toData() })
 
             val directory =
                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
