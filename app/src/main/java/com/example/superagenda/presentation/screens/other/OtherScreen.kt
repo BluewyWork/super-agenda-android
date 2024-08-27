@@ -17,6 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.composables.LoadingPopup
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
@@ -28,6 +29,14 @@ fun OtherScreen(
    navController: NavController,
    navigationViewModel: NavigationViewModel,
 ) {
+   val showLoadingPopup: Boolean by otherViewModel.showLoadingPopup.observeAsState(false)
+
+   if (showLoadingPopup) {
+      LoadingPopup {
+         otherViewModel.dismissPopup()
+      }
+   }
+
    val popupsQueue: List<Pair<String, String>> by otherViewModel.popupsQueue.observeAsState(
       listOf()
    )

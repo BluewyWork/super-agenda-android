@@ -47,7 +47,7 @@ fun ImportTaskList(
          },
          modifier = modifier
       ) {
-         Text("Choose File")
+         Text("Import Backup File")
       }
       // TODO: remove this
       chosenFile?.let {

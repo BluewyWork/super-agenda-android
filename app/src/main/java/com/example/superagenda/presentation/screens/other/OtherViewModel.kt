@@ -22,8 +22,19 @@ import javax.inject.Inject
 class OtherViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
+   private val _showLoadingPopup = MutableLiveData<Boolean>()
+   val showLoadingPopup: LiveData<Boolean> = _showLoadingPopup
+
    private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
    val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+
+   fun showLoadingPopup() {
+      _showLoadingPopup.postValue(true)
+   }
+
+   fun dismissLoadingPopup() {
+      _showLoadingPopup.postValue(false)
+   }
 
    fun enqueuePopup(title: String, message: String) {
       _popupsQueue.value =
@@ -50,16 +61,20 @@ class OtherViewModel @Inject constructor(
 
    fun onBackUpButtonPress() {
       viewModelScope.launch {
+         showLoadingPopup()
          val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
 
          if (tasks == null) {
+            dismissLoadingPopup()
             enqueuePopup("ERROR", "Failed, no tasks to backup...")
             return@launch
          }
 
          if (taskUseCase.backupTasks(tasks)) {
+            dismissLoadingPopup()
             enqueuePopup("INFO", "Successfully backed up tasks!\nYou can find it under Download")
          } else {
+            dismissLoadingPopup()
             enqueuePopup("ERROR", "Failed to backup tasks...")
          }
       }
@@ -67,8 +82,16 @@ class OtherViewModel @Inject constructor(
 
    fun onImportButtonPress(contentResolver: ContentResolver, filePath: String) {
       viewModelScope.launch {
+         showLoadingPopup()
+
          Log.d("LOOK AT ME", "CHOSEN FILE: ${printFileContents(contentResolver, filePath)}")
          val taskList = deserializeTasksFromJson(contentResolver, filePath)
+
+         if (taskList == null) {
+            dismissLoadingPopup()
+            enqueuePopup("ERROR", "Failed, presumably corrupted or outdated file")
+            return@launch
+         }
 
          var codeSuccess = true
 
@@ -76,10 +99,26 @@ class OtherViewModel @Inject constructor(
             codeSuccess = taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)
          }
 
+         var codeSuccess2 = true
+
+         for (task in taskList) {
+            codeSuccess2 = taskUseCase.updateTaskAtAPI(task)
+         }
+
          if (codeSuccess) {
+            dismissLoadingPopup()
             enqueuePopup("INFO", "Successfully imported tasks!")
          } else {
+            dismissLoadingPopup()
             enqueuePopup("ERROR", "Failure on importing some tasks...")
+         }
+
+         if (codeSuccess2) {
+            dismissLoadingPopup()
+            enqueuePopup("INFO", "Successfully synced tasks!")
+         } else {
+            dismissLoadingPopup()
+            enqueuePopup("ERROR", "Failed to sync tasks...")
          }
       }
    }
@@ -103,14 +142,19 @@ class OtherViewModel @Inject constructor(
    private fun deserializeTasksFromJson(
       contentResolver: ContentResolver,
       filePath: String,
-   ): List<Task> {
-      val gson = Gson()
-      val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
-      val reader = BufferedReader(InputStreamReader(inputStream))
+   ): List<Task>? {
+      try {
+         val gson = Gson()
+         val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
+         val reader = BufferedReader(InputStreamReader(inputStream))
 
-      val tasks: List<TaskModel> = gson.fromJson(reader, Array<TaskModel>::class.java).toList()
-      reader.close()
+         val tasks: List<TaskModel> = gson.fromJson(reader, Array<TaskModel>::class.java).toList()
+         reader.close()
 
-      return tasks.map { it.toDomain() }
+         return tasks.map { it.toDomain() }
+      } catch (e: Exception) {
+         Log.e("LOOK AT ME", "${e.message}")
+         return null
+      }
    }
 }
