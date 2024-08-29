@@ -6,25 +6,23 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.example.superagenda.domain.models.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskStatusDropDown(
-   taskStatus: TaskStatus? = null,
-   onStatusChange: (TaskStatus?) -> Unit,
+   taskStatus: TaskStatus?,
+   onStatusChange: (TaskStatus) -> Unit,
 ) {
-   val context = LocalContext.current
-   val taskStatuses = TaskStatus.values()
+   val taskStatuses = TaskStatus.values().toList()
 
    var expanded by remember { mutableStateOf(false) }
    var selectedStatus by remember { mutableStateOf(taskStatus) }
@@ -35,7 +33,7 @@ fun TaskStatusDropDown(
          onExpandedChange = { expanded = it },
          modifier = Modifier.fillMaxWidth()
       ) {
-         TextField(
+         OutlinedTextField(
             value = selectedStatus?.name ?: "None",
             onValueChange = {},
             readOnly = true,
@@ -49,14 +47,6 @@ fun TaskStatusDropDown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
          ) {
-            DropdownMenuItem(
-               text = { Text(text = "None") },
-               onClick = {
-                  selectedStatus = null
-                  expanded = false
-                  onStatusChange(null)
-               }
-            )
             taskStatuses.forEach { status ->
                DropdownMenuItem(
                   text = { Text(text = status.name) },
