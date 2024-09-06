@@ -33,7 +33,8 @@ fun LocalDateTimePickerTextField(
    val context = LocalContext.current
 
    val dateListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-      val updatedDateTime = (value ?: LocalDateTime.now()).withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
+      val updatedDateTime = (value ?: LocalDateTime.now()).withYear(year).withMonth(month + 1)
+         .withDayOfMonth(dayOfMonth)
       onLocalDateTimeChange(updatedDateTime)
       showTimePicker = true
    }

@@ -79,41 +79,41 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          item {
             OutlinedTextField(
                value = title,
-               onValueChange = {filterScreenViewModel.onTitleChange(it)},
+               onValueChange = { filterScreenViewModel.onTitleChange(it) },
                label = { Text("Title") },
                modifier = Modifier.fillMaxWidth()
             )
          }
 
          item {
-               TaskStatusDropDown(taskStatus = taskStatus) {
-                  filterScreenViewModel.onTaskStatusChange(it)
-               }
+            TaskStatusDropDown(taskStatus = taskStatus) {
+               filterScreenViewModel.onTaskStatusChange(it)
+            }
          }
 
          item {
-               LocalDateTimePickerTextField(
-                  value = startDateTime,
-                  label = "Start DateTime",
-                  modifier = Modifier.fillMaxWidth()
-               ) {
-                  filterScreenViewModel.onStartDateTimeChange(it)
-               }
+            LocalDateTimePickerTextField(
+               value = startDateTime,
+               label = "Start DateTime",
+               modifier = Modifier.fillMaxWidth()
+            ) {
+               filterScreenViewModel.onStartDateTimeChange(it)
+            }
          }
 
          item {
-               LocalDateTimePickerTextField(
-                  value = endDateTime,
-                  label = "End DateTime",
-                  modifier = Modifier.fillMaxWidth()
-               ) {
-                  filterScreenViewModel.onEndDateTimeChange(it)
-               }
+            LocalDateTimePickerTextField(
+               value = endDateTime,
+               label = "End DateTime",
+               modifier = Modifier.fillMaxWidth()
+            ) {
+               filterScreenViewModel.onEndDateTimeChange(it)
+            }
          }
 
          item {
             Button(
-               onClick = {filterScreenViewModel.onFilterPress(navController)},
+               onClick = { filterScreenViewModel.onFilterPress(navController) },
                modifier = Modifier
                   .align(Alignment.CenterHorizontally)
                   .fillMaxWidth()

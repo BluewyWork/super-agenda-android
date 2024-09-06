@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilterScreenViewModel @Inject constructor(
-   private val taskUseCase: TaskUseCase
+   private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
    private val _filteredTaskList = MutableLiveData<List<Task>>()
    val filteredTaskList: LiveData<List<Task>> = _filteredTaskList
