@@ -96,7 +96,10 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
             onValueChange = { loginViewModel.onPasswordChange(it) },
             singleLine = true,
             label = { Text("Password") },
-            leadingIcon = { Icon(Icons.Filled.Lock, null) }
+            leadingIcon = { Icon(Icons.Filled.Lock, null) },
+            modifier= Modifier
+               .fillMaxWidth()
+               .padding(start = 8.dp, end = 8.dp),
          )
 
          Spacer(modifier = Modifier.padding(16.dp))

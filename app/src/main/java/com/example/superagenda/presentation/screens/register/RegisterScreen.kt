@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -63,14 +64,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
    val username: String by registerViewModel.username.observeAsState("")
    val password: String by registerViewModel.password.observeAsState("")
 
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-   Spacer(modifier = Modifier.padding(16.dp))
-
-   TextField(
+   OutlinedTextField(
       modifier = Modifier
          .fillMaxWidth()
          .padding(start = 8.dp, end = 8.dp),
@@ -80,7 +74,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
       leadingIcon = { Icon(Icons.Default.Person, null) }
    )
 
-   TextField(
+   OutlinedTextField(
       modifier = Modifier
          .fillMaxWidth()
          .padding(start = 8.dp, end = 8.dp),

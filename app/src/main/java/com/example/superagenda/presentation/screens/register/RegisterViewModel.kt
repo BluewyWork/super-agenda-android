@@ -84,7 +84,7 @@ class RegisterViewModel @Inject constructor(
                navController.navigate(Destinations.Login.route)
             }
          } else {
-            enqueuePopup("ERROR", "Not accepted...")
+            enqueuePopup("ERROR", "Something went wrong...")
          }
       }
    }

@@ -24,6 +24,7 @@ class TaskRepository @Inject constructor(
    private val taskApi: TaskApi,
    private val taskDao: TaskDao,
 ) {
+   // TODO: well return ok status instead of manual value
    suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
       return withContext(Dispatchers.IO) {
          try {
@@ -104,8 +105,7 @@ class TaskRepository @Inject constructor(
    suspend fun updateTaskAtAPI(task: Task, token: String): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            taskApi.updateTask(token, task.toData())
-            true
+            taskApi.updateTask(token, task.toData()).ok
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
             false

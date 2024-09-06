@@ -131,7 +131,7 @@ class LoginViewModel @Inject constructor(
                navController.navigate(Destinations.Tasks.route)
             }
          } else {
-            enqueuePopup("ERROR", "Not accepted...")
+            enqueuePopup("ERROR", "Something went wrong...")
          }
       }
    }

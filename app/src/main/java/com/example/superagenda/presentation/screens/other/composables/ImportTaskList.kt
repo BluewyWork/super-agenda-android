@@ -49,11 +49,5 @@ fun ImportTaskList(
       ) {
          Text("Import Backup File")
       }
-      // TODO: remove this
-      chosenFile?.let {
-         Text("Chosen File: $it")
-      }
    }
 }
-
-
