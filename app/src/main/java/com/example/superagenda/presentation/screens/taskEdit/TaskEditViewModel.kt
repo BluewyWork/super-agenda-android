@@ -126,7 +126,7 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
-         val endDateTime = endDateTime.value ?: run {
+         var endDateTime = endDateTime.value ?: run {
             enqueuePopup("ERROR", "Must have an end time...")
             return@launch
          }
@@ -136,6 +136,10 @@ class TaskEditViewModel @Inject constructor(
          if (taskID == null) {
             enqueuePopup("ERROR", "Wow, something changed it to null")
             return@launch
+         }
+
+         if (taskStatus == TaskStatus.Completed) {
+            endDateTime = LocalDateTime.now()
          }
 
          val task = Task(
