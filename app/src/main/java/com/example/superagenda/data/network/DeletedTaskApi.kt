@@ -17,5 +17,5 @@ interface DeletedTaskApi {
    suspend fun postDeletedTask(
       @Header("Authorization") token: String,
       @Body objectId: ObjectId
-   )
+   ) : ApiResponse<Map<String, Any>>
 }

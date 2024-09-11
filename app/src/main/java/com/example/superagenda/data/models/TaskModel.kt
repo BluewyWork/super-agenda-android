@@ -72,7 +72,8 @@ fun TaskModel.toDatabase() = TaskEntity(
    description = description,
    status = status,
    startDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(startDateTime))!!,
-   endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!
+   endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!,
+   lastModified = localDateTimeToString(bsonDateTimeToLocalDateTime(lastModified))!!
 )
 
 class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {

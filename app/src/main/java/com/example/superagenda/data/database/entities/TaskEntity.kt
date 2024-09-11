@@ -18,6 +18,7 @@ data class TaskEntity(
    @ColumnInfo("status") val status: TaskStatusModel,
    @ColumnInfo("startDateTime") val startDateTime: String,
    @ColumnInfo(name = "endDateTime") val endDateTime: String,
+   @ColumnInfo(name = "lastModified") val lastModified: String,
 )
 
 fun TaskEntity.toData() = TaskModel(
@@ -26,5 +27,6 @@ fun TaskEntity.toData() = TaskModel(
    description = description,
    status = status,
    startDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(startDateTime)!!),
-   endDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endDateTime)!!)
+   endDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endDateTime)!!),
+   lastModified = localDateTimeToBsonDateTime(stringToLocalDateTime(lastModified)!!)
 )
