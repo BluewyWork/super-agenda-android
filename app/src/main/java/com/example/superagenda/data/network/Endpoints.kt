@@ -17,6 +17,8 @@ object TaskEndpoints {
    const val UPDATE_TASK = "/api/user/task/update"
    const val UPDATE_TASK_LIST = "/api/user/task/update/list"
    const val DELETE_TASK = "/api/user/task/delete"
+   const val GET_DELETED_TASK_LIST = "/api/user/deleted_task/show"
+   const val ADD_DELETED_TASK = "/api/user/deleted_task/add"
 }
 
 object SelfEndpoints {

@@ -124,19 +124,20 @@ class NewTaskViewModel @Inject constructor(
             description = description,
             status = taskStatus,
             startDateTime = startDatetime,
-            endDateTime = endDateTime
+            endDateTime = endDateTime,
+            lastModified = LocalDateTime.now()
          )
 
          if (task2UseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
             enqueuePopup("INFO", "Successfully created task locally!")
 
-            if (loginUseCase.isLoggedIn()) {
-               if (task2UseCase.createTaskAtAPI(task)) {
-                  enqueuePopup("INFO", "Successfully created task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to create task at API...")
-               }
-            }
+//            if (loginUseCase.isLoggedIn()) {
+//               if (task2UseCase.createTaskAtAPI(task)) {
+//                  enqueuePopup("INFO", "Successfully created task at API!")
+//               } else {
+//                  enqueuePopup("ERROR", "Failed to create task at API...")
+//               }
+//            }
 
             waitForPopup {
                navController.navigateUp()

@@ -29,6 +29,7 @@ import com.example.superagenda.presentation.composables.NewTaskFloatingActionBut
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 import com.example.superagenda.presentation.screens.tasks.composables.LineWithText
+import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,6 +42,13 @@ fun TasksScreen(
    navController: NavController,
    navigationViewModel: NavigationViewModel,
 ) {
+   LaunchedEffect(Unit) {
+      while (true) {
+         tasksViewModel.synchronizeTasks()
+         delay(10000)
+      }
+   }
+
    Navigation(
       content = { padding ->
          val pagerState = rememberPagerState { 3 }
@@ -79,17 +87,14 @@ fun TasksScreen(
             ) { currentPage ->
                when (currentPage) {
                   0 -> {
-                     tasksViewModel.loadTasksNotStarted()
-                     TasksNotStarted(tasksViewModel, navController)
+                                    TasksNotStarted(tasksViewModel, navController)
                   }
 
                   1 -> {
-                     tasksViewModel.loadTasksOngoing()
                      TasksOngoing(tasksViewModel, navController)
                   }
 
                   2 -> {
-                     tasksViewModel.loadTasksCompleted()
                      TasksCompleted(tasksViewModel, navController)
                   }
                }

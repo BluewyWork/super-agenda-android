@@ -1,5 +1,6 @@
 package com.example.superagenda.di
 
+import com.example.superagenda.data.network.DeletedTaskApi
 import com.example.superagenda.data.network.LoginApi
 import com.example.superagenda.data.network.RegisterApi
 import com.example.superagenda.data.network.SelfApi
@@ -44,5 +45,11 @@ class RetrofitModule {
    @Provides
    fun provideRegisterApiClient(retrofit: Retrofit): RegisterApi {
       return retrofit.create(RegisterApi::class.java)
+   }
+
+   @Singleton
+   @Provides
+   fun provideDeletedTaskApiClient(retrofit: Retrofit): DeletedTaskApi {
+      return retrofit.create(DeletedTaskApi::class.java)
    }
 }

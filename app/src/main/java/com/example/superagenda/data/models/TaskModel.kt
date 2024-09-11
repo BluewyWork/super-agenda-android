@@ -27,6 +27,8 @@ data class TaskModel(
    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("end_date_time") val endDateTime: BsonDateTime,
+   @JsonAdapter(BsonDateTimeConverter::class)
+   @SerializedName("last_modified") val lastModified: BsonDateTime,
 )
 
 enum class TaskStatusModel {
@@ -45,7 +47,8 @@ fun TaskModel.toDomain() = Task(
       TaskStatusModel.Completed -> TaskStatus.Completed
    },
    startDateTime = bsonDateTimeToLocalDateTime(startDateTime),
-   endDateTime = bsonDateTimeToLocalDateTime(endDateTime)
+   endDateTime = bsonDateTimeToLocalDateTime(endDateTime),
+   lastModified = bsonDateTimeToLocalDateTime(lastModified)
 )
 
 fun Task.toData() = TaskModel(
@@ -58,7 +61,8 @@ fun Task.toData() = TaskModel(
       TaskStatus.Completed -> TaskStatusModel.Completed
    },
    startDateTime = localDateTimeToBsonDateTime(startDateTime),
-   endDateTime = localDateTimeToBsonDateTime(endDateTime)
+   endDateTime = localDateTimeToBsonDateTime(endDateTime),
+   lastModified = localDateTimeToBsonDateTime(lastModified)
 
 )
 

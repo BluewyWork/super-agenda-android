@@ -148,19 +148,20 @@ class TaskEditViewModel @Inject constructor(
             description = description,
             status = taskStatus,
             startDateTime = startDatetime,
-            endDateTime = endDateTime
+            endDateTime = endDateTime,
+            lastModified = LocalDateTime.now()
          )
 
          if (taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
             enqueuePopup("INFO", "Successfully updated task locally!")
 
-            if (loginUseCase.isLoggedIn()) {
-               if (taskUseCase.updateTaskAtAPI(task)) {
-                  enqueuePopup("INFO", "Successfully updated task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to update task at API...")
-               }
-            }
+//            if (loginUseCase.isLoggedIn()) {
+//               if (taskUseCase.updateTaskAtAPI(task)) {
+//                  enqueuePopup("INFO", "Successfully updated task at API!")
+//               } else {
+//                  enqueuePopup("ERROR", "Failed to update task at API...")
+//               }
+//            }
 
             waitForPopup {
                navController.navigateUp()
@@ -187,13 +188,13 @@ class TaskEditViewModel @Inject constructor(
          if (taskUseCase.deleteTaskAtLocalDatabase(taskID)) {
             enqueuePopup("INFO", "Successfully deleted task locally!")
 
-            if (loginUseCase.isLoggedIn()) {
-               if (taskUseCase.deleteTaskAtAPI(taskID)) {
-                  enqueuePopup("INFO", "Successfully deleted task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to delete task at API...")
-               }
-            }
+//            if (loginUseCase.isLoggedIn()) {
+//               if (taskUseCase.deleteTaskAtAPI(taskID)) {
+//                  enqueuePopup("INFO", "Successfully deleted task at API!")
+//               } else {
+//                  enqueuePopup("ERROR", "Failed to delete task at API...")
+//               }
+//            }
 
             waitForPopup {
                navController.navigateUp()
