@@ -21,7 +21,7 @@ fun LineWithText(
    text: String,
    lineColor: Color = Color.Gray,
    lineThickness: Dp = 1.dp,
-   modifier: Modifier = Modifier
+   modifier: Modifier = Modifier,
 ) {
    Box(
       contentAlignment = Alignment.Center,
@@ -31,7 +31,9 @@ fun LineWithText(
          verticalAlignment = Alignment.CenterVertically,
          modifier = Modifier.fillMaxWidth()
       ) {
-         Canvas(modifier = Modifier.weight(1f).height(lineThickness)) {
+         Canvas(modifier = Modifier
+            .weight(1f)
+            .height(lineThickness)) {
             drawLine(
                color = lineColor,
                start = Offset(0f, center.y),
@@ -44,7 +46,9 @@ fun LineWithText(
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(horizontal = 8.dp)
          )
-         Canvas(modifier = Modifier.weight(1f).height(lineThickness)) {
+         Canvas(modifier = Modifier
+            .weight(1f)
+            .height(lineThickness)) {
             drawLine(
                color = lineColor,
                start = Offset(0f, center.y),

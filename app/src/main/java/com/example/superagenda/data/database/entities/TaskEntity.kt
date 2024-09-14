@@ -12,7 +12,7 @@ import org.bson.types.ObjectId
 @Entity(tableName = "task_table")
 data class TaskEntity(
    @PrimaryKey(autoGenerate = false)
-   @ColumnInfo(name = "_id") val _id: String,
+   @ColumnInfo(name = "id") val id: String,
    @ColumnInfo(name = "title") val title: String,
    @ColumnInfo("description") val description: String,
    @ColumnInfo("status") val status: TaskStatusModel,
@@ -21,7 +21,7 @@ data class TaskEntity(
 )
 
 fun TaskEntity.toData() = TaskModel(
-   _id = ObjectId(_id),
+   id = ObjectId(id),
    title = title,
    description = description,
    status = status,

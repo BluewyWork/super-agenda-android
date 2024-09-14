@@ -28,7 +28,7 @@ class TaskRepository @Inject constructor(
    suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
       return withContext(Dispatchers.IO) {
          try {
-            val taskList = taskDao.selectAll()
+            val taskList = taskDao.retrieveTasks()
 
             taskList.map { it.toData().toDomain() }
          } catch (e: Exception) {
@@ -42,7 +42,7 @@ class TaskRepository @Inject constructor(
    suspend fun insertOrUpdateTaskAtLocalDatabase(task: Task): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            taskDao.insertOrUpdate(task.toData().toDatabase())
+            taskDao.insertOrUpdateTask(task.toData().toDatabase())
 
             true
          } catch (e: Exception) {
@@ -56,7 +56,7 @@ class TaskRepository @Inject constructor(
    suspend fun deleteTaskAtLocalDatabase(taskID: ObjectId): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            taskDao.deleteById(taskID.toHexString())
+            taskDao.deleteTask(taskID.toHexString())
             true
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
@@ -68,7 +68,7 @@ class TaskRepository @Inject constructor(
    suspend fun deleteAllTasksAtLocalDatabase(): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            taskDao.deleteAll()
+            taskDao.nukeTasks()
             true
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")

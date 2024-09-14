@@ -33,7 +33,7 @@ class LoginRepository @Inject constructor(
       return withContext(Dispatchers.IO) {
          try {
             val tokenEntity = TokenEntity(token)
-            tokenDao.insert(tokenEntity)
+            tokenDao.insertToken(tokenEntity)
 
             true
          } catch (e: Exception) {
@@ -47,7 +47,7 @@ class LoginRepository @Inject constructor(
    suspend fun retrieveTokenFromLocalStorage(): String? {
       return withContext(Dispatchers.IO) {
          try {
-            tokenDao.retrieve().token
+            tokenDao.retrieveToken().token
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
@@ -59,7 +59,7 @@ class LoginRepository @Inject constructor(
    suspend fun clearTokensFromLocalStorage(): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            tokenDao.deleteAll()
+            tokenDao.nukeToken()
 
             true
          } catch (e: Exception) {

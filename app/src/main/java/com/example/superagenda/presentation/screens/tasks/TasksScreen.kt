@@ -114,7 +114,9 @@ fun TasksScreen(
 fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController) {
    val tasksNotStarted: List<Task>? by tasksViewModel.tasksNotStarted.observeAsState()
 
-   LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+   LazyColumn(modifier = Modifier
+      .fillMaxSize()
+      .padding(8.dp)) {
       item {
          if (tasksNotStarted == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
@@ -125,10 +127,12 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
             )
          } else {
             val tasksGroupedByWeek = tasksNotStarted!!.groupBy { task ->
-               task.startDateTime.toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+               task.startDateTime.toLocalDate()
+                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             }
 
-            val currentWeekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            val currentWeekStart =
+               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             val lastWeekStart = currentWeekStart.minusWeeks(1)
             val nextWeekStart = currentWeekStart.plusWeeks(1)
 
@@ -164,7 +168,9 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
 fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
    val tasksOngoing: List<Task>? by tasksViewModel.tasksOngoing.observeAsState()
 
-   LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+   LazyColumn(modifier = Modifier
+      .fillMaxSize()
+      .padding(8.dp)) {
       item {
          if (tasksOngoing == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
@@ -175,10 +181,12 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
             )
          } else {
             val tasksGroupedByWeek = tasksOngoing!!.groupBy { task ->
-               task.endDateTime.toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+               task.endDateTime.toLocalDate()
+                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             }
 
-            val currentWeekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            val currentWeekStart =
+               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             val lastWeekStart = currentWeekStart.minusWeeks(1)
             val nextWeekStart = currentWeekStart.plusWeeks(1)
 
@@ -214,7 +222,9 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
 fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController) {
    val tasksCompleted: List<Task>? by tasksViewModel.tasksCompleted.observeAsState()
 
-   LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+   LazyColumn(modifier = Modifier
+      .fillMaxSize()
+      .padding(8.dp)) {
       item {
          if (tasksCompleted == null) {
             EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
@@ -225,10 +235,12 @@ fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController)
             )
          } else {
             val tasksGroupedByWeek = tasksCompleted!!.groupBy { task ->
-               task.endDateTime.toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+               task.endDateTime.toLocalDate()
+                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             }
 
-            val currentWeekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            val currentWeekStart =
+               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             val lastWeekStart = currentWeekStart.minusWeeks(1)
 
             val sortedWeekKeys = tasksGroupedByWeek.keys.sortedDescending()

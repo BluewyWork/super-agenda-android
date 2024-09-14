@@ -9,17 +9,17 @@ import com.example.superagenda.data.database.entities.TaskEntity
 @Dao
 interface TaskDao {
    @Query("SELECT * FROM task_table")
-   fun selectAll(): List<TaskEntity>
+   fun retrieveTasks(): List<TaskEntity>
 
    @Query("DELETE FROM task_table")
-   fun deleteAll()
+   fun nukeTasks()
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   suspend fun insertOrUpdateMany(taskEntityList: List<TaskEntity>)
+   suspend fun insertOrUpdateTasks(taskEntityList: List<TaskEntity>)
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   fun insertOrUpdate(taskEntity: TaskEntity)
+   fun insertOrUpdateTask(taskEntity: TaskEntity)
 
    @Query("DELETE FROM task_table WHERE _id = :taskId")
-   fun deleteById(taskId: String)
+   fun deleteTask(taskId: String)
 }

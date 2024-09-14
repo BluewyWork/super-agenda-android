@@ -19,7 +19,7 @@ import java.lang.reflect.Type
 
 data class TaskModel(
    @JsonAdapter(ObjectIdSerializer::class)
-   @SerializedName("_id") val _id: ObjectId,
+   @SerializedName("_id") val id: ObjectId,
    @SerializedName("title") val title: String,
    @SerializedName("description") val description: String,
    @SerializedName("status") val status: TaskStatusModel,
@@ -36,7 +36,7 @@ enum class TaskStatusModel {
 }
 
 fun TaskModel.toDomain() = Task(
-   _id = _id,
+   _id = id,
    title = title,
    description = description,
    status = when (status) {
@@ -49,7 +49,7 @@ fun TaskModel.toDomain() = Task(
 )
 
 fun Task.toData() = TaskModel(
-   _id = _id,
+   id = _id,
    title = title,
    description = description,
    status = when (status) {
@@ -63,7 +63,7 @@ fun Task.toData() = TaskModel(
 )
 
 fun TaskModel.toDatabase() = TaskEntity(
-   _id = _id.toString(),
+   id = id.toString(),
    title = title,
    description = description,
    status = status,

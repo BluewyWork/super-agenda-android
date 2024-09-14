@@ -46,13 +46,16 @@ fun NavigationHost(
          loginViewModel.onShow(navController)
          LoginScreen(loginViewModel, navController)
       }
+
       composable(Destinations.Register.route) {
          RegisterScreen(registerViewModel, navController)
       }
+
       composable(Destinations.Profile.route) {
          profileViewModel.onShow()
          ProfileScreen(profileViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.TaskEdit.route) {
          val task = tasksViewModel.taskToEdit.value
          if (task == null) {
@@ -64,6 +67,7 @@ fun NavigationHost(
          taskEditViewModel.onShow(navController)
          TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.TaskEdit.route + "2") {
          val task = filterViewModel.taskToEdit.value
          if (task == null) {
@@ -75,17 +79,21 @@ fun NavigationHost(
          taskEditViewModel.onShow(navController)
          TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.NewTask.route) {
          newTaskViewModel.onShow()
          NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.Filter.route) {
          filterViewModel.onShow()
          FilterScreen(filterViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.Tasks.route) {
          TasksScreen(tasksViewModel, navController, navigationViewModel)
       }
+
       composable(Destinations.Other.route) {
          OtherScreen(otherViewModel, navController, navigationViewModel)
       }
