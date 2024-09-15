@@ -20,6 +20,6 @@ interface TaskDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    fun insertOrUpdateTask(taskEntity: TaskEntity)
 
-   @Query("DELETE FROM task_table WHERE _id = :taskId")
+   @Query("DELETE FROM task_table WHERE id = :taskId")
    fun deleteTask(taskId: String)
 }
