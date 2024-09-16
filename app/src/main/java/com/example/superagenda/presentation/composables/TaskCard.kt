@@ -23,6 +23,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.domain.models.TaskStatus
+import java.time.Duration
+import java.time.LocalDateTime
 
 @Composable
 fun TaskCard(task: Task, onClick: () -> Unit) {
@@ -60,6 +63,63 @@ fun TaskCard(task: Task, onClick: () -> Unit) {
                style = MaterialTheme.typography.bodyMedium.copy(
                   fontSize = 16.sp
                )
+            )
+
+            var s: String = ""
+
+            when (task.status) {
+               TaskStatus.NotStarted -> {
+                  val difference = Duration.between(LocalDateTime.now(), task.startDateTime)
+                  val days = difference.toDays()
+                  s = if (days > 0) {
+                     "starts in $days day/s"
+                  } else {
+                     val hours = difference.toHours()
+                     val minutes = difference.toMinutes() % 60
+                     when {
+                        hours > 0 -> "starts in $hours hour/s"
+                        minutes > 0 -> "starts in $minutes minute/s"
+                        else -> "start time has passed"
+                     }
+                  }
+               }
+
+               TaskStatus.Ongoing -> {
+                  val difference = Duration.between(LocalDateTime.now(), task.endDateTime)
+                  val days = difference.toDays()
+                  s = if (days > 0) {
+                     "expires in $days day/s"
+                  } else {
+                     val hours = difference.toHours()
+                     val minutes = difference.toMinutes() % 60
+                     when {
+                        hours > 0 -> "expires in $hours hour/s"
+                        minutes > 0 -> "expires in $minutes minute/s"
+                        else -> "expired"
+                     }
+                  }
+               }
+
+               TaskStatus.Completed -> {
+                  val difference = Duration.between(task.endDateTime, LocalDateTime.now())
+                  val days = difference.toDays()
+                  s = if (days > 0) {
+                     "was completed $days day/s ago"
+                  } else {
+                     val hours = difference.toHours()
+                     val minutes = difference.toMinutes() % 60
+                     when {
+                        hours > 0 -> "was completed $hours hour/s ago"
+                        minutes > 0 -> "was completed $minutes minute/s ago"
+                        else -> "was completed just now"
+                     }
+                  }
+               }
+            }
+
+            Text(
+               text = s,
+               fontSize = 12.sp
             )
          }
       }

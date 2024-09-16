@@ -146,7 +146,7 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
                   else -> if (weekStart.isBefore(currentWeekStart)) {
                      "Started at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
                   } else {
-                     "Started at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+                     "Starts the Week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
                   }
                }
 
