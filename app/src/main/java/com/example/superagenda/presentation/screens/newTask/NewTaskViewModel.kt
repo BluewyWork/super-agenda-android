@@ -10,6 +10,7 @@ import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
@@ -80,15 +81,6 @@ class NewTaskViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
-      }
-   }
-
    fun onCreateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value
@@ -118,6 +110,14 @@ class NewTaskViewModel @Inject constructor(
             return@launch
          }
 
+         if (startDatetime >= endDateTime) {
+            enqueuePopup(
+               "ERROR",
+               "The expiration date can't be before or the same as the start date"
+            )
+            return@launch
+         }
+
          val task = Task(
             _id = ObjectId(),
             title = title,
@@ -138,15 +138,13 @@ class NewTaskViewModel @Inject constructor(
                }
             }
 
-            waitForPopup {
-               navController.navigateUp()
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to create task locally...")
-
-            waitForPopup {
-               navController.navigateUp()
-            }
          }
       }
    }

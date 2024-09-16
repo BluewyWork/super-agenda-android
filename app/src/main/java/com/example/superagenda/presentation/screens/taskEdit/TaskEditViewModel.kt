@@ -10,6 +10,7 @@ import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -142,6 +143,14 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = LocalDateTime.now()
          }
 
+         if (startDatetime >= endDateTime) {
+            enqueuePopup(
+               "ERROR",
+               "The expiration date can't be before or the same as the start date"
+            )
+            return@launch
+         }
+
          val task = Task(
             _id = taskID,
             title = title,
@@ -162,15 +171,19 @@ class TaskEditViewModel @Inject constructor(
                }
             }
 
-            waitForPopup {
-               navController.navigateUp()
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to update task locally...")
 
-            waitForPopup {
-               navController.navigateUp()
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          }
       }
    }
@@ -195,15 +208,19 @@ class TaskEditViewModel @Inject constructor(
                }
             }
 
-            waitForPopup {
-               navController.navigateUp()
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to delete task locally...")
 
-            waitForPopup {
-               navController.navigateUp()
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          }
       }
    }
