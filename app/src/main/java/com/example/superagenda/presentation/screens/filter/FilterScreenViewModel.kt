@@ -56,23 +56,7 @@ class FilterScreenViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
-      }
-   }
-
-   // redundant
-   fun onShow() {
-      viewModelScope.launch {
-
-      }
-   }
-
-   fun onFilterPress(navController: NavController) {
+   fun onFilterPress() {
       viewModelScope.launch {
          val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
 

@@ -86,7 +86,6 @@ fun NavigationHost(
       }
 
       composable(Destinations.Filter.route) {
-         filterViewModel.onShow()
          FilterScreen(filterViewModel, navController, navigationViewModel)
       }
 

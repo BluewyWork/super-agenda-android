@@ -50,15 +50,6 @@ class OtherViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
-      }
-   }
-
    fun onBackUpButtonPress() {
       viewModelScope.launch {
          showLoadingPopup()

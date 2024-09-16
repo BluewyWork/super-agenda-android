@@ -94,15 +94,6 @@ class TaskEditViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
-      }
-   }
-
    fun onUpdateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value

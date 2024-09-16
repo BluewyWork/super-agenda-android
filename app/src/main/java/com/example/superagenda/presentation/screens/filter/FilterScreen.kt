@@ -113,7 +113,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
 
          item {
             Button(
-               onClick = { filterScreenViewModel.onFilterPress(navController) },
+               onClick = { filterScreenViewModel.onFilterPress() },
                modifier = Modifier
                   .align(Alignment.CenterHorizontally)
                   .fillMaxWidth()
