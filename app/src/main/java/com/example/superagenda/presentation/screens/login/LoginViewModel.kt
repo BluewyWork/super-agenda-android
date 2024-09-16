@@ -10,6 +10,7 @@ import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -127,9 +128,11 @@ class LoginViewModel @Inject constructor(
             _password.postValue("")
             enqueuePopup("INFO", "Successfully logged in!")
 
-            waitForPopup {
-               navController.navigate(Destinations.Tasks.route)
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Something went wrong...")
          }

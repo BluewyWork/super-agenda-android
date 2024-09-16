@@ -9,6 +9,7 @@ import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.RegisterUseCase
 import com.example.superagenda.domain.models.UserForRegister
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -80,9 +81,12 @@ class RegisterViewModel @Inject constructor(
          if (ok) {
             _password.postValue("")
             enqueuePopup("INFO", "Successfully registered...")
-            waitForPopup {
-               navController.navigate(Destinations.Login.route)
+
+            while (popupsQueue.value?.isNotEmpty() == true) {
+               delay(1000)
             }
+
+            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Something went wrong...")
          }
