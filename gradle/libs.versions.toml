@@ -6,22 +6,22 @@ kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 
 # dependencies
-androidx-activity-compose = "1.9.3"
-coil-compose = "2.0.0"
 android-compose-bom = "2024.10.00"
+androidx-activity-compose = "1.9.3"
 androidx-core-ktx = "1.13.1"
 androidx-espresso-core = "3.6.1"
-junit = "4.13.2"
 androidx-junit = "1.2.1"
 androidx-lifecycle-runtime-ktx = "2.8.6"
+coil-compose = "2.0.0"
+junit = "4.13.2"
 
 # non default dependencies
+androidx-navigation-compose = "2.8.3"
+androidx-runtime-livedata = "1.7.4"
 hilt-android = "2.51.1"
 mongodb = "5.1.0"
-androidx-navigation-compose = "2.8.3"
 retrofit = "2.11.0"
 room = "2.6.1"
-androidx-runtime-livedata = "1.7.4"
 
 [libraries]
 # default
@@ -54,8 +54,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt-android" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
