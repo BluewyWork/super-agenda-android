@@ -1,8 +1,9 @@
 plugins {
    alias(libs.plugins.androidApplication)
    alias(libs.plugins.jetbrainsKotlinAndroid)
-   kotlin("kapt")
+   alias(libs.plugins.ksp)
    alias(libs.plugins.daggerHiltAndroid)
+   alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -71,14 +72,11 @@ dependencies {
    debugImplementation(libs.androidx.ui.test.manifest)
    implementation(libs.androidx.runtime.livedata)
    implementation(libs.hilt.android)
-   kapt(libs.hilt.android.compiler)
    implementation(libs.mongodb)
    implementation(libs.retrofit)
    implementation(libs.retrofit.converter.json)
    implementation(libs.room.ktx)
-   kapt(libs.room.compiler)
+   ksp(libs.room.compiler)
+   ksp(libs.hilt.android.compiler)
    implementation(libs.coil.compose)
-}
-kapt {
-   correctErrorTypes = true
 }

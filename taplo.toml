@@ -1,0 +1,10 @@
+[formatting]
+align_comments = false
+reorder_keys = true
+
+[[rule]]
+include = ["**/lib.versions.toml"]
+keys = [""]
+
+[rule.formatting]
+reorder_keys = false
