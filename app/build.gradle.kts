@@ -12,8 +12,8 @@ android {
 
    defaultConfig {
       applicationId = "com.example.superagenda"
-      minSdk = 34
-      targetSdk = 34
+      minSdk = 35
+      targetSdk = 35
       versionCode = 1
       versionName = "1.0"
 
@@ -33,7 +33,7 @@ android {
       }
    }
    compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_17
+      sourceCompatibility = JavaVersion.VERSION_21
       targetCompatibility = JavaVersion.VERSION_21
    }
    kotlinOptions {
