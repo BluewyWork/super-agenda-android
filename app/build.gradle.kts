@@ -34,16 +34,16 @@ android {
    }
    compileOptions {
       sourceCompatibility = JavaVersion.VERSION_17
-      targetCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_21
    }
    kotlinOptions {
-      jvmTarget = "17"
+      jvmTarget = "21"
    }
    buildFeatures {
       compose = true
    }
    composeOptions {
-      kotlinCompilerExtensionVersion = "1.4.3"
+      kotlinCompilerExtensionVersion = "1.5.15"
    }
    packaging {
       resources {
@@ -79,4 +79,5 @@ dependencies {
    ksp(libs.room.compiler)
    ksp(libs.hilt.android.compiler)
    implementation(libs.coil.compose)
+//   implementation(libs.hilt.navigation.compose)
 }
