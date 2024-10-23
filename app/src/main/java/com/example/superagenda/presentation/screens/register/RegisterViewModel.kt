@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.core.navigations.Destinations
 import com.example.superagenda.domain.RegisterUseCase
 import com.example.superagenda.domain.models.UserForRegister
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,13 +47,12 @@ class RegisterViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
+   private suspend fun whenPopupsEmpty(code: () -> Unit) {
+      while (popupsQueue.value?.isNotEmpty() == true) {
+         delay(2000)
       }
+
+      code()
    }
 
    fun onRegisterButtonPress(navController: NavController) {
@@ -82,11 +80,7 @@ class RegisterViewModel @Inject constructor(
             _password.postValue("")
             enqueuePopup("INFO", "Successfully registered...")
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
-            }
-
-            navController.navigateUp()
+            whenPopupsEmpty { navController.navigateUp() }
          } else {
             enqueuePopup("ERROR", "Something went wrong...")
          }

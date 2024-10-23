@@ -94,6 +94,14 @@ class TaskEditViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
+   private suspend fun whenPopupsEmpty(code: () -> Unit) {
+      while (popupsQueue.value?.isNotEmpty() == true) {
+         delay(2000)
+      }
+
+      code()
+   }
+
    fun onUpdateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value
@@ -162,19 +170,16 @@ class TaskEditViewModel @Inject constructor(
                }
             }
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigateUp()
             }
 
-            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to update task locally...")
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigateUp()
             }
-
-            navController.navigateUp()
          }
       }
    }
@@ -199,19 +204,15 @@ class TaskEditViewModel @Inject constructor(
                }
             }
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigateUp()
             }
-
-            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to delete task locally...")
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigateUp()
             }
-
-            navController.navigateUp()
          }
       }
    }

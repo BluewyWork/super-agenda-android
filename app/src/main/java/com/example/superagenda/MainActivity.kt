@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
       setContent {
          SuperAgendaTheme {
             NavigationHost(
-               service = service,
                registerViewModel = registerViewModel,
                loginViewModel = loginViewModel,
                profileViewModel = profileViewModel,

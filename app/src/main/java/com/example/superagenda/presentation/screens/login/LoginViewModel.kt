@@ -28,7 +28,6 @@ class LoginViewModel @Inject constructor(
    private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
    val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
 
-
    fun onUsernameChange(username: String) {
       _username.postValue(username)
    }
@@ -37,7 +36,7 @@ class LoginViewModel @Inject constructor(
       _password.postValue(password)
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   private fun enqueuePopup(title: String, message: String) {
       _popupsQueue.value =
          popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
             Pair(
@@ -51,27 +50,13 @@ class LoginViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
-   fun waitForPopup(code: () -> Unit) {
-      popupsQueue.observeForever { queue ->
-         if (queue.isNullOrEmpty()) {
-            code()
-            popupsQueue.removeObserver { this }
-         }
+   private suspend fun whenPopupsEmpty(code: () -> Unit) {
+      // if this is null it will execute the code, hmm....
+      while (popupsQueue.value?.isNotEmpty() == true) {
+         delay(2000)
       }
-   }
 
-   fun onShow(navController: NavController) {
-      viewModelScope.launch {
-         val isLoggedIn = loginUseCase.isLoggedIn()
-
-         if (!isLoggedIn) {
-            return@launch
-         }
-
-         // NOTE: with the current flow of the application this code is unused.
-         navController.navigate(Destinations.Tasks.route)
-         _password.postValue("")
-      }
+      code()
    }
 
    fun onLoginButtonPress(navController: NavController) {
@@ -128,11 +113,9 @@ class LoginViewModel @Inject constructor(
             _password.postValue("")
             enqueuePopup("INFO", "Successfully logged in!")
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigate(Destinations.Tasks.route)
             }
-
-            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Something went wrong...")
          }

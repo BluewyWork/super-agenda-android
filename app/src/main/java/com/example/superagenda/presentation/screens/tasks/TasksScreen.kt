@@ -1,6 +1,5 @@
 package com.example.superagenda.presentation.screens.tasks
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TasksScreen(
    tasksViewModel: TasksViewModel,

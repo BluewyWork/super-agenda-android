@@ -81,6 +81,14 @@ class NewTaskViewModel @Inject constructor(
       _popupsQueue.postValue(_popupsQueue.value?.drop(1))
    }
 
+   private suspend fun whenPopupsEmpty(code: () -> Unit) {
+      while (popupsQueue.value?.isNotEmpty() == true) {
+         delay(2000)
+      }
+
+      code()
+   }
+
    fun onCreateButtonPress(navController: NavController) {
       viewModelScope.launch {
          val title = title.value
@@ -138,11 +146,9 @@ class NewTaskViewModel @Inject constructor(
                }
             }
 
-            while (popupsQueue.value?.isNotEmpty() == true) {
-               delay(1000)
+            whenPopupsEmpty {
+               navController.navigateUp()
             }
-
-            navController.navigateUp()
          } else {
             enqueuePopup("ERROR", "Failed to create task locally...")
          }
