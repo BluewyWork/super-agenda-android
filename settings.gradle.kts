@@ -19,5 +19,5 @@ dependencyResolutionManagement {
    }
 }
 
-rootProject.name = "Super Agenda"
+rootProject.name = "SuperAgendaAndroid"
 include(":app")
