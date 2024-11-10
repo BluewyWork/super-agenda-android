@@ -1,13 +1,13 @@
 package com.example.superagenda.domain
 
-import com.example.superagenda.data.LoginRepository
+import com.example.superagenda.data.AuthenticationRepository
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.domain.models.Task
 import org.bson.types.ObjectId
 import javax.inject.Inject
 
 class TaskUseCase @Inject constructor(
-   private val loginRepository: LoginRepository,
+   private val authenticationRepository: AuthenticationRepository,
    private val taskRepository: TaskRepository,
 ) {
    suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
@@ -31,7 +31,7 @@ class TaskUseCase @Inject constructor(
    }
 
    suspend fun retrieveTaskAtApi(): List<Task>? {
-      val token = loginRepository.retrieveTokenFromLocalStorage()
+      val token = authenticationRepository.retrieveTokenFromLocalStorage()
 
       if (token.isNullOrBlank()) {
          return null
@@ -43,7 +43,7 @@ class TaskUseCase @Inject constructor(
    // honestly with this setup we can't tell what type of error we have here
    // maybe throws ... should be better because that is how its done in kotlin
    suspend fun createTaskAtAPI(task: Task): Boolean {
-      val token = loginRepository.retrieveTokenFromLocalStorage()
+      val token = authenticationRepository.retrieveTokenFromLocalStorage()
 
       if (token.isNullOrBlank()) {
          return false
@@ -53,7 +53,7 @@ class TaskUseCase @Inject constructor(
    }
 
    suspend fun updateTaskAtAPI(task: Task): Boolean {
-      val token = loginRepository.retrieveTokenFromLocalStorage()
+      val token = authenticationRepository.retrieveTokenFromLocalStorage()
 
       if (token.isNullOrBlank()) {
          return false
@@ -63,7 +63,7 @@ class TaskUseCase @Inject constructor(
    }
 
    suspend fun deleteTaskAtAPI(taskID: ObjectId): Boolean {
-      val token = loginRepository.retrieveTokenFromLocalStorage()
+      val token = authenticationRepository.retrieveTokenFromLocalStorage()
 
       // need to change to result type for more detailed errors
       if (token.isNullOrBlank()) {
