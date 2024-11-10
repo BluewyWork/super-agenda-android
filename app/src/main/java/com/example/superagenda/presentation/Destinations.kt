@@ -1,4 +1,4 @@
-package com.example.superagenda.core.navigations
+package com.example.superagenda.presentation
 
 sealed class Destinations(
    val route: String,

@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.R
-import com.example.superagenda.core.navigations.Destinations
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel

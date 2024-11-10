@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.superagenda.core.navigations.Destinations
+import com.example.superagenda.presentation.Destinations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

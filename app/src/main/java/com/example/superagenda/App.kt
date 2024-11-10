@@ -1,4 +1,4 @@
-package com.example.superagenda.core
+package com.example.superagenda
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

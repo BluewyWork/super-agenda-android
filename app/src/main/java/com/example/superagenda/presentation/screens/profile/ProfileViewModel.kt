@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.core.navigations.Destinations
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.SelfUseCase
 import com.example.superagenda.domain.TaskUseCase

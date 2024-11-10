@@ -1,4 +1,4 @@
-package com.example.superagenda.core.navigations
+package com.example.superagenda.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.core.navigations.Destinations
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.PopupDialog
 
