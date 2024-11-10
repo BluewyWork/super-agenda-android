@@ -21,9 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel

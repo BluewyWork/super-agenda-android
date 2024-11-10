@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.SelfUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForProfile
+import com.example.superagenda.presentation.Destinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
