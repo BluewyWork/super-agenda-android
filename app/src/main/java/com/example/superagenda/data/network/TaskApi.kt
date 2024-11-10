@@ -1,7 +1,7 @@
 package com.example.superagenda.data.network
 
 import com.example.superagenda.data.models.TaskModel
-import com.example.superagenda.data.network.response.ApiResponse
+import com.example.superagenda.data.network.models.ApiResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

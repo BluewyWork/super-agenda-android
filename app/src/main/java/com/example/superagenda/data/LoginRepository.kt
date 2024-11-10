@@ -4,21 +4,21 @@ import android.util.Log
 import com.example.superagenda.data.database.dao.TokenDao
 import com.example.superagenda.data.database.entities.TokenEntity
 import com.example.superagenda.data.models.toData
-import com.example.superagenda.data.network.LoginApi
+import com.example.superagenda.data.network.AuthenticationApi
 import com.example.superagenda.domain.models.UserForLogin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
-   private val loginApi: LoginApi,
+   private val authenticationApi: AuthenticationApi,
    private val tokenDao: TokenDao,
 ) {
    suspend fun retrieveTokenFromAPI(userForLogin: UserForLogin): String? {
       return withContext(Dispatchers.IO) {
          try {
             val userForLoginModel = userForLogin.toData()
-            val apiResponse = loginApi.login(userForLoginModel)
+            val apiResponse = authenticationApi.login(userForLoginModel)
 
             apiResponse.data.token
          } catch (e: Exception) {
