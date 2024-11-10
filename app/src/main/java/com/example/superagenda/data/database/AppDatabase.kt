@@ -11,7 +11,7 @@ import com.example.superagenda.data.database.entities.TokenEntity
    entities = [TokenEntity::class, TaskEntity::class],
    version = 1
 )
-abstract class SuperAgendaDatabase : RoomDatabase() {
-   abstract fun getTokenDao(): TokenDao
-   abstract fun getTaskDao(): TaskDao
+abstract class AppDatabase : RoomDatabase() {
+   abstract fun tokenDao(): TokenDao
+   abstract fun taskDao(): TaskDao
 }

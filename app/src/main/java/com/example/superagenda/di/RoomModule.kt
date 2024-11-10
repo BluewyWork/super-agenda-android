@@ -2,7 +2,7 @@ package com.example.superagenda.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.superagenda.data.database.SuperAgendaDatabase
+import com.example.superagenda.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,14 +18,14 @@ object RoomModule {
    @Singleton
    @Provides
    fun provideRoom(@ApplicationContext context: Context) =
-      Room.databaseBuilder(context, SuperAgendaDatabase::class.java, SUPER_AGENDA_DATABASE_NAME)
+      Room.databaseBuilder(context, AppDatabase::class.java, SUPER_AGENDA_DATABASE_NAME)
          .build()
 
    @Singleton
    @Provides
-   fun provideTokenDao(db: SuperAgendaDatabase) = db.getTokenDao()
+   fun provideTokenDao(db: AppDatabase) = db.tokenDao()
 
    @Singleton
    @Provides
-   fun provideTaskDao(db: SuperAgendaDatabase) = db.getTaskDao()
+   fun provideTaskDao(db: AppDatabase) = db.taskDao()
 }
