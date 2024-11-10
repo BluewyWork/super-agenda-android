@@ -1,14 +1,9 @@
 package com.example.superagenda
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.example.superagenda.core.NotificationService
 import com.example.superagenda.core.navigations.NavigationHost
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
@@ -19,7 +14,7 @@ import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksViewModel
-import com.example.superagenda.ui.theme.SuperAgendaTheme
+import com.example.superagenda.ui.theme.SuperAgendaAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,13 +30,10 @@ class MainActivity : ComponentActivity() {
    private val otherViewModel: OtherViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
-      createNotificationChannel()
       super.onCreate(savedInstanceState)
 
-      val service = NotificationService(applicationContext)
-
       setContent {
-         SuperAgendaTheme {
+         SuperAgendaAndroidTheme {
             NavigationHost(
                registerViewModel = registerViewModel,
                loginViewModel = loginViewModel,
@@ -54,22 +46,6 @@ class MainActivity : ComponentActivity() {
                otherViewModel = otherViewModel
             )
          }
-      }
-   }
-
-   private fun createNotificationChannel() {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-         val channel = NotificationChannel(
-            NotificationService.CHANNEL_ID,
-            "Random Name",
-            NotificationManager.IMPORTANCE_DEFAULT
-         )
-
-         channel.description = "This is an example description."
-
-         val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-         notificationManager.createNotificationChannel(channel)
       }
    }
 }
