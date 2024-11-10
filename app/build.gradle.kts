@@ -79,5 +79,4 @@ dependencies {
    ksp(libs.room.compiler)
    ksp(libs.hilt.android.compiler)
    implementation(libs.coil.compose)
-//   implementation(libs.hilt.navigation.compose)
 }
