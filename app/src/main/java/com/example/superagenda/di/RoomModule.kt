@@ -28,4 +28,8 @@ object RoomModule {
    @Singleton
    @Provides
    fun provideTaskDao(db: AppDatabase) = db.taskDao()
+
+   @Singleton
+   @Provides
+   fun provideProfile(db: AppDatabase) = db.userForProfileDao()
 }

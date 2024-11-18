@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForLogin
 import com.example.superagenda.presentation.Destinations
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
    private val taskUseCase: TaskUseCase,
+   private val userUseCase: UserUseCase
 ) : ViewModel() {
    private val _username = MutableLiveData<String>()
    val username: LiveData<String> = _username
@@ -79,6 +81,8 @@ class LoginViewModel @Inject constructor(
                password
             )
          )
+
+         userUseCase.retrieveUserForProfile()
 
          if (ok) {
             // attempt to save local tasks

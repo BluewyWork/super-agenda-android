@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.SelfUseCase
+import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.Destinations
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-   private val selfUseCase: SelfUseCase,
+   private val userUseCase: UserUseCase,
    private val loginUseCase: LoginUseCase,
    private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
 
    fun onShow() {
       viewModelScope.launch {
-         val userProfile = selfUseCase.retrieveUserForProfile()
+         val userProfile = userUseCase.retrieveUserForProfile()
 
          _userForProfile.postValue(userProfile)
       }
@@ -59,7 +59,7 @@ class ProfileViewModel @Inject constructor(
 
    fun onDeleteButtonPressButton(navController: NavController) {
       viewModelScope.launch {
-         if (!selfUseCase.deleteProfile()) {
+         if (!userUseCase.deleteProfile()) {
             enqueuePopup("ERROR", "Failed to delete profile at api...")
             return@launch
          }
