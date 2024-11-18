@@ -82,7 +82,13 @@ class LoginViewModel @Inject constructor(
             )
          )
 
-         userUseCase.retrieveUserForProfile()
+         val userForProfile = userUseCase.retrieveUserForProfile()
+
+         if (userForProfile == null) {
+            enqueuePopup("ERROR", "Unable to sync with api...")
+         } else {
+            userUseCase.upsertUserForProfileAtDatabase(userForProfile)
+         }
 
          if (ok) {
             // attempt to save local tasks

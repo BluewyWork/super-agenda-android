@@ -1,7 +1,7 @@
 package com.example.superagenda.di
 
 import com.example.superagenda.data.network.AuthenticationApi
-import com.example.superagenda.data.network.SelfApi
+import com.example.superagenda.data.network.UserApi
 import com.example.superagenda.data.network.TaskApi
 import dagger.Module
 import dagger.Provides
@@ -35,7 +35,7 @@ class RetrofitModule {
 
    @Singleton
    @Provides
-   fun provideProfileApi(retrofit: Retrofit): SelfApi {
-      return retrofit.create(SelfApi::class.java)
+   fun provideProfileApi(retrofit: Retrofit): UserApi {
+      return retrofit.create(UserApi::class.java)
    }
 }

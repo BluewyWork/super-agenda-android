@@ -5,7 +5,7 @@ import com.example.superagenda.data.database.dao.UserForProfileDao
 import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.models.toDatabase
 import com.example.superagenda.data.models.toDomain
-import com.example.superagenda.data.network.SelfApi
+import com.example.superagenda.data.network.UserApi
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
@@ -14,14 +14,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.example.superagenda.util.Result
 
-class SelfRepository @Inject constructor(
-   private val selfApi: SelfApi,
-   private val selfDao: UserForProfileDao
+class UserRepository @Inject constructor(
+   private val userApi: UserApi,
+   private val userForProfileDao: UserForProfileDao
 ) {
    suspend fun retrieveProfileFromAPI(token: String): UserForProfile? {
       return withContext(Dispatchers.IO) {
          try {
-            selfApi.retrieveUserProfile(token).data.toDomain()
+            userApi.retrieveUserProfile(token).data.toDomain()
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
@@ -33,7 +33,7 @@ class SelfRepository @Inject constructor(
    suspend fun deleteProfileFromApi(token: String): Boolean {
       return withContext(Dispatchers.IO) {
          try {
-            val response = selfApi.deleteProfile(token)
+            val response = userApi.deleteProfile(token)
 
             return@withContext response.ok
          } catch (e: Exception) {
@@ -44,12 +44,22 @@ class SelfRepository @Inject constructor(
       }
    }
 
-   suspend fun upsertProfileAtDatabase(userForProfile: UserForProfile): AppResult<Unit> {
+   suspend fun upsertUserForProfileAtDatabase(userForProfile: UserForProfile): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
-            selfDao.upsert(userForProfile.toData().toDatabase())
+            userForProfileDao.upsert(userForProfile.toData().toDatabase())
 
             Result.Success(Unit)
+         } catch (e: Exception) {
+            Result.Error(AppError.DatabaseError.UNKNOWN)
+         }
+      }
+   }
+
+   suspend fun getUserForProfileAtDatabase(): AppResult<UserForProfile> {
+      return withContext(Dispatchers.IO) {
+         try {
+            Result.Success(userForProfileDao.get().toData().toDomain())
          } catch (e: Exception) {
             Result.Error(AppError.DatabaseError.UNKNOWN)
          }

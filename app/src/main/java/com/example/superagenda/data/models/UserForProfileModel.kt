@@ -37,3 +37,8 @@ fun UserForProfileModel.toDatabase() = UserForProfileEntity(
    username= username,
    membership = membership
 )
+
+fun UserForProfileEntity.toData() = UserForProfileModel(
+   username = username,
+   membership = membership,
+)
