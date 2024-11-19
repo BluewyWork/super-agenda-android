@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,31 +41,43 @@ class TasksViewModel @Inject constructor(
       // after that it is just pushing to mongodb
 
       viewModelScope.launch {
-         val tasks = task2UseCase.getTasksAtDatabase() ?: return@launch
+         when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+            is Result.Error -> TODO()
 
-         val filtered = tasks.filter { it.status == TaskStatus.NotStarted }
-
-         _tasksNotStarted.postValue(filtered)
+            is Result.Success -> {
+               val tasks = resultGetTasksAtDatabase.data
+               val filtered = tasks.filter { it.status == TaskStatus.NotStarted }
+               _tasksNotStarted.postValue(filtered)
+            }
+         }
       }
    }
 
    fun loadTasksOngoing() {
       viewModelScope.launch {
-         val tasks = task2UseCase.getTasksAtDatabase() ?: return@launch
+         when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+            is Result.Error -> TODO()
 
-         val filtered = tasks.filter { it.status == TaskStatus.Ongoing }
-
-         _tasksOngoing.postValue(filtered)
+            is Result.Success -> {
+               val tasks = resultGetTasksAtDatabase.data
+               val filtered = tasks.filter { it.status == TaskStatus.Ongoing }
+               _tasksNotStarted.postValue(filtered)
+            }
+         }
       }
    }
 
    fun loadTasksCompleted() {
       viewModelScope.launch {
-         val tasks = task2UseCase.getTasksAtDatabase() ?: return@launch
+         when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+            is Result.Error -> TODO()
 
-         val filtered = tasks.filter { it.status == TaskStatus.Completed }
-
-         _tasksCompleted.postValue(filtered)
+            is Result.Success -> {
+               val tasks = resultGetTasksAtDatabase.data
+               val filtered = tasks.filter { it.status == TaskStatus.Completed }
+               _tasksNotStarted.postValue(filtered)
+            }
+         }
       }
    }
 }

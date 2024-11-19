@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -57,12 +58,12 @@ class FilterScreenViewModel @Inject constructor(
 
    fun onFilterPress() {
       viewModelScope.launch {
-         val tasks = taskUseCase.getTasksAtDatabase()
-
-         if (tasks == null) {
-            enqueuePopup("ERROR", "Failed to retrieve tasks from local storage...")
-
-            return@launch
+        val tasks = when (val result = taskUseCase.getTasksAtDatabase()) {
+            is Result.Error -> {
+               enqueuePopup("ERROR", result.error.toString())
+               return@launch
+            }
+            is Result.Success -> result.data
          }
 
          val filteredTasks = tasks

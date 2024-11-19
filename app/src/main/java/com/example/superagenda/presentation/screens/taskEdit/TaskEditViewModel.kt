@@ -9,6 +9,7 @@ import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -159,26 +160,28 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (taskUseCase.upsertTaskAtDatabase(task)) {
-            enqueuePopup("INFO", "Successfully updated task locally!")
+         when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
+            is Result.Error ->
+               enqueuePopup("ERROR", "Failed to update task locally...")
 
-            if (loginUseCase.isLoggedIn()) {
-               if (taskUseCase.updateTaskAtAPI(task)) {
-                  enqueuePopup("INFO", "Successfully updated task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to update task at API...")
+            is Result.Success -> {
+               when (val resultIsLoggedIn = loginUseCase.isLoggedIn()) {
+                  is Result.Error -> TODO()
+                  is Result.Success -> {
+                     when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
+                        is Result.Error ->
+                           enqueuePopup("ERROR", "Failed to update task at API...")
+
+                        is Result.Success -> {
+                           enqueuePopup("INFO", "Successfully updated task at API!")
+                        }
+                     }
+
+                     whenPopupsEmpty {
+                        navController.navigateUp()
+                     }
+                  }
                }
-            }
-
-            whenPopupsEmpty {
-               navController.navigateUp()
-            }
-
-         } else {
-            enqueuePopup("ERROR", "Failed to update task locally...")
-
-            whenPopupsEmpty {
-               navController.navigateUp()
             }
          }
       }
@@ -189,29 +192,21 @@ class TaskEditViewModel @Inject constructor(
          val taskID = taskToEdit.value?._id
 
          if (taskID == null) {
-            enqueuePopup("ERROR", "Hmmm, taskID null, wtf...")
+            enqueuePopup("ERROR", "Hmmm, taskID null, how?...")
             return@launch
          }
 
-         if (taskUseCase.deleteTaskAtDatabase(taskID)) {
-            enqueuePopup("INFO", "Successfully deleted task locally!")
+         when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
+            is Result.Error -> enqueuePopup("INFO", "Unable to delete the task locally...")
 
-            if (loginUseCase.isLoggedIn()) {
-               if (taskUseCase.deleteTaskAtAPI(taskID)) {
-                  enqueuePopup("INFO", "Successfully deleted task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to delete task at API...")
-               }
-            }
+            is Result.Success -> {
+                when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID))  {
+                   is Result.Error ->enqueuePopup ("ERROR", resultDeleteTaskAtApi.error.toString())
 
-            whenPopupsEmpty {
-               navController.navigateUp()
-            }
-         } else {
-            enqueuePopup("ERROR", "Failed to delete task locally...")
-
-            whenPopupsEmpty {
-               navController.navigateUp()
+                   is Result.Success -> {
+                      enqueuePopup("INFO", "Successfully updated task at api!")
+                   }
+                }
             }
          }
       }

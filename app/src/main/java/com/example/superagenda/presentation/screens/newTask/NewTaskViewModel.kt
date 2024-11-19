@@ -9,6 +9,7 @@ import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -135,22 +136,28 @@ class NewTaskViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (task2UseCase.upsertTaskAtDatabase(task)) {
-            enqueuePopup("INFO", "Successfully created task locally!")
+         when (val resultUpsertTaskAtDatabase = task2UseCase.upsertTaskAtDatabase(task)) {
+            is Result.Error -> enqueuePopup("ERROR", resultUpsertTaskAtDatabase.error.toString())
 
-            if (loginUseCase.isLoggedIn()) {
-               if (task2UseCase.createTaskAtAPI(task)) {
-                  enqueuePopup("INFO", "Successfully created task at API!")
-               } else {
-                  enqueuePopup("ERROR", "Failed to create task at API...")
+            is Result.Success -> enqueuePopup("INFO", "Successfully created task locally!")
+         }
+
+         when (val resultLoggedIn = loginUseCase.isLoggedIn()) {
+            is Result.Error -> enqueuePopup("ERROR", resultLoggedIn.error.toString())
+
+            is Result.Success -> {
+               when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
+                  is Result.Error -> {
+                     enqueuePopup("ERROR", "Failed to create task at API...")
+                  }
+
+                  is Result.Success -> enqueuePopup("INFO", "Successfully created task at API!")
                }
             }
+         }
 
-            whenPopupsEmpty {
-               navController.navigateUp()
-            }
-         } else {
-            enqueuePopup("ERROR", "Failed to create task locally...")
+         whenPopupsEmpty {
+            navController.navigateUp()
          }
       }
    }

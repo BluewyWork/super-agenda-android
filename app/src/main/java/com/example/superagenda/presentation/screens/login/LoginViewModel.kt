@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.models.UserForLogin
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.util.Result
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
    private val taskUseCase: TaskUseCase,
-   private val userUseCase: UserUseCase
+   private val userUseCase: UserUseCase,
 ) : ViewModel() {
    private val _username = MutableLiveData<String>()
    val username: LiveData<String> = _username
@@ -65,71 +65,97 @@ class LoginViewModel @Inject constructor(
    fun onLoginButtonPress(navController: NavController) {
       viewModelScope.launch {
          val username = username.value
+
          if (username.isNullOrBlank()) {
             enqueuePopup("ERROR", "Field username is not valid...")
             return@launch
          }
 
          val password = password.value
+
          if (password.isNullOrBlank()) {
             enqueuePopup("ERROR", "Field password is not valid...")
             return@launch
          }
 
-         val ok = loginUseCase.login(
+         when (val resultLogin = loginUseCase.login(
             UserForLogin(
                username,
                password
             )
-         )
+         )) {
+            is Result.Error -> enqueuePopup("ERROR", resultLogin.error.toString())
 
-         when(val result = userUseCase.getUserForProfileAtApi()) {
-            is Result.Error -> {
-               enqueuePopup("ERROR", result.error.toString())
-            }
             is Result.Success -> {
-               userUseCase.upsertUserForProfileAtDatabase(result.data)
-            }
-         }
+               _password.postValue("")
+               enqueuePopup("INFO", "Successfully logged in!")
 
-         if (ok) {
-            // attempt to save local tasks
-            val tasks = taskUseCase.getTasksAtDatabase()
+               when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
+                  is Result.Error -> TODO()
 
-            var lastResult = true
+                  is Result.Success -> {
+                     val tasksDatabase = resultGetTasksAtDatabase.data
+                     var lastResult = true
 
-            if (tasks != null) {
-               for (task in tasks) {
-                  lastResult = taskUseCase.createTaskAtAPI(task)
+                     for (task in tasksDatabase) {
+                        when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
+                           is Result.Error -> enqueuePopup(
+                              "ERROR",
+                              resultCreateTaskAtApi.error.toString()
+                           )
+
+                           is Result.Success -> lastResult = resultCreateTaskAtApi.data
+                        }
+                     }
+
+                     if (!lastResult) {
+                        enqueuePopup(
+                           "ERROR",
+                           "Some tasks failed to sync...\nWill retry automatically later..."
+                        )
+                     }
+
+                     when (val resultGetTasksAtApi = taskUseCase.getTasksAtApi()) {
+                        is Result.Error -> enqueuePopup(
+                           "ERROR",
+                           resultGetTasksAtApi.error.toString()
+                        )
+
+                        is Result.Success -> {
+                           val tasksApi = resultGetTasksAtApi.data
+
+                           var lastResult2 = true
+
+                           for (task in tasksApi) {
+                              lastResult2 = when (val resultUpdateAtDatabase =
+                                 taskUseCase.upsertTaskAtDatabase(task)) {
+                                 is Result.Error -> false
+                                 is Result.Success -> true
+                              }
+                           }
+
+                           if (!lastResult2) {
+                              enqueuePopup("ERROR", "Failed to bring some or all tasks locally...")
+                           }
+                        }
+                     }
+
+                     when (val result = userUseCase.getUserForProfileAtApi()) {
+                        is Result.Error -> {
+                           enqueuePopup("ERROR", result.error.toString())
+                        }
+
+                        is Result.Success -> {
+                           userUseCase.upsertUserForProfileAtDatabase(result.data)
+                        }
+                     }
+
+                     whenPopupsEmpty {
+                        navController.navigate(Destinations.Tasks.route)
+                     }
+                  }
                }
             }
-
-            if (!lastResult) {
-               enqueuePopup("ERROR", "Failed to sync tasks created before logged in...")
-            }
-
-            val remoteTasks = taskUseCase.getTasksAtApi()
-
-            var lastResult2 = true
-
-            if (remoteTasks != null) {
-               for (task in remoteTasks) {
-                  lastResult2 = taskUseCase.upsertTaskAtDatabase(task)
-               }
-            }
-
-            if (!lastResult2) {
-               enqueuePopup("ERROR", "Failed to bring some or all tasks locally...")
-            }
-
-            _password.postValue("")
-            enqueuePopup("INFO", "Successfully logged in!")
-
-            whenPopupsEmpty {
-               navController.navigate(Destinations.Tasks.route)
-            }
-         } else {
-            enqueuePopup("ERROR", "Something went wrong...")
          }
       }
    }

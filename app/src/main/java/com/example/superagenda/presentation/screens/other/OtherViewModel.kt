@@ -11,6 +11,7 @@ import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.util.Result
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -53,20 +54,24 @@ class OtherViewModel @Inject constructor(
    fun onBackUpButtonPress() {
       viewModelScope.launch {
          showLoadingPopup()
-         val tasks = taskUseCase.getTasksAtDatabase()
+         when(val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
+            is Result.Error -> {
+               dismissLoadingPopup()
+               enqueuePopup("ERROR", "Failed, no tasks to backup...")
+            }
 
-         if (tasks == null) {
-            dismissLoadingPopup()
-            enqueuePopup("ERROR", "Failed, no tasks to backup...")
-            return@launch
-         }
+            is Result.Success -> {
+              val tasks = resultGetTasksAtDatabase.data
 
-         if (taskUseCase.backupTasks(tasks)) {
-            dismissLoadingPopup()
-            enqueuePopup("INFO", "Successfully backed up tasks!\nYou can find it under Download")
-         } else {
-            dismissLoadingPopup()
-            enqueuePopup("ERROR", "Failed to backup tasks...")
+               // TODO: Update this function to use AppResult
+               if (taskUseCase.backupTasks(tasks)) {
+                  dismissLoadingPopup()
+                  enqueuePopup("INFO", "Successfully backed up tasks!\nYou can find it under Download")
+               } else {
+                  dismissLoadingPopup()
+                  enqueuePopup("ERROR", "Failed to backup tasks...")
+               }
+            }
          }
       }
    }
@@ -93,13 +98,23 @@ class OtherViewModel @Inject constructor(
          var codeSuccess = true
 
          for (task in taskList) {
-            codeSuccess = taskUseCase.upsertTaskAtDatabase(task)
+            codeSuccess = when(val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
+               is Result.Error -> false
+               is Result.Success -> true
+            }
          }
 
          var codeSuccess2 = true
 
          for (task in taskList) {
-            codeSuccess2 = taskUseCase.updateTaskAtAPI(task)
+            codeSuccess2 = when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
+               is Result.Error -> {
+                  enqueuePopup("ERROR", resultUpdateTaskAtApi.error.toString())
+                  false
+               }
+
+               is Result.Success -> resultUpdateTaskAtApi.data
+            }
          }
 
          if (codeSuccess) {
