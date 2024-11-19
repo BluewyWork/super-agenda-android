@@ -28,8 +28,8 @@ class LoginViewModel @Inject constructor(
    private val _password = MutableLiveData<String>()
    val password: LiveData<String> = _password
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onUsernameChange(username: String) {
       _username.postValue(username)
@@ -39,12 +39,13 @@ class LoginViewModel @Inject constructor(
       _password.postValue(password)
    }
 
-   private fun enqueuePopup(title: String, message: String) {
+   private fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }
@@ -84,46 +85,51 @@ class LoginViewModel @Inject constructor(
                password
             )
          )) {
-            is Result.Error -> enqueuePopup("ERROR", resultLogin.error.toString())
+            is Result.Error -> enqueuePopup("ERROR", "Failed to log in...", resultLogin.error.toString())
 
             is Result.Success -> {
                _password.postValue("")
                enqueuePopup("INFO", "Successfully logged in!")
 
                when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
-                  is Result.Error -> TODO()
+                  is Result.Error ->
+                     enqueuePopup("ERROR", "Failed to get tasks at api...")
 
                   is Result.Success -> {
                      val tasksDatabase = resultGetTasksAtDatabase.data
                      var lastResult = true
 
                      for (task in tasksDatabase) {
-                        when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
-                           is Result.Error -> enqueuePopup(
-                              "ERROR",
-                              resultCreateTaskAtApi.error.toString()
-                           )
+                        lastResult = when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
+                           is Result.Error -> {
+                     //                              enqueuePopup(
+                     //                                 "ERROR",
+                     //                                 "Failed to create task at api...",
+                     //                                 resultCreateTaskAtApi.error.toString()
+                     //                              )
+                              false
+                           }
 
-                           is Result.Success -> lastResult = resultCreateTaskAtApi.data
+                           is Result.Success -> resultCreateTaskAtApi.data
                         }
                      }
 
                      if (!lastResult) {
                         enqueuePopup(
                            "ERROR",
-                           "Some tasks failed to sync...\nWill retry automatically later..."
+                           "Failed to create tasks at api..."
                         )
                      }
 
                      when (val resultGetTasksAtApi = taskUseCase.getTasksAtApi()) {
                         is Result.Error -> enqueuePopup(
                            "ERROR",
+                           "Failed to get tasks at api...",
                            resultGetTasksAtApi.error.toString()
                         )
 
                         is Result.Success -> {
                            val tasksApi = resultGetTasksAtApi.data
-
                            var lastResult2 = true
 
                            for (task in tasksApi) {
@@ -135,14 +141,14 @@ class LoginViewModel @Inject constructor(
                            }
 
                            if (!lastResult2) {
-                              enqueuePopup("ERROR", "Failed to bring some or all tasks locally...")
+                              enqueuePopup("ERROR", "Failed to save tasks locally...")
                            }
                         }
                      }
 
                      when (val result = userUseCase.getUserForProfileAtApi()) {
                         is Result.Error -> {
-                           enqueuePopup("ERROR", result.error.toString())
+                           enqueuePopup("ERROR", "Failed to get user profile...", result.error.toString())
                         }
 
                         is Result.Success -> {

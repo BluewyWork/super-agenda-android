@@ -26,8 +26,8 @@ class OtherViewModel @Inject constructor(
    private val _showLoadingPopup = MutableLiveData<Boolean>()
    val showLoadingPopup: LiveData<Boolean> = _showLoadingPopup
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    fun showLoadingPopup() {
       _showLoadingPopup.postValue(true)
@@ -37,12 +37,13 @@ class OtherViewModel @Inject constructor(
       _showLoadingPopup.postValue(false)
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }

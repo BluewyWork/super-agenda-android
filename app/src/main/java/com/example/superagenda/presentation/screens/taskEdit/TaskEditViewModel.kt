@@ -10,6 +10,7 @@ import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
+import com.example.superagenda.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,8 +40,8 @@ class TaskEditViewModel @Inject constructor(
    private val _taskToEdit = MutableLiveData<Task>()
    val taskToEdit: LiveData<Task> = _taskToEdit
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onTitleChange(title: String) {
       _title.postValue(title)
@@ -81,12 +82,13 @@ class TaskEditViewModel @Inject constructor(
       _endDateTime.postValue(task.endDateTime)
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, description: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, description, error)) ?: listOf(
+            Triple(
                title,
-               message
+               description,
+               error
             )
          )
    }
@@ -162,24 +164,21 @@ class TaskEditViewModel @Inject constructor(
 
          when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
             is Result.Error ->
-               enqueuePopup("ERROR", "Failed to update task locally...")
+               enqueuePopup("ERROR", "Failed to update task locally...", resultUpsertTaskAtDatabase.error.toString())
 
             is Result.Success -> {
-               when (val resultIsLoggedIn = loginUseCase.isLoggedIn()) {
-                  is Result.Error -> TODO()
-                  is Result.Success -> {
-                     when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
-                        is Result.Error ->
-                           enqueuePopup("ERROR", "Failed to update task at API...")
+               loginUseCase.isLoggedIn().onSuccess {
+                  when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
+                     is Result.Error ->
+                        enqueuePopup("ERROR", "Failed to update task at API...", resultUpdateTaskAtApi.error.toString())
 
-                        is Result.Success -> {
-                           enqueuePopup("INFO", "Successfully updated task at API!")
-                        }
+                     is Result.Success -> {
+                        enqueuePopup("INFO", "Successfully updated task at API!")
                      }
+                  }
 
-                     whenPopupsEmpty {
-                        navController.navigateUp()
-                     }
+                  whenPopupsEmpty {
+                     navController.navigateUp()
                   }
                }
             }
@@ -197,14 +196,19 @@ class TaskEditViewModel @Inject constructor(
          }
 
          when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
-            is Result.Error -> enqueuePopup("INFO", "Unable to delete the task locally...")
+            is Result.Error ->
+               enqueuePopup("ERROR", "Failed to delete task locally...", resultDeleteTaskAtDatabase.error.toString())
 
             is Result.Success -> {
-               when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
-                  is Result.Error -> enqueuePopup("ERROR", resultDeleteTaskAtApi.error.toString())
+               loginUseCase.isLoggedIn().onSuccess {
+                  when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
+                     is Result.Error -> {
+                        enqueuePopup("ERROR", "Failed to delete task at api...", resultDeleteTaskAtApi.error.toString())
+                     }
 
-                  is Result.Success -> {
-                     enqueuePopup("INFO", "Successfully updated task at api!")
+                     is Result.Success -> {
+                        enqueuePopup("INFO", "Successfully updated task at api!")
+                     }
                   }
                }
             }

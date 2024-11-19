@@ -37,8 +37,8 @@ class NewTaskViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onTitleChange(title: String) {
       _title.postValue(title)
@@ -68,12 +68,13 @@ class NewTaskViewModel @Inject constructor(
       _endDateTime.postValue(LocalDateTime.now())
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }
@@ -137,27 +138,34 @@ class NewTaskViewModel @Inject constructor(
          )
 
          when (val resultUpsertTaskAtDatabase = task2UseCase.upsertTaskAtDatabase(task)) {
-            is Result.Error -> enqueuePopup("ERROR", resultUpsertTaskAtDatabase.error.toString())
-
-            is Result.Success -> enqueuePopup("INFO", "Successfully created task locally!")
-         }
-
-         when (val resultLoggedIn = loginUseCase.isLoggedIn()) {
-            is Result.Error -> enqueuePopup("ERROR", resultLoggedIn.error.toString())
+            is Result.Error ->
+               enqueuePopup("ERROR", "Failed to upsert task locally...", resultUpsertTaskAtDatabase.error.toString())
 
             is Result.Success -> {
-               when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
+               enqueuePopup("INFO", "Successfully created task locally!")
+
+               // here because i don't want it to attempt if saving locally fails in the
+               // first place
+               when (val resultLoggedIn = loginUseCase.isLoggedIn()) {
                   is Result.Error -> {
-                     enqueuePopup("ERROR", "Failed to create task at API...")
+                     // skip cause not logged in
                   }
 
-                  is Result.Success -> enqueuePopup("INFO", "Successfully created task at API!")
+                  is Result.Success -> {
+                     when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
+                        is Result.Error ->
+                           enqueuePopup("ERROR", "Failed to create task at API...", resultCreateTaskAtApi.error.toString())
+
+                        is Result.Success ->
+                           enqueuePopup("INFO", "Successfully created task at API!")
+                     }
+                  }
+               }
+
+               whenPopupsEmpty {
+                  navController.navigateUp()
                }
             }
-         }
-
-         whenPopupsEmpty {
-            navController.navigateUp()
          }
       }
    }

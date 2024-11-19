@@ -31,14 +31,15 @@ fun ProfileScreen(
    navController: NavController,
    navigationViewModel: NavigationViewModel,
 ) {
-   val popupsQueue: List<Pair<String, String>> by profileViewModel.popupsQueue.observeAsState(
+   val popupsQueue: List<Triple<String, String, String>> by profileViewModel.popupsQueue.observeAsState(
       listOf()
    )
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
          title = popupsQueue.first().first,
-         message = popupsQueue.first().second
+         message = popupsQueue.first().second,
+         error = popupsQueue.first().third,
       ) {
          profileViewModel.dismissPopup()
       }

@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.RegisterUseCase
 import com.example.superagenda.domain.models.UserForRegister
+import com.example.superagenda.presentation.Destinations
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,8 +24,8 @@ class RegisterViewModel @Inject constructor(
    private val _password = MutableLiveData<String>()
    val password: LiveData<String> = _password
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onUsernameChange(username: String) {
       _username.postValue(username)
@@ -33,12 +35,13 @@ class RegisterViewModel @Inject constructor(
       _password.postValue(password)
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }
@@ -69,20 +72,26 @@ class RegisterViewModel @Inject constructor(
             return@launch
          }
 
-         val ok = registerUseCase.register(
+         when (val resultRegister = registerUseCase.register(
             UserForRegister(
                username,
                password
             )
-         )
+         )) {
+            is Result.Error -> {
+               enqueuePopup("ERROR", "Failed to register...", resultRegister.error.toString())
+            }
 
-         if (ok) {
-            _password.postValue("")
-            enqueuePopup("INFO", "Successfully registered...")
-
-            whenPopupsEmpty { navController.navigateUp() }
-         } else {
-            enqueuePopup("ERROR", "Something went wrong...")
+            is Result.Success -> {
+               if (resultRegister.data) {
+                  enqueuePopup("INFO", "Successfully registered..")
+                  whenPopupsEmpty {
+                     navController.navigate(Destinations.Login.route)
+                  }
+               } else {
+                  enqueuePopup("ERROR", "Failed to register (Rejected)")
+               }
+            }
          }
       }
    }

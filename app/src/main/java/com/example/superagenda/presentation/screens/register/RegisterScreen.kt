@@ -31,11 +31,12 @@ import com.example.superagenda.presentation.composables.PopupDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-   val popupsQueue: List<Pair<String, String>> by registerViewModel.popupsQueue.observeAsState(
+   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popupsQueue.observeAsState(
       listOf()
    )
+
    if (popupsQueue.isNotEmpty()) {
-      PopupDialog(popupsQueue.first().first, popupsQueue.first().second) {
+      PopupDialog(popupsQueue.first().first, popupsQueue.first().second, popupsQueue.first().third) {
          registerViewModel.dismissPopup()
       }
    }

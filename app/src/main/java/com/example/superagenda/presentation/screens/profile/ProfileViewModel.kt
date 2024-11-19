@@ -25,15 +25,16 @@ class ProfileViewModel @Inject constructor(
    private val _userForProfile = MutableLiveData<UserForProfile?>()
    val userForProfile: LiveData<UserForProfile?> = _userForProfile
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }
@@ -53,8 +54,13 @@ class ProfileViewModel @Inject constructor(
 
    fun onShow() {
       viewModelScope.launch {
-         when (val result = userUseCase.getUserForProfileAtApi()) {
-            is Result.Error -> enqueuePopup("ERROR", result.error.toString())
+         when (val result = userUseCase.getUserForProfileAtDatabase()) {
+            is Result.Error -> enqueuePopup(
+               "ERROR",
+               "Unable to get user for profile locally...",
+               result.error.toString()
+            )
+
             is Result.Success -> _userForProfile.postValue(result.data)
          }
       }
@@ -63,7 +69,11 @@ class ProfileViewModel @Inject constructor(
    fun onDeleteButtonPressButton(navController: NavController) {
       viewModelScope.launch {
          when (val resultDeleteUserAtApi = userUseCase.deleteUserAtApi()) {
-            is Result.Error -> enqueuePopup("ERROR", "Failed to delete profile at api...")
+            is Result.Error -> enqueuePopup(
+               "ERROR",
+               "Failed to delete profile at api...",
+               resultDeleteUserAtApi.error.toString()
+            )
 
             is Result.Success -> {
                if (!resultDeleteUserAtApi.data) {
@@ -73,14 +83,18 @@ class ProfileViewModel @Inject constructor(
                when (val deleteTokenAtDatabase = loginUseCase.deleteTokenFromDatabase()) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
-                     "Failed to clear token from local storage..."
+                     "Failed to clear token from local storage...",
+                     deleteTokenAtDatabase.error.toString()
                   )
 
                   is Result.Success -> {
                      when (val resultDeleteTasksAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
                         is Result.Error -> {
-                           enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
-                           return@launch
+                           enqueuePopup(
+                              "ERROR",
+                              "Failed to clear tasks from local storage...",
+                              resultDeleteTasksAtDatabase.error.toString()
+                           )
                         }
 
                         is Result.Success -> {
@@ -103,14 +117,18 @@ class ProfileViewModel @Inject constructor(
 
    fun onLogoutPress(navController: NavController) {
       viewModelScope.launch {
-         loginUseCase.deleteTokenFromDatabase().onError {
-            enqueuePopup("ERROR", "Failed to clear token from local storage...")
+         loginUseCase.deleteTokenFromDatabase().onError { error ->
+            enqueuePopup("ERROR", "Failed to clear token from local storage...", error.toString())
             return@launch
          }
 
-         when (val resultDeleteTasksAtDatabse = taskUseCase.deleteTasksAtDatabase()) {
+         when (val resultDeleteTasksAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
             is Result.Error -> {
-               enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
+               enqueuePopup(
+                  "ERROR",
+                  "Failed to clear tasks from local storage...",
+                  resultDeleteTasksAtDatabase.error.toString()
+               )
             }
 
             is Result.Success -> {

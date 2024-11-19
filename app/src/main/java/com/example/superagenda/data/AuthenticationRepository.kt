@@ -69,18 +69,18 @@ class AuthenticationRepository @Inject constructor(
       }
    }
 
-   suspend fun registerAtAPI(userForRegister: UserForRegister): Boolean {
+   suspend fun registerAtAPI(userForRegister: UserForRegister): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
          try {
             val userForRegisterModel = userForRegister.toData()
 
             val response = authenticationApi.register(userForRegisterModel)
 
-            response.ok
+            Result.Success(response.ok)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }

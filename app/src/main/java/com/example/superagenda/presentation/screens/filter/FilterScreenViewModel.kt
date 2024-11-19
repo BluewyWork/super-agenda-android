@@ -32,8 +32,8 @@ class FilterScreenViewModel @Inject constructor(
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
 
-   private val _popupsQueue = MutableLiveData<List<Pair<String, String>>>()
-   val popupsQueue: LiveData<List<Pair<String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
+   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
    private val _taskToEdit = MutableLiveData<Task>()
    val taskToEdit: LiveData<Task> = _taskToEdit
@@ -42,12 +42,13 @@ class FilterScreenViewModel @Inject constructor(
       _taskToEdit.postValue(task)
    }
 
-   fun enqueuePopup(title: String, message: String) {
+   fun enqueuePopup(title: String, message: String, error: String) {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Pair(title, message)) ?: listOf(
-            Pair(
+         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
+            Triple(
                title,
-               message
+               message,
+               error
             )
          )
    }
@@ -60,7 +61,7 @@ class FilterScreenViewModel @Inject constructor(
       viewModelScope.launch {
          val tasks = when (val result = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> {
-               enqueuePopup("ERROR", result.error.toString())
+               enqueuePopup("ERROR", "Failed to get tasks locally...", result.error.toString())
                return@launch
             }
 

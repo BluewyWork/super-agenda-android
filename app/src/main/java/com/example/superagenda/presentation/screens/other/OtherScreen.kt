@@ -37,14 +37,15 @@ fun OtherScreen(
       }
    }
 
-   val popupsQueue: List<Pair<String, String>> by otherViewModel.popupsQueue.observeAsState(
+   val popupsQueue: List<Triple<String, String, String>> by otherViewModel.popupsQueue.observeAsState(
       listOf()
    )
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
          title = popupsQueue.first().first,
-         message = popupsQueue.first().second
+         message = popupsQueue.first().second,
+         error = popupsQueue.first().third,
       ) {
          otherViewModel.dismissPopup()
       }

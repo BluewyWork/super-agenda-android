@@ -31,13 +31,14 @@ import com.example.superagenda.presentation.composables.PopupDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-   val popupsQueue: List<Pair<String, String>> by loginViewModel.popupsQueue.observeAsState(
+   val popupsQueue: List<Triple<String, String, String>> by loginViewModel.popupsQueue.observeAsState(
       listOf()
    )
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
          title = popupsQueue.first().first,
          message = popupsQueue.first().second,
+         error = popupsQueue.first().third,
 
          onDismiss = {
             loginViewModel.dismissPopup()
