@@ -1,8 +1,8 @@
 package com.example.superagenda.di
 
 import com.example.superagenda.data.network.AuthenticationApi
-import com.example.superagenda.data.network.UserApi
 import com.example.superagenda.data.network.TaskApi
+import com.example.superagenda.data.network.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

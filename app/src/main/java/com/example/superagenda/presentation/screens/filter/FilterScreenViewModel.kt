@@ -58,11 +58,12 @@ class FilterScreenViewModel @Inject constructor(
 
    fun onFilterPress() {
       viewModelScope.launch {
-        val tasks = when (val result = taskUseCase.getTasksAtDatabase()) {
+         val tasks = when (val result = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> {
                enqueuePopup("ERROR", result.error.toString())
                return@launch
             }
+
             is Result.Success -> result.data
          }
 

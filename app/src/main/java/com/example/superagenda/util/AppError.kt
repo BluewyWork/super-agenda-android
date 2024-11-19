@@ -4,10 +4,18 @@ sealed interface AppError : Error {
    enum class NetworkError : AppError {
       NO_INTERNET,
       SERVER_ERROR,
-      UNKNOWN;
+      UNKNOWN {
+         override fun toString(): String {
+            return "NetworkError::UNKNOWN"
+         }
+      }
    }
 
    enum class DatabaseError : AppError {
-      UNKNOWN
+      UNKNOWN {
+         override fun toString(): String {
+            return "DatabaseError::UNKNOWN"
+         }
+      }
    }
 }

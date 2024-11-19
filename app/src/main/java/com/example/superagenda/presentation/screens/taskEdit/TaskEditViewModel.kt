@@ -200,13 +200,13 @@ class TaskEditViewModel @Inject constructor(
             is Result.Error -> enqueuePopup("INFO", "Unable to delete the task locally...")
 
             is Result.Success -> {
-                when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID))  {
-                   is Result.Error ->enqueuePopup ("ERROR", resultDeleteTaskAtApi.error.toString())
+               when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
+                  is Result.Error -> enqueuePopup("ERROR", resultDeleteTaskAtApi.error.toString())
 
-                   is Result.Success -> {
-                      enqueuePopup("INFO", "Successfully updated task at api!")
-                   }
-                }
+                  is Result.Success -> {
+                     enqueuePopup("INFO", "Successfully updated task at api!")
+                  }
+               }
             }
          }
       }

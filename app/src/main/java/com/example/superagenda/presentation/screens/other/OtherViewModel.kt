@@ -54,19 +54,22 @@ class OtherViewModel @Inject constructor(
    fun onBackUpButtonPress() {
       viewModelScope.launch {
          showLoadingPopup()
-         when(val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
+         when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> {
                dismissLoadingPopup()
                enqueuePopup("ERROR", "Failed, no tasks to backup...")
             }
 
             is Result.Success -> {
-              val tasks = resultGetTasksAtDatabase.data
+               val tasks = resultGetTasksAtDatabase.data
 
                // TODO: Update this function to use AppResult
                if (taskUseCase.backupTasks(tasks)) {
                   dismissLoadingPopup()
-                  enqueuePopup("INFO", "Successfully backed up tasks!\nYou can find it under Download")
+                  enqueuePopup(
+                     "INFO",
+                     "Successfully backed up tasks!\nYou can find it under Download"
+                  )
                } else {
                   dismissLoadingPopup()
                   enqueuePopup("ERROR", "Failed to backup tasks...")
@@ -98,10 +101,11 @@ class OtherViewModel @Inject constructor(
          var codeSuccess = true
 
          for (task in taskList) {
-            codeSuccess = when(val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
-               is Result.Error -> false
-               is Result.Success -> true
-            }
+            codeSuccess =
+               when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
+                  is Result.Error -> false
+                  is Result.Success -> true
+               }
          }
 
          var codeSuccess2 = true

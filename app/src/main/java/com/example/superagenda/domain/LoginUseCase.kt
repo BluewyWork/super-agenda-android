@@ -10,7 +10,7 @@ class LoginUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
 ) {
    suspend fun login(userForLogin: UserForLogin): AppResult<Unit> {
-      val token = when(val result = authenticationRepository.getTokenAtApi(userForLogin)) {
+      val token = when (val result = authenticationRepository.getTokenAtApi(userForLogin)) {
          is Result.Error -> return Result.Error(result.error)
          is Result.Success -> result.data
       }
@@ -20,7 +20,7 @@ class LoginUseCase @Inject constructor(
    }
 
    suspend fun isLoggedIn(): AppResult<Unit> {
-      return when(val result = authenticationRepository.getTokenAtDatabase()) {
+      return when (val result = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> Result.Error(result.error)
          is Result.Success -> Result.Success(Unit)
       }

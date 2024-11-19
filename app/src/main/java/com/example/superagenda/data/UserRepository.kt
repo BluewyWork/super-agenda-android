@@ -9,14 +9,14 @@ import com.example.superagenda.data.network.UserApi
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
+import com.example.superagenda.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.superagenda.util.Result
 
 class UserRepository @Inject constructor(
    private val userApi: UserApi,
-   private val userForProfileDao: UserForProfileDao
+   private val userForProfileDao: UserForProfileDao,
 ) {
    suspend fun getUserForProfileAtApi(token: String): AppResult<UserForProfile> {
       return withContext(Dispatchers.IO) {

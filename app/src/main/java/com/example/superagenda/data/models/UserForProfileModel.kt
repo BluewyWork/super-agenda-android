@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UserForProfileModel(
    @SerializedName("username") val username: String,
-   @SerializedName("membership") val membership: MembershipModel
+   @SerializedName("membership") val membership: MembershipModel,
 )
 
 enum class MembershipModel {
@@ -34,7 +34,7 @@ fun UserForProfileModel.toDomain() = UserForProfile(
 )
 
 fun UserForProfileModel.toDatabase() = UserForProfileEntity(
-   username= username,
+   username = username,
    membership = membership
 )
 

@@ -9,5 +9,5 @@ import com.example.superagenda.data.models.MembershipModel
 data class UserForProfileEntity(
    @PrimaryKey(autoGenerate = false)
    @ColumnInfo(name = "username") val username: String,
-   @ColumnInfo(name = "membership") val membership: MembershipModel
+   @ColumnInfo(name = "membership") val membership: MembershipModel,
 )

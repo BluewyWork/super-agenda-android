@@ -11,6 +11,7 @@ import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
+import com.example.superagenda.util.Result
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,7 +22,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-import com.example.superagenda.util.Result
 
 class TaskRepository @Inject constructor(
    private val taskApi: TaskApi,

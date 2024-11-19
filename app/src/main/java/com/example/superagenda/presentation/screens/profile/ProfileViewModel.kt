@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
-import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.util.Result
@@ -15,7 +15,6 @@ import com.example.superagenda.util.onError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -68,31 +67,35 @@ class ProfileViewModel @Inject constructor(
 
             is Result.Success -> {
                if (!resultDeleteUserAtApi.data) {
-                 return@launch
+                  return@launch
                }
 
-              when (val deleteTokenAtDatabase = loginUseCase.deleteTokenFromDatabase()) {
-                 is Result.Error -> enqueuePopup("ERROR", "Failed to clear token from local storage...")
+               when (val deleteTokenAtDatabase = loginUseCase.deleteTokenFromDatabase()) {
+                  is Result.Error -> enqueuePopup(
+                     "ERROR",
+                     "Failed to clear token from local storage..."
+                  )
 
-                 is Result.Success -> {
-                    when (val resultDeleteTasksAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
-                       is Result.Error ->  {
-                          enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
-                          return@launch
-                       }
-                       is Result.Success -> {
-                          enqueuePopup(
-                             "INFO",
-                             "Successfully deleted profile at api and cleared related data locally!"
-                          )
+                  is Result.Success -> {
+                     when (val resultDeleteTasksAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
+                        is Result.Error -> {
+                           enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
+                           return@launch
+                        }
 
-                          waitForPopup {
-                             navController.navigate(Destinations.Login.route)
-                          }
-                       }
-                    }
-                 }
-              }
+                        is Result.Success -> {
+                           enqueuePopup(
+                              "INFO",
+                              "Successfully deleted profile at api and cleared related data locally!"
+                           )
+
+                           waitForPopup {
+                              navController.navigate(Destinations.Login.route)
+                           }
+                        }
+                     }
+                  }
+               }
             }
          }
       }
@@ -109,6 +112,7 @@ class ProfileViewModel @Inject constructor(
             is Result.Error -> {
                enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
             }
+
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully logged out and cleared related data...")
 

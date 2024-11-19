@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.superagenda.util.Result
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(

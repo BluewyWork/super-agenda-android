@@ -1,12 +1,12 @@
 package com.example.superagenda.domain
 
 import com.example.superagenda.data.AuthenticationRepository
-import com.example.superagenda.data.UserRepository
 import com.example.superagenda.data.TaskRepository
+import com.example.superagenda.data.UserRepository
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.util.AppResult
-import javax.inject.Inject
 import com.example.superagenda.util.Result
+import javax.inject.Inject
 
 class UserUseCase @Inject constructor(
    private val userRepository: UserRepository,
@@ -14,7 +14,7 @@ class UserUseCase @Inject constructor(
    private val taskRepository: TaskRepository,
 ) {
    suspend fun getUserForProfileAtApi(): AppResult<UserForProfile> {
-      val token =  when(val tokenResult = authenticationRepository.getTokenAtDatabase()) {
+      val token = when (val tokenResult = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(tokenResult.error)
          is Result.Success -> tokenResult.data
       }
@@ -23,7 +23,7 @@ class UserUseCase @Inject constructor(
    }
 
    suspend fun deleteUserAtApi(): AppResult<Boolean> {
-      val token =  when(val tokenResult = authenticationRepository.getTokenAtDatabase()) {
+      val token = when (val tokenResult = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(tokenResult.error)
          is Result.Success -> tokenResult.data
       }
@@ -38,6 +38,6 @@ class UserUseCase @Inject constructor(
    }
 
    suspend fun getUserForProfileAtDatabase(): AppResult<UserForProfile> {
-     return userRepository.getUserForProfileAtDatabase()
+      return userRepository.getUserForProfileAtDatabase()
    }
 }
