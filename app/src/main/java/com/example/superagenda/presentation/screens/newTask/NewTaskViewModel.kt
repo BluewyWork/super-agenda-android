@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.UserUseCase
+import com.example.superagenda.domain.models.Membership
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class NewTaskViewModel @Inject constructor(
    private val task2UseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
+   private val userUseCase: UserUseCase
 ) : ViewModel() {
    private val _title = MutableLiveData<String>()
    val title: LiveData<String> = _title
@@ -126,6 +129,41 @@ class NewTaskViewModel @Inject constructor(
                "The expiration date can't be before or the same as the start date"
             )
             return@launch
+         }
+
+         when(val resultGetUseForProfileAtDatabase = userUseCase.getUserForProfileAtDatabase()) {
+            is Result.Error -> {
+               enqueuePopup("ERROR", "Failed to get user for profile locally...", resultGetUseForProfileAtDatabase.error.toString())
+               return@launch
+            }
+
+            is Result.Success -> {
+               val userForProfile = resultGetUseForProfileAtDatabase.data
+
+               when(userForProfile.membership) {
+                  Membership.FREE -> {
+                     when(val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+                        is Result.Error -> {
+                           enqueuePopup("ERROR", "Failed to get tasks locally...", resultGetTasksAtDatabase.error.toString())
+                           return@launch
+                        }
+
+                        is Result.Success -> {
+                           val tasksDatabase = resultGetTasksAtDatabase.data
+
+                           if (tasksDatabase.size > 5) {
+                              enqueuePopup("INFO", "You can only create up to 5 tasks with the free plan, consider upgrading to premium")
+                              return@launch
+                           }
+                        }
+                     }
+                  }
+
+                  Membership.PREMIUM -> {
+                     // proceed
+                  }
+               }
+            }
          }
 
          val task = Task(
