@@ -18,28 +18,24 @@ class UserRepository @Inject constructor(
    private val userApi: UserApi,
    private val userForProfileDao: UserForProfileDao
 ) {
-   suspend fun retrieveProfileFromAPI(token: String): UserForProfile? {
+   suspend fun getUserForProfileAtApi(token: String): AppResult<UserForProfile> {
       return withContext(Dispatchers.IO) {
          try {
-            userApi.retrieveUserProfile(token).data.toDomain()
+            Result.Success(userApi.getUserForProfile(token).data.toDomain())
          } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-
-            null
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun deleteProfileFromApi(token: String): Boolean {
+   suspend fun deleteUserAtApi(token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
          try {
-            val response = userApi.deleteProfile(token)
-
-            return@withContext response.ok
+            Result.Success(userApi.delete(token).ok)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }

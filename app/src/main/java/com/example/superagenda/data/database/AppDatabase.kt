@@ -7,9 +7,10 @@ import com.example.superagenda.data.database.dao.TaskDao
 import com.example.superagenda.data.database.dao.TokenDao
 import com.example.superagenda.data.database.entities.TaskEntity
 import com.example.superagenda.data.database.entities.TokenEntity
+import com.example.superagenda.data.database.entities.UserForProfileEntity
 
 @Database(
-   entities = [TokenEntity::class, TaskEntity::class],
+   entities = [TokenEntity::class, TaskEntity::class, UserForProfileEntity::class],
    version = 1
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -8,6 +8,7 @@ import com.example.superagenda.domain.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.superagenda.util.Result
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
@@ -18,7 +19,10 @@ class NavigationViewModel @Inject constructor(
 
    fun onShow() {
       viewModelScope.launch {
-         _isLoggedIn.postValue(loginUseCase.isLoggedIn())
+         when (val result = loginUseCase.isLoggedIn()) {
+            is Result.Error -> _isLoggedIn.postValue(false)
+            is Result.Success -> _isLoggedIn.postValue(true)
+         }
       }
    }
 }

@@ -57,7 +57,7 @@ class FilterScreenViewModel @Inject constructor(
 
    fun onFilterPress() {
       viewModelScope.launch {
-         val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
+         val tasks = taskUseCase.getTasksAtDatabase()
 
          if (tasks == null) {
             enqueuePopup("ERROR", "Failed to retrieve tasks from local storage...")

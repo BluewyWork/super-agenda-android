@@ -3,6 +3,8 @@ package com.example.superagenda.domain
 import com.example.superagenda.data.AuthenticationRepository
 import com.example.superagenda.data.TaskRepository
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.util.AppResult
+import com.example.superagenda.util.Result
 import org.bson.types.ObjectId
 import javax.inject.Inject
 
@@ -10,64 +12,53 @@ class TaskUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
    private val taskRepository: TaskRepository,
 ) {
-   suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
-      // dao always returns a list
-      // null only if there has been an exception
-      val tasks = taskRepository.retrieveTasksFromLocalDatabase()
-
-      return tasks
+   suspend fun getTasksAtDatabase(): AppResult<List<Task>> {
+      return taskRepository.getTasksAtDatabase()
    }
 
-   suspend fun insertOrUpdateTaskAtLocalDatabase(task: Task): Boolean {
-      return taskRepository.insertOrUpdateTaskAtLocalDatabase(task)
+   suspend fun upsertTaskAtDatabase(task: Task): AppResult<Unit> {
+      return taskRepository.upsertTaskAtDatabase(task)
    }
 
-   suspend fun deleteTaskAtLocalDatabase(taskID: ObjectId): Boolean {
-      return taskRepository.deleteTaskAtLocalDatabase(taskID)
+   suspend fun deleteTaskAtDatabase(taskID: ObjectId): AppResult<Unit> {
+      return taskRepository.deleteTaskAtDatabase(taskID)
    }
 
-   suspend fun deleteAllTasksAtLocalDatabase(): Boolean {
-      return taskRepository.deleteAllTasksAtLocalDatabase()
+   suspend fun deleteTasksAtDatabase(): AppResult<Unit> {
+      return taskRepository.deleteTasksAtDatabase()
    }
 
-   suspend fun retrieveTaskAtApi(): List<Task>? {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
-
-      if (token.isNullOrBlank()) {
-         return null
+   suspend fun getTasksAtApi(): AppResult<List<Task>> {
+      val token = when(val result = authenticationRepository.getTokenAtDatabase()) {
+         is Result.Error -> return Result.Error(result.error)
+         is Result.Success -> result.data
       }
 
-      return taskRepository.retrieveTasksAPI(token)
+      return taskRepository.getTasksAtAPI(token)
    }
 
-   // honestly with this setup we can't tell what type of error we have here
-   // maybe throws ... should be better because that is how its done in kotlin
-   suspend fun createTaskAtAPI(task: Task): Boolean {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
+   suspend fun createTaskAtAPI(task: Task): AppResult<Boolean> {
+     val token = when( val result = authenticationRepository.getTokenAtDatabase()) {
+        is Result.Error -> return Result.Error(result.error)
+        is Result.Success -> result.data
+     }
 
-      if (token.isNullOrBlank()) {
-         return false
-      }
-
-      return taskRepository.createTaskAtAPI(task, token)
+        return taskRepository.createTaskAtAPI(task, token)
    }
 
-   suspend fun updateTaskAtAPI(task: Task): Boolean {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
-
-      if (token.isNullOrBlank()) {
-         return false
+   suspend fun updateTaskAtAPI(task: Task): AppResult<Boolean> {
+      val token = when( val result = authenticationRepository.getTokenAtDatabase()) {
+         is Result.Error -> return Result.Error(result.error)
+         is Result.Success -> result.data
       }
 
       return taskRepository.updateTaskAtAPI(task, token)
    }
 
-   suspend fun deleteTaskAtAPI(taskID: ObjectId): Boolean {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
-
-      // need to change to result type for more detailed errors
-      if (token.isNullOrBlank()) {
-         return false
+   suspend fun deleteTaskAtAPI(taskID: ObjectId): AppResult<Boolean> {
+      val token = when( val result = authenticationRepository.getTokenAtDatabase()) {
+         is Result.Error -> return Result.Error(result.error)
+         is Result.Success -> result.data
       }
 
       return taskRepository.deleteTaskAtApi(taskID, token)

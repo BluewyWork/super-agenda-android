@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.example.superagenda.data.database.entities.TaskEntity
 
 @Dao
@@ -16,6 +17,9 @@ interface TaskDao {
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    suspend fun insertOrUpdateTasks(taskEntityList: List<TaskEntity>)
+
+   @Upsert
+   suspend fun upsert(taskEntity: TaskEntity)
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    fun insertOrUpdateTask(taskEntity: TaskEntity)

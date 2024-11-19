@@ -9,6 +9,8 @@ import com.example.superagenda.data.models.toDatabase
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.data.network.TaskApi
 import com.example.superagenda.domain.models.Task
+import com.example.superagenda.util.AppError
+import com.example.superagenda.util.AppResult
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,108 +21,115 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import com.example.superagenda.util.Result
 
 class TaskRepository @Inject constructor(
    private val taskApi: TaskApi,
    private val taskDao: TaskDao,
 ) {
-   // TODO: well return ok status instead of manual value
-   suspend fun retrieveTasksFromLocalDatabase(): List<Task>? {
+   suspend fun getTasksAtDatabase(): AppResult<List<Task>> {
       return withContext(Dispatchers.IO) {
          try {
             val taskList = taskDao.retrieveTasks()
 
-            taskList.map { it.toData().toDomain() }
+            Result.Success(taskList.map { it.toData().toDomain() })
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            null
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun insertOrUpdateTaskAtLocalDatabase(task: Task): Boolean {
+   suspend fun upsertTaskAtDatabase(task: Task): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
-            taskDao.insertOrUpdateTask(task.toData().toDatabase())
+            taskDao.upsert(task.toData().toDatabase())
 
-            true
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }
 
-   suspend fun deleteTaskAtLocalDatabase(taskID: ObjectId): Boolean {
+   suspend fun deleteTaskAtDatabase(taskID: ObjectId): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
             taskDao.deleteTask(taskID.toHexString())
-            true
+
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-            false
+
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }
 
-   suspend fun deleteAllTasksAtLocalDatabase(): Boolean {
+   suspend fun deleteTasksAtDatabase(): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
             taskDao.nukeTasks()
-            true
+
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-            false
+
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }
 
-   suspend fun retrieveTasksAPI(token: String): List<Task>? {
+   suspend fun getTasksAtAPI(token: String): AppResult<List<Task>> {
       return withContext(Dispatchers.IO) {
          try {
-            taskApi.retrieveTaskList(token).data.map { it.toDomain() }
+            Result.Success(taskApi.retrieveTaskList(token).data.map { it.toDomain() })
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-            null
+
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun createTaskAtAPI(task: Task, token: String): Boolean {
+   suspend fun createTaskAtAPI(task: Task, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
          try {
-            taskApi.createTask(token, task.toData())
+            Result.Success(taskApi.createTask(token, task.toData()).ok)
 
-            true
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun updateTaskAtAPI(task: Task, token: String): Boolean {
+   suspend fun updateTaskAtAPI(task: Task, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
          try {
-            taskApi.updateTask(token, task.toData()).ok
+            Result.Success(
+               taskApi.updateTask(token, task.toData()).ok
+            )
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-            false
+
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun deleteTaskAtApi(taskID: ObjectId, token: String): Boolean {
+   suspend fun deleteTaskAtApi(taskID: ObjectId, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
          try {
-            taskApi.deleteTask(token, taskID.toHexString())
-            true
+            Result.Success(taskApi.deleteTask(token, taskID.toHexString()).ok)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-            false
+
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }

@@ -53,7 +53,7 @@ class OtherViewModel @Inject constructor(
    fun onBackUpButtonPress() {
       viewModelScope.launch {
          showLoadingPopup()
-         val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
+         val tasks = taskUseCase.getTasksAtDatabase()
 
          if (tasks == null) {
             dismissLoadingPopup()
@@ -93,7 +93,7 @@ class OtherViewModel @Inject constructor(
          var codeSuccess = true
 
          for (task in taskList) {
-            codeSuccess = taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)
+            codeSuccess = taskUseCase.upsertTaskAtDatabase(task)
          }
 
          var codeSuccess2 = true

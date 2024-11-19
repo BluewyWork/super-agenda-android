@@ -135,7 +135,7 @@ class NewTaskViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (task2UseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
+         if (task2UseCase.upsertTaskAtDatabase(task)) {
             enqueuePopup("INFO", "Successfully created task locally!")
 
             if (loginUseCase.isLoggedIn()) {

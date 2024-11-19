@@ -159,7 +159,7 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = endDateTime
          )
 
-         if (taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)) {
+         if (taskUseCase.upsertTaskAtDatabase(task)) {
             enqueuePopup("INFO", "Successfully updated task locally!")
 
             if (loginUseCase.isLoggedIn()) {
@@ -193,7 +193,7 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
-         if (taskUseCase.deleteTaskAtLocalDatabase(taskID)) {
+         if (taskUseCase.deleteTaskAtDatabase(taskID)) {
             enqueuePopup("INFO", "Successfully deleted task locally!")
 
             if (loginUseCase.isLoggedIn()) {

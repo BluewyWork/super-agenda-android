@@ -10,6 +10,8 @@ import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.presentation.Destinations
+import com.example.superagenda.util.Result
+import com.example.superagenda.util.onError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,25 +53,26 @@ class ProfileViewModel @Inject constructor(
 
    fun onShow() {
       viewModelScope.launch {
-         val userProfile = userUseCase.retrieveUserForProfile()
-
-         _userForProfile.postValue(userProfile)
+         when (val result = userUseCase.getUserForProfileAtApi()) {
+            is Result.Error -> enqueuePopup("ERROR", result.error.toString())
+            is Result.Success -> _userForProfile.postValue(result.data)
+         }
       }
    }
 
    fun onDeleteButtonPressButton(navController: NavController) {
       viewModelScope.launch {
-         if (!userUseCase.deleteProfile()) {
+         userUseCase.deleteUserAtApi().onError {
             enqueuePopup("ERROR", "Failed to delete profile at api...")
             return@launch
          }
 
-         if (!loginUseCase.clearTokensAtLocalStorage()) {
+         loginUseCase.deleteTokenFromDatabase().onError {
             enqueuePopup("ERROR", "Failed to clear token from local storage...")
             return@launch
          }
 
-         if (!taskUseCase.deleteAllTasksAtLocalDatabase()) {
+         if (!taskUseCase.deleteTasksAtDatabase()) {
             enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
             return@launch
          }
@@ -87,12 +90,12 @@ class ProfileViewModel @Inject constructor(
 
    fun onLogoutPress(navController: NavController) {
       viewModelScope.launch {
-         if (!loginUseCase.clearTokensAtLocalStorage()) {
+         loginUseCase.deleteTokenFromDatabase().onError {
             enqueuePopup("ERROR", "Failed to clear token from local storage...")
             return@launch
          }
 
-         if (!taskUseCase.deleteAllTasksAtLocalDatabase()) {
+         if (!taskUseCase.deleteTasksAtDatabase()) {
             enqueuePopup("ERROR", "Failed to clear tasks from local storage...")
             return@launch
          }

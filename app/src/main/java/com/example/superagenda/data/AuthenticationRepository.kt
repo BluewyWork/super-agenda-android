@@ -7,66 +7,64 @@ import com.example.superagenda.data.models.toData
 import com.example.superagenda.data.network.AuthenticationApi
 import com.example.superagenda.domain.models.UserForLogin
 import com.example.superagenda.domain.models.UserForRegister
+import com.example.superagenda.util.AppError
+import com.example.superagenda.util.AppResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.example.superagenda.util.Result
 
 class AuthenticationRepository @Inject constructor(
    private val authenticationApi: AuthenticationApi,
    private val tokenDao: TokenDao,
 ) {
-   suspend fun retrieveTokenFromAPI(userForLogin: UserForLogin): String? {
+   suspend fun getTokenAtApi(userForLogin: UserForLogin): AppResult<String> {
       return withContext(Dispatchers.IO) {
          try {
-            val userForLoginModel = userForLogin.toData()
-            val apiResponse = authenticationApi.login(userForLoginModel)
-
-            apiResponse.data.token
+            Result.Success(authenticationApi.login(userForLogin.toData()).data.token)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            null
+            Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
    }
 
-   suspend fun insertTokenToLocalDatabase(token: String): Boolean {
+   suspend fun upsertTokenAtDatabase(token: String): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
-            val tokenEntity = TokenEntity(token)
-            tokenDao.upsert(tokenEntity)
-
-            true
+            tokenDao.upsert(TokenEntity(token))
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }
 
-   suspend fun retrieveTokenFromLocalStorage(): String? {
+   suspend fun getTokenAtDatabase(): AppResult<String> {
       return withContext(Dispatchers.IO) {
          try {
-            tokenDao.get().token
+            Result.Success(tokenDao.get().token)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            null
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }
 
-   suspend fun clearTokensFromLocalStorage(): Boolean {
+   suspend fun deleteTokenAtDatabase(): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
             tokenDao.delete()
 
-            true
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
-            false
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }

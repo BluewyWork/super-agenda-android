@@ -13,26 +13,22 @@ class UserUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
    private val taskRepository: TaskRepository,
 ) {
-   suspend fun retrieveUserForProfile(): UserForProfile? {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
-
-      if (token.isNullOrBlank()) {
-         return null
+   suspend fun getUserForProfileAtApi(): AppResult<UserForProfile> {
+      val token =  when(val tokenResult = authenticationRepository.getTokenAtDatabase()) {
+         is Result.Error -> return Result.Error(tokenResult.error)
+         is Result.Success -> tokenResult.data
       }
 
-      return userRepository.retrieveProfileFromAPI(token)
+      return userRepository.getUserForProfileAtApi(token)
    }
 
-   suspend fun deleteProfile(): Boolean {
-      val token = authenticationRepository.retrieveTokenFromLocalStorage()
-
-      if (token.isNullOrBlank()) {
-         return false
+   suspend fun deleteUserAtApi(): AppResult<Boolean> {
+      val token =  when(val tokenResult = authenticationRepository.getTokenAtDatabase()) {
+         is Result.Error -> return Result.Error(tokenResult.error)
+         is Result.Success -> tokenResult.data
       }
 
-      val isProfileDeletedAtAPI = userRepository.deleteProfileFromApi(token)
-
-      return isProfileDeletedAtAPI
+      return userRepository.deleteUserAtApi(token)
    }
 
    suspend fun upsertUserForProfileAtDatabase(userForProfile: UserForProfile): AppResult<Unit> {

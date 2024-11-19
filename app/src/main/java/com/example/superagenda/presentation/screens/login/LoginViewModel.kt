@@ -10,6 +10,7 @@ import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.UserForLogin
 import com.example.superagenda.presentation.Destinations
+import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,17 +83,18 @@ class LoginViewModel @Inject constructor(
             )
          )
 
-         val userForProfile = userUseCase.retrieveUserForProfile()
-
-         if (userForProfile == null) {
-            enqueuePopup("ERROR", "Unable to sync with api...")
-         } else {
-            userUseCase.upsertUserForProfileAtDatabase(userForProfile)
+         when(val result = userUseCase.getUserForProfileAtApi()) {
+            is Result.Error -> {
+               enqueuePopup("ERROR", result.error.toString())
+            }
+            is Result.Success -> {
+               userUseCase.upsertUserForProfileAtDatabase(result.data)
+            }
          }
 
          if (ok) {
             // attempt to save local tasks
-            val tasks = taskUseCase.retrieveTasksFromLocalDatabase()
+            val tasks = taskUseCase.getTasksAtDatabase()
 
             var lastResult = true
 
@@ -106,13 +108,13 @@ class LoginViewModel @Inject constructor(
                enqueuePopup("ERROR", "Failed to sync tasks created before logged in...")
             }
 
-            val remoteTasks = taskUseCase.retrieveTaskAtApi()
+            val remoteTasks = taskUseCase.getTasksAtApi()
 
             var lastResult2 = true
 
             if (remoteTasks != null) {
                for (task in remoteTasks) {
-                  lastResult2 = taskUseCase.insertOrUpdateTaskAtLocalDatabase(task)
+                  lastResult2 = taskUseCase.upsertTaskAtDatabase(task)
                }
             }
 
