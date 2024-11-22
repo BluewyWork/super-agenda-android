@@ -188,7 +188,7 @@ class NewTaskViewModel @Inject constructor(
          }
 
          val task = Task(
-            _id = ObjectId(),
+            id = ObjectId(),
             title = title,
             description = description,
             status = taskStatus,

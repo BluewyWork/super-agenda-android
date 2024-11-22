@@ -36,7 +36,7 @@ enum class TaskStatusModel {
 }
 
 fun TaskModel.toDomain() = Task(
-   _id = id,
+   id = id,
    title = title,
    description = description,
    status = when (status) {
@@ -49,7 +49,7 @@ fun TaskModel.toDomain() = Task(
 )
 
 fun Task.toData() = TaskModel(
-   id = _id,
+   id = id,
    title = title,
    description = description,
    status = when (status) {

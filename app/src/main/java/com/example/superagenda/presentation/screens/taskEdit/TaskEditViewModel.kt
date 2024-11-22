@@ -134,7 +134,7 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
-         val taskID = taskToEdit.value?._id
+         val taskID = taskToEdit.value?.id
 
          if (taskID == null) {
             enqueuePopup("ERROR", "Wow, something changed it to null")
@@ -154,7 +154,7 @@ class TaskEditViewModel @Inject constructor(
          }
 
          val task = Task(
-            _id = taskID,
+            id = taskID,
             title = title,
             description = description,
             status = taskStatus,
@@ -188,7 +188,7 @@ class TaskEditViewModel @Inject constructor(
 
    fun onDeleteButtonPress(navController: NavController) {
       viewModelScope.launch {
-         val taskID = taskToEdit.value?._id
+         val taskID = taskToEdit.value?.id
 
          if (taskID == null) {
             enqueuePopup("ERROR", "Hmmm, taskID null, how?...")

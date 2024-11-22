@@ -4,7 +4,7 @@ import org.bson.types.ObjectId
 import java.time.LocalDateTime
 
 data class Task(
-   val _id: ObjectId,
+   val id: ObjectId,
    var title: String,
    val description: String,
    val status: TaskStatus,
