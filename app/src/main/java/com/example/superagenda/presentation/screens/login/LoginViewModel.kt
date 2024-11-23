@@ -85,7 +85,11 @@ class LoginViewModel @Inject constructor(
                password
             )
          )) {
-            is Result.Error -> enqueuePopup("ERROR", "Failed to log in...", resultLogin.error.toString())
+            is Result.Error -> enqueuePopup(
+               "ERROR",
+               "Failed to log in...",
+               resultLogin.error.toString()
+            )
 
             is Result.Success -> {
                _password.postValue("")
@@ -100,18 +104,19 @@ class LoginViewModel @Inject constructor(
                      var lastResult = true
 
                      for (task in tasksDatabase) {
-                        lastResult = when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
-                           is Result.Error -> {
-                     //                              enqueuePopup(
-                     //                                 "ERROR",
-                     //                                 "Failed to create task at api...",
-                     //                                 resultCreateTaskAtApi.error.toString()
-                     //                              )
-                              false
-                           }
+                        lastResult =
+                           when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
+                              is Result.Error -> {
+                                 //                              enqueuePopup(
+                                 //                                 "ERROR",
+                                 //                                 "Failed to create task at api...",
+                                 //                                 resultCreateTaskAtApi.error.toString()
+                                 //                              )
+                                 false
+                              }
 
-                           is Result.Success -> resultCreateTaskAtApi.data
-                        }
+                              is Result.Success -> resultCreateTaskAtApi.data
+                           }
                      }
 
                      if (!lastResult) {
@@ -148,7 +153,11 @@ class LoginViewModel @Inject constructor(
 
                      when (val result = userUseCase.getUserForProfileAtApi()) {
                         is Result.Error -> {
-                           enqueuePopup("ERROR", "Failed to get user profile...", result.error.toString())
+                           enqueuePopup(
+                              "ERROR",
+                              "Failed to get user profile...",
+                              result.error.toString()
+                           )
                         }
 
                         is Result.Success -> {

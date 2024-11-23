@@ -23,7 +23,7 @@ import javax.inject.Inject
 class NewTaskViewModel @Inject constructor(
    private val task2UseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
-   private val userUseCase: UserUseCase
+   private val userUseCase: UserUseCase,
 ) : ViewModel() {
    private val _title = MutableLiveData<String>()
    val title: LiveData<String> = _title
@@ -133,9 +133,13 @@ class NewTaskViewModel @Inject constructor(
 
          when (loginUseCase.isLoggedIn()) {
             is Result.Error -> {
-               when(val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+               when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
                   is Result.Error -> {
-                     enqueuePopup("ERROR", "Failed to get tasks locally...", resultGetTasksAtDatabase.error.toString())
+                     enqueuePopup(
+                        "ERROR",
+                        "Failed to get tasks locally...",
+                        resultGetTasksAtDatabase.error.toString()
+                     )
                      return@launch
                   }
 
@@ -143,7 +147,10 @@ class NewTaskViewModel @Inject constructor(
                      val tasksDatabase = resultGetTasksAtDatabase.data
 
                      if (tasksDatabase.size > 5) {
-                        enqueuePopup("INFO", "You can only create up to 5 tasks with the free plan, consider upgrading to premium")
+                        enqueuePopup(
+                           "INFO",
+                           "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+                        )
                         return@launch
                      }
                   }
@@ -151,19 +158,28 @@ class NewTaskViewModel @Inject constructor(
             }
 
             is Result.Success -> {
-               when(val resultGetUseForProfileAtDatabase = userUseCase.getUserForProfileAtDatabase()) {
+               when (val resultGetUseForProfileAtDatabase =
+                  userUseCase.getUserForProfileAtDatabase()) {
                   is Result.Error -> {
-                     enqueuePopup("ERROR", "Failed to get user for profile locally...", resultGetUseForProfileAtDatabase.error.toString())
+                     enqueuePopup(
+                        "ERROR",
+                        "Failed to get user for profile locally...",
+                        resultGetUseForProfileAtDatabase.error.toString()
+                     )
                   }
 
                   is Result.Success -> {
                      val userForProfile = resultGetUseForProfileAtDatabase.data
 
-                     when(userForProfile.membership) {
+                     when (userForProfile.membership) {
                         Membership.FREE -> {
-                           when(val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+                           when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
                               is Result.Error -> {
-                                 enqueuePopup("ERROR", "Failed to get tasks locally...", resultGetTasksAtDatabase.error.toString())
+                                 enqueuePopup(
+                                    "ERROR",
+                                    "Failed to get tasks locally...",
+                                    resultGetTasksAtDatabase.error.toString()
+                                 )
                                  return@launch
                               }
 
@@ -171,7 +187,10 @@ class NewTaskViewModel @Inject constructor(
                                  val tasksDatabase = resultGetTasksAtDatabase.data
 
                                  if (tasksDatabase.size > 5) {
-                                    enqueuePopup("INFO", "You can only create up to 5 tasks with the free plan, consider upgrading to premium")
+                                    enqueuePopup(
+                                       "INFO",
+                                       "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+                                    )
                                     return@launch
                                  }
                               }
@@ -198,7 +217,11 @@ class NewTaskViewModel @Inject constructor(
 
          when (val resultUpsertTaskAtDatabase = task2UseCase.upsertTaskAtDatabase(task)) {
             is Result.Error ->
-               enqueuePopup("ERROR", "Failed to upsert task locally...", resultUpsertTaskAtDatabase.error.toString())
+               enqueuePopup(
+                  "ERROR",
+                  "Failed to upsert task locally...",
+                  resultUpsertTaskAtDatabase.error.toString()
+               )
 
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully created task locally!")
@@ -213,7 +236,11 @@ class NewTaskViewModel @Inject constructor(
                   is Result.Success -> {
                      when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
                         is Result.Error ->
-                           enqueuePopup("ERROR", "Failed to create task at API...", resultCreateTaskAtApi.error.toString())
+                           enqueuePopup(
+                              "ERROR",
+                              "Failed to create task at API...",
+                              resultCreateTaskAtApi.error.toString()
+                           )
 
                         is Result.Success ->
                            enqueuePopup("INFO", "Successfully created task at API!")

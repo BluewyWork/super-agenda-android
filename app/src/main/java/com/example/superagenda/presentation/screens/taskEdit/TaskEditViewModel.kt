@@ -164,13 +164,21 @@ class TaskEditViewModel @Inject constructor(
 
          when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
             is Result.Error ->
-               enqueuePopup("ERROR", "Failed to update task locally...", resultUpsertTaskAtDatabase.error.toString())
+               enqueuePopup(
+                  "ERROR",
+                  "Failed to update task locally...",
+                  resultUpsertTaskAtDatabase.error.toString()
+               )
 
             is Result.Success -> {
                loginUseCase.isLoggedIn().onSuccess {
                   when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
                      is Result.Error ->
-                        enqueuePopup("ERROR", "Failed to update task at API...", resultUpdateTaskAtApi.error.toString())
+                        enqueuePopup(
+                           "ERROR",
+                           "Failed to update task at API...",
+                           resultUpdateTaskAtApi.error.toString()
+                        )
 
                      is Result.Success -> {
                         enqueuePopup("INFO", "Successfully updated task at API!")
@@ -197,13 +205,21 @@ class TaskEditViewModel @Inject constructor(
 
          when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
             is Result.Error ->
-               enqueuePopup("ERROR", "Failed to delete task locally...", resultDeleteTaskAtDatabase.error.toString())
+               enqueuePopup(
+                  "ERROR",
+                  "Failed to delete task locally...",
+                  resultDeleteTaskAtDatabase.error.toString()
+               )
 
             is Result.Success -> {
                loginUseCase.isLoggedIn().onSuccess {
                   when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
                      is Result.Error -> {
-                        enqueuePopup("ERROR", "Failed to delete task at api...", resultDeleteTaskAtApi.error.toString())
+                        enqueuePopup(
+                           "ERROR",
+                           "Failed to delete task at api...",
+                           resultDeleteTaskAtApi.error.toString()
+                        )
                      }
 
                      is Result.Success -> {

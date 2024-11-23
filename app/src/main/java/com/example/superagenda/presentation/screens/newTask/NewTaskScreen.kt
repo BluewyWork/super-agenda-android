@@ -29,7 +29,9 @@ fun NewTaskScreen(
    navController: NavController,
    navigationViewModel: NavigationViewModel,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.observeAsState(listOf())
+   val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.observeAsState(
+      listOf()
+   )
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(

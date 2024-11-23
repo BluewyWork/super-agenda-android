@@ -1,6 +1,5 @@
 package com.example.superagenda.presentation.composables
 
-import android.provider.SyncStateContract.Constants
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -24,7 +23,8 @@ fun PopupDialog(title: String, message: String, error: String, onDismiss: () -> 
             }
 
             Text(text = message)
-         }},
+         }
+      },
 
       confirmButton = {
          TextButton(onClick = { onDismiss() }) {
