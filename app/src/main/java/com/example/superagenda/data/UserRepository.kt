@@ -23,6 +23,7 @@ class UserRepository @Inject constructor(
          try {
             Result.Success(userApi.getUserForProfile(token).data.toDomain())
          } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
             Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
@@ -34,7 +35,6 @@ class UserRepository @Inject constructor(
             Result.Success(userApi.delete(token).ok)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-
             Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }
@@ -47,6 +47,7 @@ class UserRepository @Inject constructor(
 
             Result.Success(Unit)
          } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
             Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
@@ -57,6 +58,7 @@ class UserRepository @Inject constructor(
          try {
             Result.Success(userForProfileDao.get().toData().toDomain())
          } catch (e: Exception) {
+            Log.e("LOOK AT ME", "${e.message}")
             Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }

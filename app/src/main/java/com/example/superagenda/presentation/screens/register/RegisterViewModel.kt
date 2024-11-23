@@ -11,6 +11,8 @@ import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +25,9 @@ class RegisterViewModel @Inject constructor(
 
    private val _password = MutableLiveData<String>()
    val password: LiveData<String> = _password
+
+   private val _passwordConfirm = MutableStateFlow("")
+   val passwordConfirm: StateFlow<String> = _passwordConfirm
 
    private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
    val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
@@ -58,17 +63,28 @@ class RegisterViewModel @Inject constructor(
       code()
    }
 
+   fun onPasswordConfirmChange(passwordConfirm: String) {
+      _passwordConfirm.value = passwordConfirm
+   }
+
    fun onRegisterButtonPress(navController: NavController) {
       viewModelScope.launch {
          val username = username.value
+         val password = password.value
+         val passwordConfirm = _passwordConfirm.value
+
          if (username.isNullOrBlank()) {
             enqueuePopup("ERROR", "Field username is not valid...")
             return@launch
          }
 
-         val password = password.value
          if (password.isNullOrBlank()) {
             enqueuePopup("ERROR", "Field password is not valid...")
+            return@launch
+         }
+
+         if (password != passwordConfirm) {
+            enqueuePopup("ERROR", "Passwords does not match...")
             return@launch
          }
 

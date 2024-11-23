@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -13,7 +14,7 @@ interface TaskApi {
    @GET(Endpoints.GET_TASK_LIST)
    suspend fun retrieveTaskList(@Header("Authorization") token: String): ApiResponse<List<TaskModel>>
 
-   @POST(Endpoints.UPDATE_TASK)
+   @PATCH(Endpoints.UPDATE_TASK)
    suspend fun updateTask(
       @Header("Authorization") token: String,
       @Body taskModel: TaskModel,
@@ -23,12 +24,6 @@ interface TaskApi {
    suspend fun createTask(
       @Header("Authorization") token: String,
       @Body taskModel: TaskModel,
-   ): ApiResponse<Map<String, Any>>
-
-   @POST(Endpoints.UPDATE_TASK_LIST)
-   suspend fun updateTaskList(
-      @Header("Authorization") token: String,
-      @Body taskList: List<TaskModel>,
    ): ApiResponse<Map<String, Any>>
 
    @DELETE("${Endpoints.DELETE_TASK}/{task_id}")

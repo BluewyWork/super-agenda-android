@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
@@ -36,7 +37,11 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
    )
 
    if (popupsQueue.isNotEmpty()) {
-      PopupDialog(popupsQueue.first().first, popupsQueue.first().second, popupsQueue.first().third) {
+      PopupDialog(
+         popupsQueue.first().first,
+         popupsQueue.first().second,
+         popupsQueue.first().third
+      ) {
          registerViewModel.dismissPopup()
       }
    }
@@ -63,6 +68,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
 fun Register(registerViewModel: RegisterViewModel, navController: NavController) {
    val username: String by registerViewModel.username.observeAsState("")
    val password: String by registerViewModel.password.observeAsState("")
+   val passwordConfirm by registerViewModel.passwordConfirm.collectAsStateWithLifecycle()
 
    OutlinedTextField(
       modifier = Modifier
@@ -84,6 +90,17 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
       onValueChange = { registerViewModel.onPasswordChange(it) },
       singleLine = true,
       label = { Text(text = "Password") },
+      leadingIcon = { Icon(Icons.Filled.Lock, null) }
+   )
+
+   OutlinedTextField(
+      modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+      value = passwordConfirm,
+      visualTransformation = PasswordVisualTransformation(),
+      onValueChange = { registerViewModel.onPasswordConfirmChange(it) },
+      label = { Text("Confirm Password") },
       leadingIcon = { Icon(Icons.Filled.Lock, null) }
    )
 
