@@ -9,7 +9,7 @@ class RegisterUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
 ) {
 
-   suspend fun register(userForRegister: UserForRegister): AppResult<Boolean> {
+   suspend fun register(userForRegister: UserForRegister): AppResult<Unit> {
       return authenticationRepository.registerAtAPI(userForRegister)
    }
 }

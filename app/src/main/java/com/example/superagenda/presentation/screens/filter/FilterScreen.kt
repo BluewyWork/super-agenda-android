@@ -140,7 +140,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
       ) {
          LazyColumn {
             item {
-               for (task in filteredTaskList!!) {
+               for (task in filteredTaskList) {
                   TaskCard(task = task) {
                      filterScreenViewModel.setTaskToEdit(task)
                      navController.navigate(Destinations.TaskEdit.route + "2")

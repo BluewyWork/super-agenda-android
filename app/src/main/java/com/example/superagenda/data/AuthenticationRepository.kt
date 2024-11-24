@@ -21,7 +21,7 @@ class AuthenticationRepository @Inject constructor(
    suspend fun getTokenAtApi(userForLogin: UserForLogin): AppResult<String> {
       return withContext(Dispatchers.IO) {
          try {
-            Result.Success(authenticationApi.login(userForLogin.toData()).data.token)
+            Result.Success(authenticationApi.login(userForLogin.toData()).success.token)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 
@@ -69,17 +69,15 @@ class AuthenticationRepository @Inject constructor(
       }
    }
 
-   suspend fun registerAtAPI(userForRegister: UserForRegister): AppResult<Boolean> {
+   suspend fun registerAtAPI(userForRegister: UserForRegister): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
             val userForRegisterModel = userForRegister.toData()
-
             val response = authenticationApi.register(userForRegisterModel)
 
-            Result.Success(response.ok)
+            Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-
             Result.Error(AppError.NetworkError.UNKNOWN)
          }
       }

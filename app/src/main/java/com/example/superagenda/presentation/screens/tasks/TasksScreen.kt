@@ -12,15 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.R
-import com.example.superagenda.domain.models.Task
+import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
@@ -77,17 +77,17 @@ fun TasksScreen(
             ) { currentPage ->
                when (currentPage) {
                   0 -> {
-                     tasksViewModel.loadTasksNotStarted()
+                     tasksViewModel.refreshTasks()
                      TasksNotStarted(tasksViewModel, navController)
                   }
 
                   1 -> {
-                     tasksViewModel.loadTasksOngoing()
+                     tasksViewModel.refreshTasks()
                      TasksOngoing(tasksViewModel, navController)
                   }
 
                   2 -> {
-                     tasksViewModel.loadTasksCompleted()
+                     tasksViewModel.refreshTasks()
                      TasksCompleted(tasksViewModel, navController)
                   }
                }
@@ -110,7 +110,8 @@ fun TasksScreen(
 
 @Composable
 fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController) {
-   val tasksNotStarted: List<Task>? by tasksViewModel.tasksNotStarted.observeAsState()
+   val tasks by tasksViewModel.tasks.collectAsStateWithLifecycle()
+   val tasksNotStarted = tasks.filter { it.status == TaskStatus.NotStarted }
 
    LazyColumn(
       modifier = Modifier
@@ -118,45 +119,46 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
          .padding(8.dp)
    ) {
       item {
-         if (tasksNotStarted == null) {
-            EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         } else if (tasksNotStarted!!.isEmpty()) {
+         if (tasksNotStarted.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         } else {
-            val tasksGroupedByWeek = tasksNotStarted!!.groupBy { task ->
-               task.startDateTime.toLocalDate()
-                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            return@item
+         }
+
+         val tasksGroupedByWeek = tasksNotStarted.groupBy { task ->
+            task.startDateTime.toLocalDate()
+               .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+         }
+
+         val currentWeekStart =
+            LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+         val lastWeekStart = currentWeekStart.minusWeeks(1)
+         val nextWeekStart = currentWeekStart.plusWeeks(1)
+
+         val sortedWeekKeys = tasksGroupedByWeek.keys.sorted()
+
+         sortedWeekKeys.forEach { weekStart ->
+            val weekLabel = when (weekStart) {
+               currentWeekStart -> "Starts This Week"
+               lastWeekStart -> "Started Last Week"
+               nextWeekStart -> "Starts Next Week"
+               else -> if (weekStart.isBefore(currentWeekStart)) {
+                  "Started at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               } else {
+                  "Starts the Week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               }
             }
 
-            val currentWeekStart =
-               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            val lastWeekStart = currentWeekStart.minusWeeks(1)
-            val nextWeekStart = currentWeekStart.plusWeeks(1)
+            LineWithText(weekLabel)
 
-            val sortedWeekKeys = tasksGroupedByWeek.keys.sorted()
-
-            sortedWeekKeys.forEach { weekStart ->
-               val weekLabel = when (weekStart) {
-                  currentWeekStart -> "Starts This Week"
-                  lastWeekStart -> "Started Last Week"
-                  nextWeekStart -> "Starts Next Week"
-                  else -> if (weekStart.isBefore(currentWeekStart)) {
-                     "Started at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  } else {
-                     "Starts the Week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  }
-               }
-
-               LineWithText(weekLabel)
-
-               tasksGroupedByWeek[weekStart]?.forEach { task ->
-                  TaskCard(task) {
-                     tasksViewModel.setTaskToEdit(task)
-                     navController.navigate(Destinations.TaskEdit.route)
-                  }
+            tasksGroupedByWeek[weekStart]?.forEach { task ->
+               TaskCard(task) {
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
                }
             }
          }
@@ -166,7 +168,8 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
 
 @Composable
 fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
-   val tasksOngoing: List<Task>? by tasksViewModel.tasksOngoing.observeAsState()
+   val tasks by tasksViewModel.tasks.collectAsStateWithLifecycle()
+   val tasksOngoing = tasks.filter { it.status == TaskStatus.Ongoing }
 
    LazyColumn(
       modifier = Modifier
@@ -174,45 +177,45 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
          .padding(8.dp)
    ) {
       item {
-         if (tasksOngoing == null) {
-            EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         } else if (tasksOngoing!!.isEmpty()) {
+         if (tasksOngoing.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         } else {
-            val tasksGroupedByWeek = tasksOngoing!!.groupBy { task ->
-               task.endDateTime.toLocalDate()
-                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            return@item
+         }
+
+         val tasksGroupedByWeek = tasksOngoing.groupBy { task ->
+            task.endDateTime.toLocalDate()
+               .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+         }
+
+         val currentWeekStart =
+            LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+         val lastWeekStart = currentWeekStart.minusWeeks(1)
+         val nextWeekStart = currentWeekStart.plusWeeks(1)
+
+         val sortedWeekKeys = tasksGroupedByWeek.keys.sorted()
+
+         sortedWeekKeys.forEach { weekStart ->
+            val weekLabel = when (weekStart) {
+               currentWeekStart -> "Ends This Week"
+               lastWeekStart -> "Ends Last Week"
+               nextWeekStart -> "Ends Next Week"
+               else -> if (weekStart.isBefore(currentWeekStart)) {
+                  "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               } else {
+                  "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               }
             }
 
-            val currentWeekStart =
-               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            val lastWeekStart = currentWeekStart.minusWeeks(1)
-            val nextWeekStart = currentWeekStart.plusWeeks(1)
+            LineWithText(weekLabel)
 
-            val sortedWeekKeys = tasksGroupedByWeek.keys.sorted()
-
-            sortedWeekKeys.forEach { weekStart ->
-               val weekLabel = when (weekStart) {
-                  currentWeekStart -> "Ends This Week"
-                  lastWeekStart -> "Ends Last Week"
-                  nextWeekStart -> "Ends Next Week"
-                  else -> if (weekStart.isBefore(currentWeekStart)) {
-                     "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  } else {
-                     "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  }
-               }
-
-               LineWithText(weekLabel)
-
-               tasksGroupedByWeek[weekStart]?.forEach { task ->
-                  TaskCard(task) {
-                     tasksViewModel.setTaskToEdit(task)
-                     navController.navigate(Destinations.TaskEdit.route)
-                  }
+            tasksGroupedByWeek[weekStart]?.forEach { task ->
+               TaskCard(task) {
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
                }
             }
          }
@@ -222,7 +225,8 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
 
 @Composable
 fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController) {
-   val tasksCompleted: List<Task>? by tasksViewModel.tasksCompleted.observeAsState()
+   val tasks by tasksViewModel.tasks.collectAsStateWithLifecycle()
+   val tasksCompleted = tasks.filter { it.status == TaskStatus.Completed }
 
    LazyColumn(
       modifier = Modifier
@@ -230,43 +234,43 @@ fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController)
          .padding(8.dp)
    ) {
       item {
-         if (tasksCompleted == null) {
-            EmptyState(message = "Something went wrong", iconId = R.drawable.ic_launcher_foreground)
-         } else if (tasksCompleted!!.isEmpty()) {
+         if (tasksCompleted.isEmpty()) {
             EmptyState(
                message = "Empty and so quiet...",
                iconId = R.drawable.ic_launcher_foreground
             )
-         } else {
-            val tasksGroupedByWeek = tasksCompleted!!.groupBy { task ->
-               task.endDateTime.toLocalDate()
-                  .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+
+            return@item
+         }
+
+         val tasksGroupedByWeek = tasksCompleted.groupBy { task ->
+            task.endDateTime.toLocalDate()
+               .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+         }
+
+         val currentWeekStart =
+            LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+         val lastWeekStart = currentWeekStart.minusWeeks(1)
+
+         val sortedWeekKeys = tasksGroupedByWeek.keys.sortedDescending()
+
+         sortedWeekKeys.forEach { weekStart ->
+            val weekLabel = when (weekStart) {
+               currentWeekStart -> "Completed This Week"
+               lastWeekStart -> "Completed Last Week"
+               else -> if (weekStart.isBefore(currentWeekStart)) {
+                  "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               } else {
+                  "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+               }
             }
 
-            val currentWeekStart =
-               LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            val lastWeekStart = currentWeekStart.minusWeeks(1)
+            LineWithText(weekLabel)
 
-            val sortedWeekKeys = tasksGroupedByWeek.keys.sortedDescending()
-
-            sortedWeekKeys.forEach { weekStart ->
-               val weekLabel = when (weekStart) {
-                  currentWeekStart -> "Completed This Week"
-                  lastWeekStart -> "Completed Last Week"
-                  else -> if (weekStart.isBefore(currentWeekStart)) {
-                     "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  } else {
-                     "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-                  }
-               }
-
-               LineWithText(weekLabel)
-
-               tasksGroupedByWeek[weekStart]?.forEach { task ->
-                  TaskCard(task) {
-                     tasksViewModel.setTaskToEdit(task)
-                     navController.navigate(Destinations.TaskEdit.route)
-                  }
+            tasksGroupedByWeek[weekStart]?.forEach { task ->
+               TaskCard(task) {
+                  tasksViewModel.setTaskToEdit(task)
+                  navController.navigate(Destinations.TaskEdit.route)
                }
             }
          }

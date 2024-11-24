@@ -171,6 +171,8 @@ class TaskEditViewModel @Inject constructor(
                )
 
             is Result.Success -> {
+               enqueuePopup("INFO", "Successfully updated task locally!")
+
                loginUseCase.isLoggedIn().onSuccess {
                   when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
                      is Result.Error ->
@@ -194,7 +196,7 @@ class TaskEditViewModel @Inject constructor(
       }
    }
 
-   fun onDeleteButtonPress(navController: NavController) {
+   fun onDeleteButtonPress(onSuccess: () -> Unit) {
       viewModelScope.launch {
          val taskID = taskToEdit.value?.id
 
@@ -212,18 +214,27 @@ class TaskEditViewModel @Inject constructor(
                )
 
             is Result.Success -> {
-               loginUseCase.isLoggedIn().onSuccess {
-                  when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
-                     is Result.Error -> {
-                        enqueuePopup(
-                           "ERROR",
-                           "Failed to delete task at api...",
-                           resultDeleteTaskAtApi.error.toString()
-                        )
-                     }
+               when (val re = loginUseCase.isLoggedIn()) {
+                  is Result.Error -> {
+                     onSuccess()
+                  }
 
-                     is Result.Success -> {
-                        enqueuePopup("INFO", "Successfully updated task at api!")
+                  is Result.Success -> {
+                     when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
+                        is Result.Error -> {
+                           enqueuePopup(
+                              "ERROR",
+                              "Failed to delete task at api...",
+                              resultDeleteTaskAtApi.error.toString()
+                           )
+
+                           onSuccess()
+                        }
+
+                        is Result.Success -> {
+                           enqueuePopup("INFO", "Successfully updated task at api!")
+                           onSuccess()
+                        }
                      }
                   }
                }

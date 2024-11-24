@@ -40,7 +40,7 @@ fun TaskStatusDropDown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                .fillMaxWidth()
-               .menuAnchor()
+               .menuAnchor(type, enabled)
          )
 
          ExposedDropdownMenu(

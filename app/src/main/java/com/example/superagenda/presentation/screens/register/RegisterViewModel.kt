@@ -99,13 +99,10 @@ class RegisterViewModel @Inject constructor(
             }
 
             is Result.Success -> {
-               if (resultRegister.data) {
-                  enqueuePopup("INFO", "Successfully registered..")
-                  whenPopupsEmpty {
-                     navController.navigate(Destinations.Login.route)
-                  }
-               } else {
-                  enqueuePopup("ERROR", "Failed to register (Rejected)")
+               enqueuePopup("INFO", "Successfully registered..")
+
+               whenPopupsEmpty {
+                  navController.navigate(Destinations.Login.route)
                }
             }
          }

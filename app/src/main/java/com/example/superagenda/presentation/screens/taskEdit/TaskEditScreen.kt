@@ -130,7 +130,11 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
 
       item {
          Button(
-            onClick = { taskEditViewModel.onDeleteButtonPress(navController) },
+            onClick = {
+               taskEditViewModel.onDeleteButtonPress {
+                  navController.navigateUp()
+               }
+            },
             modifier = Modifier
                .fillMaxWidth()
          ) {
