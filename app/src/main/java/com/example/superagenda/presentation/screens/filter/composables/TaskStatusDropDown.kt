@@ -22,7 +22,7 @@ fun TaskStatusDropDown(
    taskStatus: TaskStatus?,
    onStatusChange: (TaskStatus) -> Unit,
 ) {
-   val taskStatuses = TaskStatus.values().toList()
+   val taskStatuses = TaskStatus.entries
 
    var expanded by remember { mutableStateOf(false) }
    var selectedStatus by remember { mutableStateOf(taskStatus) }
@@ -40,7 +40,7 @@ fun TaskStatusDropDown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                .fillMaxWidth()
-               .menuAnchor(type, enabled)
+               .menuAnchor()
          )
 
          ExposedDropdownMenu(

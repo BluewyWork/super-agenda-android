@@ -45,7 +45,7 @@ fun TaskStatusDropDown(
 
                   modifier = Modifier
                      .fillMaxWidth()
-                     .menuAnchor(type, enabled)
+                     .menuAnchor()
                )
 
                ExposedDropdownMenu(
