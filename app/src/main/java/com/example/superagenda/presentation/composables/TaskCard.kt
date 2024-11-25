@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -41,7 +42,7 @@ fun TaskCard(task: Task, onClick: () -> Unit) {
             Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
          ) {
-            task.image?.let { Image64(it) }
+            task.image?.let { Image64(it, Modifier.size(200.dp)) }
 
             Column(
                modifier = Modifier

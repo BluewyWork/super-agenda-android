@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.superagenda.util.decodeBase64ToImage
 
 @Composable
-fun Image64(base64Str: String) {
+fun Image64(base64Str: String, modifier: Modifier = Modifier) {
    val bitmap = decodeBase64ToImage(base64Str)
 
    if (bitmap != null) {
@@ -20,7 +20,7 @@ fun Image64(base64Str: String) {
          bitmap = bitmap.asImageBitmap(),
          contentDescription = null,
          contentScale = ContentScale.Fit,
-         modifier = Modifier.size(200.dp)
+         modifier = modifier
       )
    } else {
       Text("Image cannot be loaded")

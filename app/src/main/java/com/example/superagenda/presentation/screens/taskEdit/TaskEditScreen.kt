@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +14,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
+import com.example.superagenda.presentation.composables.Image64
+import com.example.superagenda.presentation.composables.ImagePicker
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
+import com.example.superagenda.util.encodeImageToBase64
+import kotlinx.coroutines.Job
 import java.time.LocalDateTime
 
 @Composable
@@ -62,6 +68,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
    val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
    val startDateTime: LocalDateTime? by taskEditViewModel.startDateTime.observeAsState()
    val endDateTime: LocalDateTime? by taskEditViewModel.endDateTime.observeAsState()
+   val image by taskEditViewModel.image.collectAsStateWithLifecycle()
 
    LazyColumn(
       verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -129,6 +136,15 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
       }
 
       item {
+         ImagePicker {
+            it?.let { it2 ->
+               val x = encodeImageToBase64(it2)
+               taskEditViewModel.onImageChange(x)
+            }
+         }
+      }
+
+      item {
          Button(
             onClick = {
                taskEditViewModel.onDeleteButtonPress {
@@ -149,6 +165,12 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
                .fillMaxWidth()
          ) {
             Text("Update")
+         }
+      }
+
+      item {
+         if (image.isNotBlank()) {
+            Image64(image, Modifier.fillMaxWidth())
          }
       }
    }
