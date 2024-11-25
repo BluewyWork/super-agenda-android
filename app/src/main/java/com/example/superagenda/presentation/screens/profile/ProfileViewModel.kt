@@ -66,6 +66,34 @@ class ProfileViewModel @Inject constructor(
       }
    }
 
+   fun onRefreshProfilePress() {
+      viewModelScope.launch {
+         when (val result = userUseCase.getUserForProfileAtApi()) {
+            is Result.Error -> {
+               enqueuePopup(
+                  "ERROR",
+                  "Failed to get user profile...",
+                  result.error.toString()
+               )
+            }
+
+            is Result.Success -> {
+               when (val re = userUseCase.upsertUserForProfileAtDatabase(result.data)) {
+                  is Result.Error -> enqueuePopup(
+                     "ERROR",
+                     "Failed to save user locally...",
+                     re.error.toString()
+                  )
+
+                  is Result.Success -> {
+                     enqueuePopup("INFO", "Successfully refreshed profile!")
+                  }
+               }
+            }
+         }
+      }
+   }
+
    fun onDeleteButtonPressButton(navController: NavController) {
       viewModelScope.launch {
          when (val resultDeleteUserAtApi = userUseCase.deleteUserAtApi()) {

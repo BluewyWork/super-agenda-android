@@ -111,6 +111,12 @@ fun Profile(
 
          Spacer(modifier = Modifier.padding(16.dp))
 
+         Button(onClick = {
+            profileViewModel.onRefreshProfilePress()
+         }) {
+            Text("Refresh Profile")
+         }
+
          Button(
             onClick = { profileViewModel.onDeleteButtonPressButton(navController) },
             modifier = Modifier.fillMaxWidth(),
