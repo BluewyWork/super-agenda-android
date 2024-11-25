@@ -14,6 +14,7 @@ import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksViewModel
+import com.example.superagenda.ui.theme.OneDarkProTheme
 import com.example.superagenda.ui.theme.SuperAgendaAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
       super.onCreate(savedInstanceState)
 
       setContent {
-         SuperAgendaAndroidTheme {
+         OneDarkProTheme {
             NavigationHost(
                registerViewModel = registerViewModel,
                loginViewModel = loginViewModel,

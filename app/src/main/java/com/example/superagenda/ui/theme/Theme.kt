@@ -37,6 +37,28 @@ private val LightColorScheme = lightColorScheme(
    */
 )
 
+private val OneDarkProColorPalette = darkColorScheme(
+   primary = oneDarkProPrimary,
+//   primaryVariant = oneDarkProPrimaryVariant,
+   secondary = oneDarkProSecondary,
+   background = oneDarkProBackground,
+   surface = oneDarkProSurface,
+   error = oneDarkProError,
+   onPrimary = oneDarkProOnPrimary,
+   onSecondary = oneDarkProOnSecondary,
+   onBackground = oneDarkProOnBackground,
+   onSurface = oneDarkProOnSurface,
+   onError = oneDarkProOnError
+)
+
+@Composable
+fun OneDarkProTheme(content: @Composable () -> Unit) {
+   MaterialTheme(
+     colorScheme = OneDarkProColorPalette,
+      content = { content() }
+   )
+}
+
 @Composable
 fun SuperAgendaAndroidTheme(
    darkTheme: Boolean = isSystemInDarkTheme(),
