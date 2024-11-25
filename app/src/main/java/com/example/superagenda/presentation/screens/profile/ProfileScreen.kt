@@ -99,6 +99,16 @@ fun Profile(
             )
          }
 
+         OutlinedTextField(
+            label = { Text("Plan") },
+            value = userForProfile?.membership.toString(),
+            onValueChange = {},
+
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(start = 8.dp, end = 8.dp),
+         )
+
          Spacer(modifier = Modifier.padding(16.dp))
 
          Button(
