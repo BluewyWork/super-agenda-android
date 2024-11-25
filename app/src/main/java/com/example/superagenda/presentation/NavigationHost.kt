@@ -17,6 +17,7 @@ import com.example.superagenda.presentation.screens.profile.ProfileScreen
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
+import com.example.superagenda.presentation.screens.slider.SliderScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksScreen
@@ -38,8 +39,12 @@ fun NavigationHost(
 
    NavHost(
       navController = navController,
-      startDestination = Destinations.Tasks.route
+      startDestination = Destinations.Slider.route
    ) {
+      composable(Destinations.Slider.route) {
+         SliderScreen(navController)
+      }
+
       composable(Destinations.Login.route) {
          LoginScreen(loginViewModel, navController)
       }

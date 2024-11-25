@@ -3,6 +3,7 @@ package com.example.superagenda.presentation
 sealed class Destinations(
    val route: String,
 ) {
+   object Slider : Destinations("slider")
    object Register : Destinations("register")
    object Login : Destinations("login")
    object Profile : Destinations("profile")
