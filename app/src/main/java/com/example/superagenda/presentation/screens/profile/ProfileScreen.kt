@@ -112,11 +112,12 @@ fun Profile(
 
          Spacer(modifier = Modifier.padding(16.dp))
 
-         Button(onClick = {
-            profileViewModel.onRefreshProfilePress()
-         },
+         Button(
+            onClick = {
+               profileViewModel.onRefreshProfilePress()
+            },
             modifier = Modifier.fillMaxWidth()
-            ) {
+         ) {
             Text("Refresh Profile")
          }
 

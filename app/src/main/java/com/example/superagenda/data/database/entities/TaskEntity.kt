@@ -18,7 +18,7 @@ data class TaskEntity(
    @ColumnInfo("status") val status: TaskStatusModel,
    @ColumnInfo("startDateTime") val startDateTime: String,
    @ColumnInfo(name = "endDateTime") val endDateTime: String,
-   @ColumnInfo(name = "image") val image: String?
+   @ColumnInfo(name = "image") val image: String?,
 )
 
 fun TaskEntity.toData() = TaskModel(

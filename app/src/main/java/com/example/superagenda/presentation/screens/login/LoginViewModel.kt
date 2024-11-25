@@ -161,10 +161,15 @@ class LoginViewModel @Inject constructor(
                         }
 
                         is Result.Success -> {
-                          when(val re =  userUseCase.upsertUserForProfileAtDatabase(result.data)) {
-                             is Result.Error -> enqueuePopup("ERROR", "Failed to save user locally...", re.error.toString())
-                             is Result.Success -> {}
-                          }
+                           when (val re = userUseCase.upsertUserForProfileAtDatabase(result.data)) {
+                              is Result.Error -> enqueuePopup(
+                                 "ERROR",
+                                 "Failed to save user locally...",
+                                 re.error.toString()
+                              )
+
+                              is Result.Success -> {}
+                           }
                         }
                      }
 

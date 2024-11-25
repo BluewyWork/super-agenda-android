@@ -54,7 +54,7 @@ private val OneDarkProColorPalette = darkColorScheme(
 @Composable
 fun OneDarkProTheme(content: @Composable () -> Unit) {
    MaterialTheme(
-     colorScheme = OneDarkProColorPalette,
+      colorScheme = OneDarkProColorPalette,
       content = { content() }
    )
 }

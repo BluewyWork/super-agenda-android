@@ -1,6 +1,5 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,6 @@ import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 import com.example.superagenda.util.encodeImageToBase64
-import kotlinx.coroutines.Job
 import java.time.LocalDateTime
 
 @Composable

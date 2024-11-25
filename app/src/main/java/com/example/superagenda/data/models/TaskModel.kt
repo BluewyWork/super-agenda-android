@@ -27,7 +27,7 @@ data class TaskModel(
    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("end_date_time") val endDateTime: BsonDateTime,
-   val image: String?
+   val image: String?,
 )
 
 enum class TaskStatusModel {
