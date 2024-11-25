@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.newTask
 
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,8 @@ import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
@@ -39,6 +42,9 @@ class NewTaskViewModel @Inject constructor(
 
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
+
+   private val _picture = MutableStateFlow("")
+   val picture: StateFlow<String> = _picture
 
    private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
    val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
@@ -69,6 +75,7 @@ class NewTaskViewModel @Inject constructor(
       _taskStatus.postValue(TaskStatus.NotStarted)
       _startDateTime.postValue(LocalDateTime.now())
       _endDateTime.postValue(LocalDateTime.now())
+      _picture.value = ""
    }
 
    fun enqueuePopup(title: String, message: String, error: String = "") {
@@ -92,6 +99,10 @@ class NewTaskViewModel @Inject constructor(
       }
 
       code()
+   }
+
+   fun onPictureChange(picture: String) {
+      _picture.value = picture
    }
 
    fun onCreateButtonPress(navController: NavController) {
@@ -130,6 +141,8 @@ class NewTaskViewModel @Inject constructor(
             )
             return@launch
          }
+
+         val picture = _picture.value
 
          when (loginUseCase.isLoggedIn()) {
             is Result.Error -> {
@@ -212,7 +225,8 @@ class NewTaskViewModel @Inject constructor(
             description = description,
             status = taskStatus,
             startDateTime = startDatetime,
-            endDateTime = endDateTime
+            endDateTime = endDateTime,
+            image = picture.ifBlank { null }
          )
 
          when (val resultUpsertTaskAtDatabase = task2UseCase.upsertTaskAtDatabase(task)) {

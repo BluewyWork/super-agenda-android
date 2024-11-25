@@ -27,6 +27,7 @@ data class TaskModel(
    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("end_date_time") val endDateTime: BsonDateTime,
+   val image: String?
 )
 
 enum class TaskStatusModel {
@@ -45,7 +46,8 @@ fun TaskModel.toDomain() = Task(
       TaskStatusModel.Completed -> TaskStatus.Completed
    },
    startDateTime = bsonDateTimeToLocalDateTime(startDateTime),
-   endDateTime = bsonDateTimeToLocalDateTime(endDateTime)
+   endDateTime = bsonDateTimeToLocalDateTime(endDateTime),
+   image = image
 )
 
 fun Task.toData() = TaskModel(
@@ -58,7 +60,8 @@ fun Task.toData() = TaskModel(
       TaskStatus.Completed -> TaskStatusModel.Completed
    },
    startDateTime = localDateTimeToBsonDateTime(startDateTime),
-   endDateTime = localDateTimeToBsonDateTime(endDateTime)
+   endDateTime = localDateTimeToBsonDateTime(endDateTime),
+   image = image
 
 )
 
@@ -68,7 +71,8 @@ fun TaskModel.toDatabase() = TaskEntity(
    description = description,
    status = status,
    startDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(startDateTime))!!,
-   endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!
+   endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!,
+   image = image
 )
 
 class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {

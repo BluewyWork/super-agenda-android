@@ -16,11 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
+import com.example.superagenda.presentation.composables.ImagePicker
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.TaskStatusDropDown
+import com.example.superagenda.util.encodeImageToBase64
 import java.time.LocalDateTime
 
 @Composable
@@ -137,6 +139,15 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
 
                label = "End DateTime"
             )
+         }
+
+         item {
+            ImagePicker {
+               it?.let { it2 ->
+                  val x = encodeImageToBase64(it2)
+                  newTaskViewModel.onPictureChange(x)
+               }
+            }
          }
       }
    )

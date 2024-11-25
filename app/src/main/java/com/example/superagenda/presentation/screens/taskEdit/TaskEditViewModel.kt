@@ -13,6 +13,8 @@ import com.example.superagenda.util.Result
 import com.example.superagenda.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -36,6 +38,9 @@ class TaskEditViewModel @Inject constructor(
 
    private val _endDateTime = MutableLiveData<LocalDateTime>()
    val endDateTime: LiveData<LocalDateTime> = _endDateTime
+
+   private val _image = MutableStateFlow("")
+   val image: StateFlow<String> = _image
 
    private val _taskToEdit = MutableLiveData<Task>()
    val taskToEdit: LiveData<Task> = _taskToEdit
@@ -63,6 +68,10 @@ class TaskEditViewModel @Inject constructor(
       _endDateTime.postValue(endDateTime)
    }
 
+   fun onImageChange(image: String) {
+      _image.value = image
+   }
+
    fun setTaskToEdit(task: Task) {
       _taskToEdit.postValue(task)
    }
@@ -80,6 +89,7 @@ class TaskEditViewModel @Inject constructor(
       _taskStatus.postValue(task.status)
       _startDateTime.postValue(task.startDateTime)
       _endDateTime.postValue(task.endDateTime)
+      _image.value = task.image ?: ""
    }
 
    fun enqueuePopup(title: String, description: String, error: String = "") {
@@ -153,13 +163,16 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
+         val image = _image.value
+
          val task = Task(
             id = taskID,
             title = title,
             description = description,
             status = taskStatus,
             startDateTime = startDatetime,
-            endDateTime = endDateTime
+            endDateTime = endDateTime,
+            image = image.ifBlank { null }
          )
 
          when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
