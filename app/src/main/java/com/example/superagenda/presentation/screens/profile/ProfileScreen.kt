@@ -103,6 +103,7 @@ fun Profile(
             label = { Text("Plan") },
             value = userForProfile?.membership.toString(),
             onValueChange = {},
+            readOnly = true,
 
             modifier = Modifier
                .fillMaxWidth()
@@ -113,7 +114,9 @@ fun Profile(
 
          Button(onClick = {
             profileViewModel.onRefreshProfilePress()
-         }) {
+         },
+            modifier = Modifier.fillMaxWidth()
+            ) {
             Text("Refresh Profile")
          }
 
