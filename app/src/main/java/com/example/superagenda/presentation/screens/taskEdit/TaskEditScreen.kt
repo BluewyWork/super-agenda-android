@@ -2,6 +2,7 @@ package com.example.superagenda.presentation.screens.taskEdit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -15,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 
 @Composable
@@ -97,24 +98,30 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
          modifier = Modifier.fillMaxWidth()
       )
 
-      Button(
-         onClick = {
-            taskEditViewModel.onDeleteButtonPress {
-               navController.navigateUp()
-            }
-         },
-         modifier = Modifier
-            .fillMaxWidth()
+      Row (
+         horizontalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-         Text("Delete")
-      }
+         Button(
+            onClick = {
+               taskEditViewModel.onDeleteButtonPress {
+                  navController.navigateUp()
+               }
+            },
+            modifier = Modifier
+               .fillMaxWidth()
+               .weight(.5f)
+         ) {
+            Text("Delete")
+         }
 
-      Button(
-         onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
-         modifier = Modifier
-            .fillMaxWidth()
-      ) {
-         Text("Update")
+         Button(
+            onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
+            modifier = Modifier
+               .fillMaxWidth()
+               .weight(.5f)
+         ) {
+            Text("Update")
+         }
       }
    }
 }

@@ -26,7 +26,6 @@ import com.example.superagenda.util.encodeImageToBase64
 fun ImageRow(newTaskViewModel: NewTaskViewModel, images: List<String>) {
    LazyRow(
       modifier = Modifier
-         .fillMaxHeight()
          .padding(8.dp)
    ) {
       item {

@@ -5,13 +5,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.screens.navigation.Navigation
-import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
+import com.example.superagenda.presentation.screens.navigation.Navigation
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskScreen
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.other.OtherScreen
@@ -100,7 +100,7 @@ fun NavigationHost(
             navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            NewTaskScreen(newTaskViewModel, navController, wrapperNavigationViewModel)
+            NewTaskScreen(newTaskViewModel, navController)
          }
       }
 

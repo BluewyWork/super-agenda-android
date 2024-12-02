@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.ImageRow
 import com.example.superagenda.presentation.screens.newTask.composables.TaskStatusDropDown
@@ -24,7 +23,6 @@ import com.example.superagenda.presentation.screens.newTask.composables.TaskStat
 fun NewTaskScreen(
    newTaskViewModel: NewTaskViewModel,
    navController: NavController,
-   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.observeAsState(
       listOf()
@@ -42,19 +40,7 @@ fun NewTaskScreen(
       )
    }
 
-   Column {
-      NewTask(newTaskViewModel, navController)
-
-      Button(
-         onClick = { newTaskViewModel.onCreateButtonPress(navController) },
-
-         modifier = Modifier
-            .padding(vertical = 8.dp)
-            .fillMaxWidth(),
-      ) {
-         Text("Create")
-      }
-   }
+   NewTask(newTaskViewModel, navController)
 }
 
 @Composable
@@ -111,5 +97,15 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
       )
 
       ImageRow(newTaskViewModel, images)
+
+      Button(
+         onClick = { newTaskViewModel.onCreateButtonPress(navController) },
+
+         modifier = Modifier
+            .padding(vertical = 8.dp)
+            .fillMaxWidth(),
+      ) {
+         Text("Create")
+      }
    }
 }
