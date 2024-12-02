@@ -3,7 +3,6 @@ package com.example.superagenda.presentation.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,7 +50,7 @@ fun Navigation(
    floatingActionButton: @Composable () -> Unit = {},
    navigationIcon: @Composable () -> Unit = {},
    navigationViewModel: NavigationViewModel,
-   content: @Composable (padding: PaddingValues) -> Unit,
+   content: @Composable () -> Unit,
 ) {
    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
    val scope = rememberCoroutineScope()
@@ -78,7 +77,9 @@ fun Navigation(
                bottomBar = { BottomBar(navController) },
                floatingActionButton = floatingActionButton,
             ) { contentPadding ->
-               content(contentPadding)
+               Box(modifier = Modifier.padding(contentPadding)) {
+                  content()
+               }
             }
          }
       }

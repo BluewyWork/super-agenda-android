@@ -10,7 +10,8 @@ data class Task(
    val status: TaskStatus,
    val startDateTime: LocalDateTime,
    val endDateTime: LocalDateTime,
-   val image: String?,
+   val endEstimatedDateTime: LocalDateTime,
+   val images: List<String>,
 )
 
 enum class TaskStatus {

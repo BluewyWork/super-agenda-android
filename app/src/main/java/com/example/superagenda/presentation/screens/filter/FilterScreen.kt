@@ -52,16 +52,9 @@ fun FilterScreen(
       }
    }
 
-   Navigation(
-      content = { padding ->
-         Column(modifier = Modifier.padding(padding)) {
-            Filter(filterScreenViewModel, navController)
-         }
-      },
-      navController = navController,
-      topBarTitle = "Find Tasks",
-      navigationViewModel = navigationViewModel
-   )
+   Column{
+      Filter(filterScreenViewModel, navController)
+   }
 }
 
 @Composable

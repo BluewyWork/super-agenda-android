@@ -42,7 +42,7 @@ fun TaskCard(task: Task, onClick: () -> Unit) {
             Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
          ) {
-            task.image?.let { Image64(it, Modifier.size(200.dp)) }
+//            task.image?.let { Image64(it, Modifier.size(200.dp)) }
 
             Column(
                modifier = Modifier

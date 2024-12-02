@@ -1,7 +1,6 @@
 package com.example.superagenda.presentation.screens.other
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.LoadingPopup
-import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.other.composables.ImportTaskList
@@ -51,15 +49,7 @@ fun OtherScreen(
       }
    }
 
-   Navigation(
-      navController = navController,
-      topBarTitle = "Other",
-      navigationViewModel = navigationViewModel
-   ) { paddingValues ->
-      Box(modifier = Modifier.padding(paddingValues)) {
-         Other(otherViewModel = otherViewModel)
-      }
-   }
+   Other(otherViewModel)
 }
 
 @Composable

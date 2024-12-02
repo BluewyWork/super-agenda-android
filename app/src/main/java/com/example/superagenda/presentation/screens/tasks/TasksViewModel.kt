@@ -1,8 +1,6 @@
 package com.example.superagenda.presentation.screens.tasks
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
@@ -16,21 +14,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
-   private val task2UseCase: TaskUseCase,
+   private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
    private val _tasks = MutableStateFlow<List<Task>>(listOf())
    val tasks: StateFlow<List<Task>> = _tasks
 
-   private val _taskToEdit = MutableLiveData<Task>()
-   val taskToEdit: LiveData<Task> = _taskToEdit
+   private val _taskToEdit = MutableStateFlow<Task?>(null)
+   val taskToEdit: StateFlow<Task?> = _taskToEdit
+
+   // Getters & Setters
 
    fun setTaskToEdit(task: Task) {
-      _taskToEdit.postValue(task)
+      _taskToEdit.value = task
    }
+
+   fun getTaskToEdit(): Task? {
+      return _taskToEdit.value
+   }
+
+   // Main
 
    fun refreshTasks() {
       viewModelScope.launch {
-         when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+         when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> Log.e("LOOK AT ME", "${resultGetTasksAtDatabase.error}")
             is Result.Success -> _tasks.value = resultGetTasksAtDatabase.data
          }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -15,17 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.Image64
-import com.example.superagenda.presentation.composables.ImagePicker
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
-import com.example.superagenda.util.encodeImageToBase64
-import java.time.LocalDateTime
 
 @Composable
 fun TaskEditScreen(
@@ -47,129 +41,82 @@ fun TaskEditScreen(
       }
    }
 
-   Navigation(
-      navController = navController,
-      topBarTitle = "Edit Task",
-      navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
-      navigationViewModel = navigationViewModel
-   ) { padding ->
-      Column(modifier = Modifier.padding(padding)) {
-         TaskEdit(taskEditViewModel, navController)
-      }
+   Column {
+      TaskEdit(taskEditViewModel, navController)
    }
 }
 
 @Composable
 fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController) {
-   val title: String? by taskEditViewModel.title.observeAsState()
-   val description: String? by taskEditViewModel.description.observeAsState()
-   val taskStatus: TaskStatus? by taskEditViewModel.taskStatus.observeAsState()
-   val startDateTime: LocalDateTime? by taskEditViewModel.startDateTime.observeAsState()
-   val endDateTime: LocalDateTime? by taskEditViewModel.endDateTime.observeAsState()
-   val image by taskEditViewModel.image.collectAsStateWithLifecycle()
+   val title by taskEditViewModel.title.collectAsStateWithLifecycle()
+   val description by taskEditViewModel.description.collectAsStateWithLifecycle()
+   val taskStatus by taskEditViewModel.taskStatus.collectAsStateWithLifecycle()
+   val startDateTime by taskEditViewModel.startDateTime.collectAsStateWithLifecycle()
+   val endEstimatedDateTime by taskEditViewModel.endEstimatedDateTime.collectAsStateWithLifecycle()
+   val images by taskEditViewModel.images.collectAsStateWithLifecycle()
 
-   LazyColumn(
+   Column(
       verticalArrangement = Arrangement.spacedBy(8.dp),
       modifier = Modifier.padding(8.dp)
    ) {
-      item {
-         title?.let {
-            OutlinedTextField(
-               value = it,
-               onValueChange = { it2 -> taskEditViewModel.onTitleChange(it2) },
-               label = { Text("Title") },
-               modifier = Modifier.fillMaxWidth()
-            )
-         }
+      OutlinedTextField(
+         value = title,
+         onValueChange = { it2 -> taskEditViewModel.setTitle(it2) },
+         label = { Text("Title") },
+         modifier = Modifier.fillMaxWidth()
+      )
 
+      OutlinedTextField(
+         value = description,
+         onValueChange = { it2 -> taskEditViewModel.setDescription(it2) },
+         label = { Text("Description") },
+         modifier = Modifier.fillMaxWidth()
+      )
+
+      TaskStatusDropDown(taskStatus) { it2 ->
+         taskEditViewModel.setTaskStatus(it2)
       }
 
-      item {
-         description?.let {
-            OutlinedTextField(
-               value = it,
-               onValueChange = { it2 -> taskEditViewModel.onDescriptionChange(it2) },
-               label = { Text("Description") },
-               modifier = Modifier.fillMaxWidth()
-            )
-         }
-      }
+      LocalDateTimePickerTextField(
+         label = "Start DateTime",
+         value = startDateTime,
 
-      item {
-         taskStatus?.let {
-            TaskStatusDropDown(it) { it2 ->
-               taskEditViewModel.onTaskStatusChange(it2)
+         onLocalDateTimeChange = { it2 ->
+            taskEditViewModel.setStartDateTime(it2)
+         },
+
+         modifier = Modifier.fillMaxWidth()
+      )
+
+      LocalDateTimePickerTextField(
+         label = "End DateTime",
+         value = endEstimatedDateTime,
+
+         onLocalDateTimeChange = { it2 ->
+            taskEditViewModel.setEndDateTime(it2)
+         },
+
+         modifier = Modifier.fillMaxWidth()
+      )
+
+      Button(
+         onClick = {
+            taskEditViewModel.onDeleteButtonPress {
+               navController.navigateUp()
             }
-         }
+         },
+         modifier = Modifier
+            .fillMaxWidth()
+      ) {
+         Text("Delete")
       }
 
-      item {
-         startDateTime?.let {
-            LocalDateTimePickerTextField(
-               label = "Start DateTime",
-               value = it,
-
-               onLocalDateTimeChange = { it2 ->
-                  taskEditViewModel.onStartDateTimeChange(it2)
-               },
-
-               modifier = Modifier.fillMaxWidth()
-            )
-         }
-      }
-
-      item {
-         endDateTime?.let {
-            LocalDateTimePickerTextField(
-               label = "End DateTime",
-               value = it,
-
-               onLocalDateTimeChange = { it2 ->
-                  taskEditViewModel.onEndDateTimeChange(it2)
-               },
-
-               modifier = Modifier.fillMaxWidth()
-            )
-         }
-      }
-
-      item {
-         ImagePicker {
-            it?.let { it2 ->
-               val x = encodeImageToBase64(it2)
-               taskEditViewModel.onImageChange(x)
-            }
-         }
-      }
-
-      item {
-         Button(
-            onClick = {
-               taskEditViewModel.onDeleteButtonPress {
-                  navController.navigateUp()
-               }
-            },
-            modifier = Modifier
-               .fillMaxWidth()
-         ) {
-            Text("Delete")
-         }
-      }
-
-      item {
-         Button(
-            onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
-            modifier = Modifier
-               .fillMaxWidth()
-         ) {
-            Text("Update")
-         }
-      }
-
-      item {
-         if (image.isNotBlank()) {
-            Image64(image, Modifier.fillMaxWidth())
-         }
+      Button(
+         onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
+         modifier = Modifier
+            .fillMaxWidth()
+      ) {
+         Text("Update")
       }
    }
 }

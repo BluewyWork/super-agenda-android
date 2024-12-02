@@ -20,14 +20,15 @@ import java.lang.reflect.Type
 data class TaskModel(
    @JsonAdapter(ObjectIdSerializer::class)
    @SerializedName("_id") val id: ObjectId,
-   @SerializedName("title") val title: String,
-   @SerializedName("description") val description: String,
-   @SerializedName("status") val status: TaskStatusModel,
+   val title: String,
+   val description: String,
+   val status: TaskStatusModel,
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("end_date_time") val endDateTime: BsonDateTime,
-   val image: String?,
+   @SerializedName("end_date_time_estimated") val endEstimatedDateTime: BsonDateTime,
+   val images: List<String>,
 )
 
 enum class TaskStatusModel {
@@ -47,7 +48,8 @@ fun TaskModel.toDomain() = Task(
    },
    startDateTime = bsonDateTimeToLocalDateTime(startDateTime),
    endDateTime = bsonDateTimeToLocalDateTime(endDateTime),
-   image = image
+   images = images,
+   endEstimatedDateTime = bsonDateTimeToLocalDateTime(endEstimatedDateTime)
 )
 
 fun Task.toData() = TaskModel(
@@ -61,8 +63,8 @@ fun Task.toData() = TaskModel(
    },
    startDateTime = localDateTimeToBsonDateTime(startDateTime),
    endDateTime = localDateTimeToBsonDateTime(endDateTime),
-   image = image
-
+   endEstimatedDateTime = localDateTimeToBsonDateTime(endEstimatedDateTime),
+   images = images
 )
 
 fun TaskModel.toDatabase() = TaskEntity(
@@ -72,7 +74,19 @@ fun TaskModel.toDatabase() = TaskEntity(
    status = status,
    startDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(startDateTime))!!,
    endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!,
-   image = image
+   images = images,
+   endEstimatedDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endEstimatedDateTime))!!,
+)
+
+fun TaskEntity.toData() = TaskModel(
+   id = ObjectId(id),
+   title = title,
+   description = description,
+   status = status,
+   startDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(startDateTime)!!),
+   endDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endDateTime)!!),
+   images = images,
+   endEstimatedDateTime = localDateTimeToBsonDateTime(stringToLocalDateTime(endEstimatedDateTime)!!)
 )
 
 class ObjectIdSerializer : JsonSerializer<ObjectId>, JsonDeserializer<ObjectId> {

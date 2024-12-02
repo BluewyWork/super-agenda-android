@@ -22,9 +22,6 @@ import androidx.navigation.NavController
 import com.example.superagenda.R
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.Destinations
-import com.example.superagenda.presentation.composables.Navigation
-import com.example.superagenda.presentation.composables.NavigationViewModel
-import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.tasks.composables.EmptyState
 import com.example.superagenda.presentation.screens.tasks.composables.LineWithText
@@ -37,75 +34,59 @@ import java.time.temporal.TemporalAdjusters
 fun TasksScreen(
    tasksViewModel: TasksViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
 ) {
-   Navigation(
-      content = { padding ->
-         val pagerState = rememberPagerState { 3 }
+   val pagerState = rememberPagerState { 3 }
 
-         var selectedTab by remember {
-            mutableIntStateOf(pagerState.currentPage)
-         }
+   var selectedTab by remember {
+      mutableIntStateOf(pagerState.currentPage)
+   }
 
-         LaunchedEffect(selectedTab) {
-            pagerState.scrollToPage(selectedTab)
-         }
+   LaunchedEffect(selectedTab) {
+      pagerState.scrollToPage(selectedTab)
+   }
 
-         LaunchedEffect(pagerState.currentPage) {
-            selectedTab = pagerState.currentPage
-         }
+   LaunchedEffect(pagerState.currentPage) {
+      selectedTab = pagerState.currentPage
+   }
 
-         Column(modifier = Modifier.padding(padding)) {
-            TabRow(selectedTabIndex = selectedTab) {
-               for (index in 0 until pagerState.pageCount) {
-                  Tab(
-                     selected = true,
-                     onClick = { selectedTab = index }
-                  ) {
-                     when (index) {
-                        0 -> Text("Not Started")
-                        1 -> Text("Ongoing")
-                        2 -> Text("Completed")
-                     }
-                  }
-               }
-            }
-
-            HorizontalPager(
-               state = pagerState,
-               modifier = Modifier.fillMaxSize()
-            ) { currentPage ->
-               when (currentPage) {
-                  0 -> {
-                     tasksViewModel.refreshTasks()
-                     TasksNotStarted(tasksViewModel, navController)
-                  }
-
-                  1 -> {
-                     tasksViewModel.refreshTasks()
-                     TasksOngoing(tasksViewModel, navController)
-                  }
-
-                  2 -> {
-                     tasksViewModel.refreshTasks()
-                     TasksCompleted(tasksViewModel, navController)
-                  }
+   Column() {
+      TabRow(selectedTabIndex = selectedTab) {
+         for (index in 0 until pagerState.pageCount) {
+            Tab(
+               selected = true,
+               onClick = { selectedTab = index }
+            ) {
+               when (index) {
+                  0 -> Text("Not Started")
+                  1 -> Text("Ongoing")
+                  2 -> Text("Completed")
                }
             }
          }
-      },
+      }
 
-      navController = navController,
-      topBarTitle = "Tasks",
+      HorizontalPager(
+         state = pagerState,
+         modifier = Modifier.fillMaxSize()
+      ) { currentPage ->
+         when (currentPage) {
+            0 -> {
+               tasksViewModel.refreshTasks()
+               TasksNotStarted(tasksViewModel, navController)
+            }
 
-      floatingActionButton = {
-         NewTaskFloatingActionButton {
-            navController.navigate(Destinations.NewTask.route)
+            1 -> {
+               tasksViewModel.refreshTasks()
+               TasksOngoing(tasksViewModel, navController)
+            }
+
+            2 -> {
+               tasksViewModel.refreshTasks()
+               TasksCompleted(tasksViewModel, navController)
+            }
          }
-      },
-
-      navigationViewModel = navigationViewModel
-   )
+      }
+   }
 }
 
 @Composable

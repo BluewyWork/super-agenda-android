@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.bson.types.ObjectId
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -24,73 +25,67 @@ class TaskEditViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
-   private val _title = MutableLiveData<String>()
-   val title: LiveData<String> = _title
+   private val _taskId = MutableStateFlow(ObjectId())
 
-   private val _description = MutableLiveData<String>()
-   val description: LiveData<String> = _description
+   private val _title = MutableStateFlow("")
+   val title: StateFlow<String> = _title
 
-   private val _taskStatus = MutableLiveData<TaskStatus>()
-   val taskStatus: LiveData<TaskStatus> = _taskStatus
+   private val _description = MutableStateFlow("")
+   val description: StateFlow<String> = _description
 
-   private val _startDateTime = MutableLiveData<LocalDateTime>()
-   val startDateTime: LiveData<LocalDateTime> = _startDateTime
+   private val _taskStatus = MutableStateFlow(TaskStatus.NotStarted)
+   val taskStatus: StateFlow<TaskStatus> = _taskStatus
 
-   private val _endDateTime = MutableLiveData<LocalDateTime>()
-   val endDateTime: LiveData<LocalDateTime> = _endDateTime
+   private val _startDateTime = MutableStateFlow(LocalDateTime.now())
+   val startDateTime: StateFlow<LocalDateTime> = _startDateTime
 
-   private val _image = MutableStateFlow("")
-   val image: StateFlow<String> = _image
+   private val _endEstimatedDateTime = MutableStateFlow(LocalDateTime.now())
+   val endEstimatedDateTime: StateFlow<LocalDateTime> = _endEstimatedDateTime
 
-   private val _taskToEdit = MutableLiveData<Task>()
-   val taskToEdit: LiveData<Task> = _taskToEdit
+   private val _endDateTime = MutableStateFlow(LocalDateTime.now())
+   val endDateTime: StateFlow<LocalDateTime> = _endDateTime
+
+   private val _images = MutableStateFlow<List<String>>(emptyList())
+   val images: StateFlow<List<String>> = _images
 
    private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
    val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
 
-   fun onTitleChange(title: String) {
-      _title.postValue(title)
+   // Getter & Setters
+
+   fun setTaskId(id: ObjectId) {
+      _taskId.value = id
    }
 
-   fun onDescriptionChange(description: String) {
-      _description.postValue(description)
+   fun setTitle(title: String) {
+      _title.value = title
    }
 
-   fun onTaskStatusChange(taskStatus: TaskStatus) {
-      _taskStatus.postValue(taskStatus)
+   fun setDescription(description: String) {
+      _description.value = description
    }
 
-   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
-      _startDateTime.postValue(startDatetime)
+   fun setTaskStatus(taskStatus: TaskStatus) {
+      _taskStatus.value = taskStatus
    }
 
-   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
-      _endDateTime.postValue(endDateTime)
+   fun setStartDateTime(startDatetime: LocalDateTime) {
+      _startDateTime.value = startDatetime
    }
 
-   fun onImageChange(image: String) {
-      _image.value = image
+   fun setEndEstimatedDateTime(endEstimatedDateTime: LocalDateTime) {
+      _endEstimatedDateTime.value = endEstimatedDateTime
    }
 
-   fun setTaskToEdit(task: Task) {
-      _taskToEdit.postValue(task)
+   fun setEndDateTime(endDateTime: LocalDateTime) {
+      _endEstimatedDateTime.value = endDateTime
    }
 
-   fun onShow(navController: NavController) {
-      val task = taskToEdit.value
-
-      if (task == null) {
-         navController.navigateUp()
-         return
-      }
-
-      _title.postValue(task.title)
-      _description.postValue(task.description)
-      _taskStatus.postValue(task.status)
-      _startDateTime.postValue(task.startDateTime)
-      _endDateTime.postValue(task.endDateTime)
-      _image.value = task.image ?: ""
+   fun setImages(images: List<String>) {
+      _images.value = images
    }
+
+   // Utilities
 
    fun enqueuePopup(title: String, description: String, error: String = "") {
       _popupsQueue.value =
@@ -115,39 +110,26 @@ class TaskEditViewModel @Inject constructor(
       code()
    }
 
+   // Main
+
    fun onUpdateButtonPress(navController: NavController) {
       viewModelScope.launch {
+         val taskId = _taskId.value
          val title = title.value
-         if (title.isNullOrBlank()) {
+         val description = description.value
+         val taskStatus = taskStatus.value
+         val startDatetime = startDateTime.value
+         val endEstimatedDateTime = endEstimatedDateTime.value
+         var endDateTime = endDateTime.value
+         val images = _images.value
+
+         if (title.isBlank()) {
             enqueuePopup("ERROR", "Title can not be empty...")
             return@launch
          }
 
-         val description = description.value
-         if (description.isNullOrBlank()) {
+         if (description.isBlank()) {
             enqueuePopup("ERROR", "Description can not be empty...")
-            return@launch
-         }
-
-         val taskStatus = taskStatus.value ?: run {
-            enqueuePopup("ERROR", "A status for the task must be selected...")
-            return@launch
-         }
-
-         val startDatetime = startDateTime.value ?: run {
-            enqueuePopup("ERROR", "Must have a start time...")
-            return@launch
-         }
-
-         var endDateTime = endDateTime.value ?: run {
-            enqueuePopup("ERROR", "Must have an end time...")
-            return@launch
-         }
-
-         val taskID = taskToEdit.value?.id
-
-         if (taskID == null) {
-            enqueuePopup("ERROR", "Wow, something changed it to null")
             return@launch
          }
 
@@ -155,7 +137,7 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = LocalDateTime.now()
          }
 
-         if (startDatetime >= endDateTime) {
+         if (startDatetime >= endEstimatedDateTime) {
             enqueuePopup(
                "ERROR",
                "The expiration date can't be before or the same as the start date"
@@ -163,16 +145,15 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
-         val image = _image.value
-
          val task = Task(
-            id = taskID,
+            id = taskId,
             title = title,
             description = description,
             status = taskStatus,
             startDateTime = startDatetime,
+            endEstimatedDateTime = endEstimatedDateTime,
             endDateTime = endDateTime,
-            image = image.ifBlank { null }
+            images = images
          )
 
          when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
@@ -211,12 +192,7 @@ class TaskEditViewModel @Inject constructor(
 
    fun onDeleteButtonPress(onSuccess: () -> Unit) {
       viewModelScope.launch {
-         val taskID = taskToEdit.value?.id
-
-         if (taskID == null) {
-            enqueuePopup("ERROR", "Hmmm, taskID null, how?...")
-            return@launch
-         }
+         val taskId = _taskId.value
 
          when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
             is Result.Error ->
@@ -233,7 +209,7 @@ class TaskEditViewModel @Inject constructor(
                   }
 
                   is Result.Success -> {
-                     when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskID)) {
+                     when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskId)) {
                         is Result.Error -> {
                            enqueuePopup(
                               "ERROR",

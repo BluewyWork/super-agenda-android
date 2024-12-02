@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.superagenda.presentation.composables.BackIconButton
+import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
@@ -54,49 +57,89 @@ fun NavigationHost(
       }
 
       composable(Destinations.Profile.route) {
-         profileViewModel.onShow()
-         ProfileScreen(profileViewModel, navController, navigationViewModel)
+         Navigation(
+            navController = navController,
+            topBarTitle = "Profile",
+            navigationViewModel = navigationViewModel
+         ) {
+            profileViewModel.onShow()
+            ProfileScreen(profileViewModel, navController, navigationViewModel)
+         }
       }
 
       composable(Destinations.TaskEdit.route) {
-         val task = tasksViewModel.taskToEdit.value
-         if (task == null) {
-            navController.navigateUp()
+         val taskToEdit = tasksViewModel.getTaskToEdit()
+
+         if (taskToEdit == null) {
+            navController.navigate(Destinations.Tasks.route)
             return@composable
          }
 
-         taskEditViewModel.setTaskToEdit(task)
-         taskEditViewModel.onShow(navController)
-         TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
-      }
+         taskEditViewModel.setTaskId(taskToEdit.id)
+         taskEditViewModel.setTitle(taskToEdit.title)
+         taskEditViewModel.setDescription(taskToEdit.description)
+         taskEditViewModel.setTaskStatus(taskToEdit.status)
+         taskEditViewModel.setStartDateTime(taskToEdit.startDateTime)
+         taskEditViewModel.setEndDateTime(taskToEdit.endEstimatedDateTime)
+         taskEditViewModel.setImages(taskToEdit.images)
 
-      composable(Destinations.TaskEdit.route + "2") {
-         val task = filterViewModel.taskToEdit.value
-         if (task == null) {
-            navController.navigateUp()
-            return@composable
+         Navigation(
+            navController = navController,
+            topBarTitle = "TASK EDIT",
+            navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+            navigationViewModel = navigationViewModel
+         ) {
+            TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
          }
-
-         taskEditViewModel.setTaskToEdit(task)
-         taskEditViewModel.onShow(navController)
-         TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
       }
 
       composable(Destinations.NewTask.route) {
-         newTaskViewModel.onShow()
-         NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
+         Navigation(
+            navController = navController,
+            topBarTitle = "New Task",
+            navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+            navigationViewModel = navigationViewModel
+         ) {
+            NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
+         }
       }
 
       composable(Destinations.Filter.route) {
-         FilterScreen(filterViewModel, navController, navigationViewModel)
+         Navigation(
+            navController = navController,
+            topBarTitle = "Find Tasks",
+            navigationViewModel = navigationViewModel
+         ) {
+            FilterScreen(filterViewModel, navController, navigationViewModel)
+         }
       }
 
       composable(Destinations.Tasks.route) {
-         TasksScreen(tasksViewModel, navController, navigationViewModel)
+         Navigation(
+            navController,
+            topBarTitle = "TASKS",
+
+            floatingActionButton = {
+               NewTaskFloatingActionButton {
+                  navController.navigate(Destinations.NewTask.route)
+               }
+            },
+
+            navigationIcon = {},
+            navigationViewModel
+         ) {
+            TasksScreen(tasksViewModel, navController)
+         }
       }
 
       composable(Destinations.Other.route) {
-         OtherScreen(otherViewModel, navController, navigationViewModel)
+         Navigation(
+            navController = navController,
+            topBarTitle = "Other",
+            navigationViewModel = navigationViewModel
+         ) {
+            OtherScreen(otherViewModel, navController, navigationViewModel)
+         }
       }
    }
 }

@@ -8,8 +8,6 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -18,7 +16,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun ImagePicker(onImagePicked: (Bitmap?) -> Unit) {
+fun ImagePicker(
+   onImagePicked: (Bitmap?) -> Unit,
+   content: @Composable (onClick: () -> Unit) -> Unit,
+) {
    val context = LocalContext.current
    val scope = rememberCoroutineScope()
    val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -32,10 +33,8 @@ fun ImagePicker(onImagePicked: (Bitmap?) -> Unit) {
       }
    }
 
-   Button(onClick = {
+   content {
       imagePickerLauncher.launch("image/*")
-   }) {
-      Text("Pick Image")
    }
 }
 

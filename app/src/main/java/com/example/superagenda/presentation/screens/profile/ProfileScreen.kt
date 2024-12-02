@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.UserForProfile
-import com.example.superagenda.presentation.composables.Navigation
 import com.example.superagenda.presentation.composables.NavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 
@@ -45,28 +44,18 @@ fun ProfileScreen(
       }
    }
 
-   Navigation(
-      content = { padding ->
-         Profile(profileViewModel, navController, padding)
-      },
-
-      navController = navController,
-      topBarTitle = "Profile",
-      navigationViewModel = navigationViewModel
-   )
+   Profile(profileViewModel, navController)
 }
 
 @Composable
 fun Profile(
    profileViewModel: ProfileViewModel,
    navController: NavController,
-   padding: PaddingValues,
 ) {
    val userForProfile: UserForProfile? by profileViewModel.userForProfile.observeAsState()
 
    LazyColumn(
       modifier = Modifier
-         .padding(padding)
          .fillMaxSize(),
 
       contentPadding = PaddingValues(8.dp),
