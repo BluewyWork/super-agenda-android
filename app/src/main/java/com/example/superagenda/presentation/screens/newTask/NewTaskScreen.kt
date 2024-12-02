@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.ImageRow
 import com.example.superagenda.presentation.screens.newTask.composables.TaskStatusDropDown
@@ -24,7 +24,7 @@ import com.example.superagenda.presentation.screens.newTask.composables.TaskStat
 fun NewTaskScreen(
    newTaskViewModel: NewTaskViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.observeAsState(
       listOf()

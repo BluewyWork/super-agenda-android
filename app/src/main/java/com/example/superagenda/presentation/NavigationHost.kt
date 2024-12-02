@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.Navigation
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.Navigation
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
@@ -35,7 +35,7 @@ fun NavigationHost(
    taskEditViewModel: TaskEditViewModel,
    newTaskViewModel: NewTaskViewModel,
    filterViewModel: FilterScreenViewModel,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
    otherViewModel: OtherViewModel,
 ) {
    val navController = rememberNavController()
@@ -60,10 +60,10 @@ fun NavigationHost(
          Navigation(
             navController = navController,
             topBarTitle = "Profile",
-            navigationViewModel = navigationViewModel
+            wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
             profileViewModel.onShow()
-            ProfileScreen(profileViewModel, navController, navigationViewModel)
+            ProfileScreen(profileViewModel, navController, wrapperNavigationViewModel)
          }
       }
 
@@ -87,9 +87,9 @@ fun NavigationHost(
             navController = navController,
             topBarTitle = "TASK EDIT",
             navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
-            navigationViewModel = navigationViewModel
+            wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            TaskEditScreen(taskEditViewModel, navController, navigationViewModel)
+            TaskEditScreen(taskEditViewModel, navController, wrapperNavigationViewModel)
          }
       }
 
@@ -98,9 +98,9 @@ fun NavigationHost(
             navController = navController,
             topBarTitle = "New Task",
             navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
-            navigationViewModel = navigationViewModel
+            wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            NewTaskScreen(newTaskViewModel, navController, navigationViewModel)
+            NewTaskScreen(newTaskViewModel, navController, wrapperNavigationViewModel)
          }
       }
 
@@ -108,9 +108,9 @@ fun NavigationHost(
          Navigation(
             navController = navController,
             topBarTitle = "Find Tasks",
-            navigationViewModel = navigationViewModel
+            wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            FilterScreen(filterViewModel, navController, navigationViewModel)
+            FilterScreen(filterViewModel, navController, wrapperNavigationViewModel)
          }
       }
 
@@ -126,7 +126,7 @@ fun NavigationHost(
             },
 
             navigationIcon = {},
-            navigationViewModel
+            wrapperNavigationViewModel
          ) {
             TasksScreen(tasksViewModel, navController)
          }
@@ -136,9 +136,9 @@ fun NavigationHost(
          Navigation(
             navController = navController,
             topBarTitle = "Other",
-            navigationViewModel = navigationViewModel
+            wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            OtherScreen(otherViewModel, navController, navigationViewModel)
+            OtherScreen(otherViewModel, navController, wrapperNavigationViewModel)
          }
       }
    }

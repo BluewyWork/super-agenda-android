@@ -25,8 +25,7 @@ import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.composables.Navigation
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.composables.TaskCard
 import com.example.superagenda.presentation.screens.filter.composables.TaskStatusDropDown
@@ -36,7 +35,7 @@ import java.time.LocalDateTime
 fun FilterScreen(
    filterScreenViewModel: FilterScreenViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by filterScreenViewModel.popupsQueue.observeAsState(
       listOf()

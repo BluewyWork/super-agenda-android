@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.composables
+package com.example.superagenda.presentation.screens.navigation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NavigationViewModel @Inject constructor(
+class WrapperNavigationViewModel @Inject constructor(
    private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
    private val _isLoggedIn = MutableLiveData<Boolean>()

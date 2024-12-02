@@ -14,10 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.composables.Navigation
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 
@@ -25,7 +23,7 @@ import com.example.superagenda.presentation.screens.taskEdit.composables.TaskSta
 fun TaskEditScreen(
    taskEditViewModel: TaskEditViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by taskEditViewModel.popupsQueue.observeAsState(
       listOf()

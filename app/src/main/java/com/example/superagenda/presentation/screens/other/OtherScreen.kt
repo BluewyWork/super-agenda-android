@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.composables.LoadingPopup
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.other.composables.ImportTaskList
 
@@ -25,7 +25,7 @@ import com.example.superagenda.presentation.screens.other.composables.ImportTask
 fun OtherScreen(
    otherViewModel: OtherViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val showLoadingPopup: Boolean by otherViewModel.showLoadingPopup.observeAsState(false)
 

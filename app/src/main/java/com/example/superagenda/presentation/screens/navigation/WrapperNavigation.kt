@@ -1,4 +1,4 @@
-package com.example.superagenda.presentation.composables
+package com.example.superagenda.presentation.screens.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +49,7 @@ fun Navigation(
    topBarTitle: String,
    floatingActionButton: @Composable () -> Unit = {},
    navigationIcon: @Composable () -> Unit = {},
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
    content: @Composable () -> Unit,
 ) {
    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -64,7 +64,7 @@ fun Navigation(
                   navController,
                   scope,
                   drawerState,
-                  navigationViewModel
+                  wrapperNavigationViewModel
                )
             }
          },
@@ -91,12 +91,12 @@ fun DrawerContent(
    navController: NavController,
    scope: CoroutineScope,
    drawerState: DrawerState,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    // keep in mind the direction is reversed and reversed and reversed...
    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      navigationViewModel.onShow()
-      val loggedIn: Boolean by navigationViewModel.isLoggedIn.observeAsState(false)
+      wrapperNavigationViewModel.onShow()
+      val loggedIn: Boolean by wrapperNavigationViewModel.isLoggedIn.observeAsState(false)
 
       if (!loggedIn) {
          Button(

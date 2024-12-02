@@ -21,14 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.superagenda.domain.models.UserForProfile
-import com.example.superagenda.presentation.composables.NavigationViewModel
+import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 
 @Composable
 fun ProfileScreen(
    profileViewModel: ProfileViewModel,
    navController: NavController,
-   navigationViewModel: NavigationViewModel,
+   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by profileViewModel.popupsQueue.observeAsState(
       listOf()
