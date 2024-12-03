@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.newTask
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,8 +46,8 @@ class NewTaskViewModel @Inject constructor(
    private val _images = MutableStateFlow<List<String>>(emptyList())
    val images: StateFlow<List<String>> = _images
 
-   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
-   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
    // Getters & Setters
 
@@ -77,22 +78,15 @@ class NewTaskViewModel @Inject constructor(
    // Utilities
 
    fun enqueuePopup(title: String, message: String, error: String = "") {
-      _popupsQueue.value =
-         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
-            Triple(
-               title,
-               message,
-               error
-            )
-         )
+      _popupsQueue.value += Triple(title, message, error)
    }
 
    fun dismissPopup() {
-      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+      _popupsQueue.value = _popupsQueue.value.drop(1)
    }
 
    private suspend fun whenPopupsEmpty(code: () -> Unit) {
-      while (popupsQueue.value?.isNotEmpty() == true) {
+      while (popupsQueue.value.isNotEmpty()) {
          delay(2000)
       }
 
@@ -101,7 +95,7 @@ class NewTaskViewModel @Inject constructor(
 
    // Main
 
-   fun onCreateButtonPress(navController: NavController) {
+   fun onCreateButtonPress(onSuccess: () -> Unit) {
       viewModelScope.launch {
          val title = _title.value
          val description = _description.value
@@ -249,7 +243,7 @@ class NewTaskViewModel @Inject constructor(
                }
 
                whenPopupsEmpty {
-                  navController.navigateUp()
+                  onSuccess()
                }
             }
          }

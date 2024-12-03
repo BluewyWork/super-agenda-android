@@ -63,7 +63,7 @@ fun NavigationHost(
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
             profileViewModel.onShow()
-            ProfileScreen(profileViewModel, navController, wrapperNavigationViewModel)
+            ProfileScreen(profileViewModel, navController)
          }
       }
 

@@ -20,7 +20,6 @@ class TasksViewModel @Inject constructor(
    val tasks: StateFlow<List<Task>> = _tasks
 
    private val _taskToEdit = MutableStateFlow<Task?>(null)
-   val taskToEdit: StateFlow<Task?> = _taskToEdit
 
    // Getters & Setters
 

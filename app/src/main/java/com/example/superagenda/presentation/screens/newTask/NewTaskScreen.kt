@@ -9,11 +9,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.newTask.composables.ImageRow
@@ -24,9 +24,7 @@ fun NewTaskScreen(
    newTaskViewModel: NewTaskViewModel,
    navController: NavController,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.observeAsState(
-      listOf()
-   )
+   val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
@@ -99,7 +97,11 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
       ImageRow(newTaskViewModel, images)
 
       Button(
-         onClick = { newTaskViewModel.onCreateButtonPress(navController) },
+         onClick = {
+            newTaskViewModel.onCreateButtonPress {
+               navController.navigate(Destinations.Tasks.route)
+            }
+         },
 
          modifier = Modifier
             .padding(vertical = 8.dp)

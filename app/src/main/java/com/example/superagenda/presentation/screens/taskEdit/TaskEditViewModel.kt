@@ -180,10 +180,10 @@ class TaskEditViewModel @Inject constructor(
                         enqueuePopup("INFO", "Successfully updated task at API!")
                      }
                   }
+               }
 
-                  whenPopupsEmpty {
-                     navController.navigateUp()
-                  }
+               whenPopupsEmpty {
+                  navController.navigateUp()
                }
             }
          }

@@ -28,7 +28,6 @@ import com.example.superagenda.presentation.composables.PopupDialog
 fun ProfileScreen(
    profileViewModel: ProfileViewModel,
    navController: NavController,
-   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
    val popupsQueue: List<Triple<String, String, String>> by profileViewModel.popupsQueue.observeAsState(
       listOf()
