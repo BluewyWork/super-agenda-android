@@ -1,11 +1,15 @@
 package com.example.superagenda.presentation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.NewTaskFloatingActionButton
+import com.example.superagenda.presentation.composables.FloatingActionButtonPlus
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
@@ -45,7 +49,11 @@ fun NavigationHost(
       startDestination = Destinations.Slider.route
    ) {
       composable(Destinations.Slider.route) {
-         SliderScreen(navController)
+         Scaffold { padding ->
+            Box(modifier = Modifier.padding(padding)) {
+               SliderScreen(navController)
+            }
+         }
       }
 
       composable(Destinations.Login.route) {
@@ -120,7 +128,7 @@ fun NavigationHost(
             topBarTitle = "TASKS",
 
             floatingActionButton = {
-               NewTaskFloatingActionButton {
+               FloatingActionButtonPlus {
                   navController.navigate(Destinations.NewTask.route)
                }
             },

@@ -7,7 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 
 @Composable
-fun NewTaskFloatingActionButton(onClick: () -> Unit) {
+fun FloatingActionButtonPlus(onClick: () -> Unit) {
    FloatingActionButton(
       onClick = { onClick() },
    ) {

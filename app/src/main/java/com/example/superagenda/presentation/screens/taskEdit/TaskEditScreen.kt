@@ -1,8 +1,11 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -11,14 +14,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.composables.ImageRow
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
+import com.example.superagenda.util.decodeBase64ToImage
 
 @Composable
 fun TaskEditScreen(
@@ -98,7 +109,50 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
          modifier = Modifier.fillMaxWidth()
       )
 
-      Row (
+      var showBigImage by remember { mutableStateOf("") }
+
+      ImageRow(
+         images,
+         onImageClick = { imageClicked ->
+            val bitmap = decodeBase64ToImage(imageClicked)
+
+            if (bitmap != null) {
+               showBigImage = imageClicked
+            }
+         }
+      ) { imageNew ->
+         taskEditViewModel.setImages(images + imageNew)
+      }
+
+      if (showBigImage.isNotEmpty()) {
+         Dialog(
+            onDismissRequest = { showBigImage = "" }
+         ) {
+            Box(
+               modifier = Modifier
+                  .fillMaxSize()
+                  .padding(16.dp),
+               contentAlignment = Alignment.Center
+            ) {
+               Column(
+                  horizontalAlignment = Alignment.CenterHorizontally
+               ) {
+                  Image(
+                     bitmap = decodeBase64ToImage(showBigImage)!!.asImageBitmap(),
+                     contentDescription = null,
+                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                  )
+                  Button(onClick = { showBigImage = "" }) {
+                     Text("Close")
+                  }
+               }
+            }
+         }
+      }
+
+      Row(
          horizontalArrangement = Arrangement.spacedBy(8.dp)
       ) {
          Button(

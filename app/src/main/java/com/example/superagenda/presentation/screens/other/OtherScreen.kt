@@ -16,7 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.superagenda.presentation.composables.LoadingPopup
+import com.example.superagenda.presentation.composables.DialogLoading
 import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.other.composables.ImportTaskList
@@ -30,7 +30,7 @@ fun OtherScreen(
    val showLoadingPopup: Boolean by otherViewModel.showLoadingPopup.observeAsState(false)
 
    if (showLoadingPopup) {
-      LoadingPopup {
+      DialogLoading {
          otherViewModel.dismissPopup()
       }
    }

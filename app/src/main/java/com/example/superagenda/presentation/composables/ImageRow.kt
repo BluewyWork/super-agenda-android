@@ -1,8 +1,7 @@
-package com.example.superagenda.presentation.screens.newTask.composables
+package com.example.superagenda.presentation.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,13 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.example.superagenda.presentation.composables.ImagePicker
-import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.util.decodeBase64ToImage
 import com.example.superagenda.util.encodeImageToBase64
 
 @Composable
-fun ImageRow(newTaskViewModel: NewTaskViewModel, images: List<String>) {
+fun ImageRow(images: List<String>, onImageClick: (String) -> Unit, onClick: (String) -> Unit) {
    LazyRow(
       modifier = Modifier
          .padding(8.dp)
@@ -33,8 +30,7 @@ fun ImageRow(newTaskViewModel: NewTaskViewModel, images: List<String>) {
             onImagePicked = {
                it?.let { it2 ->
                   val imageNew = encodeImageToBase64(it2)
-                  val imagesNew = images + imageNew
-                  newTaskViewModel.setImages(imagesNew)
+                  onClick(imageNew)
                }
             }
          ) { onClick ->
@@ -63,7 +59,7 @@ fun ImageRow(newTaskViewModel: NewTaskViewModel, images: List<String>) {
 
                modifier = Modifier
                   .padding(8.dp)
-                  .clickable { }
+                  .clickable { onImageClick(image) }
                   .width(100.dp)
                   .height(100.dp),
 

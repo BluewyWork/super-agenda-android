@@ -137,7 +137,9 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
             LineWithText(weekLabel)
 
             tasksGroupedByWeek[weekStart]?.forEach { task ->
-               TaskCard(task) {
+               TaskCard(
+                  task,
+               ) {
                   tasksViewModel.setTaskToEdit(task)
                   navController.navigate(Destinations.TaskEdit.route)
                }
@@ -194,7 +196,10 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
             LineWithText(weekLabel)
 
             tasksGroupedByWeek[weekStart]?.forEach { task ->
-               TaskCard(task) {
+               TaskCard(
+                  task,
+
+                  ) {
                   tasksViewModel.setTaskToEdit(task)
                   navController.navigate(Destinations.TaskEdit.route)
                }
@@ -249,7 +254,9 @@ fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController)
             LineWithText(weekLabel)
 
             tasksGroupedByWeek[weekStart]?.forEach { task ->
-               TaskCard(task) {
+               TaskCard(
+                  task,
+               ) {
                   tasksViewModel.setTaskToEdit(task)
                   navController.navigate(Destinations.TaskEdit.route)
                }

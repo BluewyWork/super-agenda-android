@@ -1,11 +1,7 @@
 package com.example.superagenda.presentation.screens.newTask
 
-import androidx.compose.runtime.Composable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.UserUseCase
@@ -241,6 +237,13 @@ class NewTaskViewModel @Inject constructor(
                      }
                   }
                }
+
+               _title.value = ""
+               _description.value = ""
+               _taskStatus.value = TaskStatus.NotStarted
+               _startDateTime.value = LocalDateTime.now()
+               _endEstimatedDateTime.value = LocalDateTime.now()
+               _images.value = emptyList()
 
                whenPopupsEmpty {
                   onSuccess()

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun LoadingPopup(onDismissRequest: () -> Unit) {
+fun DialogLoading(onDismissRequest: () -> Unit) {
    Dialog(onDismissRequest = onDismissRequest) {
       CircularProgressIndicator()
    }

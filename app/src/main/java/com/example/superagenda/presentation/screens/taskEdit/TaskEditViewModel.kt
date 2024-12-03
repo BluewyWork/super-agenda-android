@@ -194,7 +194,7 @@ class TaskEditViewModel @Inject constructor(
       viewModelScope.launch {
          val taskId = _taskId.value
 
-         when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTasksAtDatabase()) {
+         when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTaskAtDatabase(taskId)) {
             is Result.Error ->
                enqueuePopup(
                   "ERROR",
@@ -203,7 +203,7 @@ class TaskEditViewModel @Inject constructor(
                )
 
             is Result.Success -> {
-               when (val re = loginUseCase.isLoggedIn()) {
+               when (loginUseCase.isLoggedIn()) {
                   is Result.Error -> {
                      onSuccess()
                   }
