@@ -14,32 +14,25 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.superagenda.domain.models.Task
-import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.composables.TaskCard
+import com.example.superagenda.presentation.screens.filter.composables.CardTask
 import com.example.superagenda.presentation.screens.filter.composables.TaskStatusDropDown
-import java.time.LocalDateTime
 
 @Composable
 fun FilterScreen(
    filterScreenViewModel: FilterScreenViewModel,
    navController: NavController,
-   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by filterScreenViewModel.popupsQueue.observeAsState(
-      listOf()
-   )
+   val popupsQueue: List<Triple<String, String, String>> by filterScreenViewModel.popupsQueue.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
@@ -51,18 +44,18 @@ fun FilterScreen(
       }
    }
 
-   Column{
+   Column {
       Filter(filterScreenViewModel, navController)
    }
 }
 
 @Composable
 fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavController) {
-   val title: String by filterScreenViewModel.title.observeAsState("")
-   val taskStatus: TaskStatus? by filterScreenViewModel.taskStatus.observeAsState()
-   val startDateTime: LocalDateTime? by filterScreenViewModel.startDateTime.observeAsState()
-   val endDateTime: LocalDateTime? by filterScreenViewModel.endDateTime.observeAsState()
-   val filteredTaskList: List<Task> by filterScreenViewModel.filteredTaskList.observeAsState(listOf())
+   val title by filterScreenViewModel.title.collectAsStateWithLifecycle()
+   val taskStatus by filterScreenViewModel.taskStatus.collectAsStateWithLifecycle()
+   val startDateTime by filterScreenViewModel.startDateTime.collectAsStateWithLifecycle()
+   val endDateTime by filterScreenViewModel.endEstimatedDateTime.collectAsStateWithLifecycle()
+   val filteredTaskList by filterScreenViewModel.filteredTaskList.collectAsStateWithLifecycle()
 
    Column {
       LazyColumn(
@@ -90,7 +83,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
                label = "Start DateTime",
                modifier = Modifier.fillMaxWidth()
             ) {
-               filterScreenViewModel.onStartDateTimeChange(it)
+               filterScreenViewModel.setStartDateTime(it)
             }
          }
 
@@ -100,7 +93,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
                label = "End DateTime",
                modifier = Modifier.fillMaxWidth()
             ) {
-               filterScreenViewModel.onEndDateTimeChange(it)
+               filterScreenViewModel.setEndEstimatedTime(it)
             }
          }
 
@@ -133,7 +126,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
          LazyColumn {
             item {
                for (task in filteredTaskList) {
-                  TaskCard(task = task) {
+                  CardTask(task) {
                      filterScreenViewModel.setTaskToEdit(task)
                      navController.navigate(Destinations.TaskEdit.route + "2")
                   }

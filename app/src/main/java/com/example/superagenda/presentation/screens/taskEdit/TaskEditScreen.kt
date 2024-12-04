@@ -103,7 +103,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
          value = endEstimatedDateTime,
 
          onLocalDateTimeChange = { it2 ->
-            taskEditViewModel.setEndDateTime(it2)
+            taskEditViewModel.setEndEstimatedDateTime(it2)
          },
 
          modifier = Modifier.fillMaxWidth()

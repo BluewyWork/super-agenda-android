@@ -20,9 +20,9 @@ import com.example.superagenda.domain.models.TaskStatus
 @Composable
 fun TaskStatusDropDown(
    taskStatus: TaskStatus?,
-   onStatusChange: (TaskStatus) -> Unit,
+   onStatusChange: (TaskStatus?) -> Unit,
 ) {
-   val taskStatuses = TaskStatus.entries
+   val taskStatuses = TaskStatus.entries.toTypedArray()
 
    var expanded by remember { mutableStateOf(false) }
    var selectedStatus by remember { mutableStateOf(taskStatus) }
@@ -47,6 +47,15 @@ fun TaskStatusDropDown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
          ) {
+            DropdownMenuItem(
+               text = { Text(text = "Clear") },
+               onClick = {
+                  selectedStatus = null
+                  expanded = false
+                  onStatusChange(null)
+               }
+            )
+
             taskStatuses.forEach { status ->
                DropdownMenuItem(
                   text = { Text(text = status.name) },

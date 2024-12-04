@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
@@ -31,9 +32,7 @@ import com.example.superagenda.presentation.composables.PopupDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-   val popupsQueue: List<Triple<String, String, String>> by loginViewModel.popupsQueue.observeAsState(
-      listOf()
-   )
+   val popupsQueue: List<Triple<String, String, String>> by loginViewModel.popupsQueue.collectAsStateWithLifecycle()
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
          title = popupsQueue.first().first,
@@ -75,8 +74,8 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
 
 @Composable
 fun Login(loginViewModel: LoginViewModel, navController: NavController) {
-   val username: String by loginViewModel.username.observeAsState("")
-   val password: String by loginViewModel.password.observeAsState("")
+   val username: String by loginViewModel.username.collectAsStateWithLifecycle()
+   val password: String by loginViewModel.password.collectAsStateWithLifecycle()
 
    Column(
       content = {

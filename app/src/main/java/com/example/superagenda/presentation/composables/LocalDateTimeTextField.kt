@@ -3,8 +3,10 @@ package com.example.superagenda.presentation.composables
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -25,7 +27,7 @@ fun LocalDateTimePickerTextField(
    value: LocalDateTime?,
    label: String,
    modifier: Modifier = Modifier,
-   onLocalDateTimeChange: (LocalDateTime) -> Unit,
+   onLocalDateTimeChange: (LocalDateTime?) -> Unit,
 ) {
    var showDatePicker by remember { mutableStateOf(false) }
    var showTimePicker by remember { mutableStateOf(false) }
@@ -75,16 +77,28 @@ fun LocalDateTimePickerTextField(
       singleLine = true,
       readOnly = true,
       modifier = modifier,
+
       leadingIcon = {
          Icon(imageVector = Icons.Filled.DateRange, contentDescription = null)
       },
+
       trailingIcon = {
-         Icon(imageVector = Icons.Filled.Edit,
-            contentDescription = null,
-            modifier = Modifier.clickable {
-               showDatePicker = true
-            }
-         )
+         Row {
+            Icon(
+               imageVector = Icons.Default.Delete,
+               contentDescription = null,
+               modifier = Modifier.clickable {
+                  onLocalDateTimeChange(null)
+               }
+            )
+            Icon(
+               imageVector = Icons.Filled.Edit,
+               contentDescription = null,
+               modifier = Modifier.clickable {
+                  showDatePicker = true
+               }
+            )
+         }
       }
    )
 }

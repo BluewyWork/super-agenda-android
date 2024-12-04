@@ -26,7 +26,7 @@ data class TaskModel(
    @JsonAdapter(BsonDateTimeConverter::class)
    @SerializedName("start_date_time") val startDateTime: BsonDateTime,
    @JsonAdapter(BsonDateTimeConverter::class)
-   @SerializedName("end_date_time") val endDateTime: BsonDateTime,
+   @SerializedName("end_date_time") val endDateTime: BsonDateTime?,
    @SerializedName("end_date_time_estimated") val endEstimatedDateTime: BsonDateTime,
    val images: List<String>,
 )
@@ -47,7 +47,7 @@ fun TaskModel.toDomain() = Task(
       TaskStatusModel.Completed -> TaskStatus.Completed
    },
    startDateTime = bsonDateTimeToLocalDateTime(startDateTime),
-   endDateTime = bsonDateTimeToLocalDateTime(endDateTime),
+   endDateTime = endDateTime?.let { bsonDateTimeToLocalDateTime(it) },
    images = images,
    endEstimatedDateTime = bsonDateTimeToLocalDateTime(endEstimatedDateTime)
 )
@@ -62,7 +62,7 @@ fun Task.toData() = TaskModel(
       TaskStatus.Completed -> TaskStatusModel.Completed
    },
    startDateTime = localDateTimeToBsonDateTime(startDateTime),
-   endDateTime = localDateTimeToBsonDateTime(endDateTime),
+   endDateTime = endDateTime?.let { localDateTimeToBsonDateTime(it) },
    endEstimatedDateTime = localDateTimeToBsonDateTime(endEstimatedDateTime),
    images = images
 )
@@ -73,7 +73,7 @@ fun TaskModel.toDatabase() = TaskEntity(
    description = description,
    status = status,
    startDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(startDateTime))!!,
-   endDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endDateTime))!!,
+   endDateTime = localDateTimeToString(endDateTime?.let { bsonDateTimeToLocalDateTime(it) }),
    images = images,
    endEstimatedDateTime = localDateTimeToString(bsonDateTimeToLocalDateTime(endEstimatedDateTime))!!,
 )

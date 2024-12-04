@@ -206,7 +206,7 @@ fun PageSecond(pagerState: PagerState, scope: CoroutineScope, navController: Nav
                Button(
                   onClick = {
                      scope.launch {
-                        pagerState.scrollToPage(2)
+                        navController.navigate(Destinations.Tasks.route)
                      }
                   },
 

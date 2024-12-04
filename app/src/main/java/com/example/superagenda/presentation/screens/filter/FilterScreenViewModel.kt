@@ -1,7 +1,5 @@
 package com.example.superagenda.presentation.screens.filter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.TaskUseCase
@@ -9,6 +7,8 @@ import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -17,45 +17,65 @@ import javax.inject.Inject
 class FilterScreenViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
-   private val _filteredTaskList = MutableLiveData<List<Task>>()
-   val filteredTaskList: LiveData<List<Task>> = _filteredTaskList
+   private val _filteredTaskList = MutableStateFlow<List<Task>>(emptyList())
+   val filteredTaskList: StateFlow<List<Task>> = _filteredTaskList
 
-   private val _title = MutableLiveData<String>()
-   val title: LiveData<String> = _title
+   private val _title = MutableStateFlow<String>("")
+   val title: StateFlow<String> = _title
 
-   private val _taskStatus = MutableLiveData<TaskStatus>()
-   val taskStatus: LiveData<TaskStatus> = _taskStatus
+   private val _taskStatus = MutableStateFlow<TaskStatus?>(null)
+   val taskStatus: StateFlow<TaskStatus?> = _taskStatus
 
-   private val _startDateTime = MutableLiveData<LocalDateTime>()
-   val startDateTime: LiveData<LocalDateTime> = _startDateTime
+   private val _startDateTime = MutableStateFlow<LocalDateTime?>(null)
+   val startDateTime: StateFlow<LocalDateTime?> = _startDateTime
 
-   private val _endDateTime = MutableLiveData<LocalDateTime>()
-   val endDateTime: LiveData<LocalDateTime> = _endDateTime
+   private val _endEstimatedDateTime = MutableStateFlow<LocalDateTime?>(null)
+   val endEstimatedDateTime: StateFlow<LocalDateTime?> = _endEstimatedDateTime
 
-   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
-   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
-   private val _taskToEdit = MutableLiveData<Task>()
-   val taskToEdit: LiveData<Task> = _taskToEdit
+   private val _taskToEdit = MutableStateFlow<Task?>(null)
+   val taskToEdit: StateFlow<Task?> = _taskToEdit
+
+   // Getters & Setters
 
    fun setTaskToEdit(task: Task) {
-      _taskToEdit.postValue(task)
+      _taskToEdit.value = task
    }
+
+   fun getTaskToEdit(): Task? {
+      return _taskToEdit.value
+   }
+
+   fun onTitleChange(title: String) {
+      _title.value = title
+   }
+
+   fun onTaskStatusChange(taskStatus: TaskStatus?) {
+      _taskStatus.value = taskStatus
+   }
+
+   fun setStartDateTime(startDatetime: LocalDateTime?) {
+      _startDateTime.value = startDatetime
+   }
+
+   fun setEndEstimatedTime(endDateTime: LocalDateTime?) {
+      _endEstimatedDateTime.value = endDateTime
+   }
+
+   // Utilities
 
    fun enqueuePopup(title: String, message: String, error: String) {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
-            Triple(
-               title,
-               message,
-               error
-            )
-         )
+         popupsQueue.value + Triple(title, message, error)
    }
 
    fun dismissPopup() {
-      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+      _popupsQueue.value = _popupsQueue.value.drop(1)
    }
+
+   // Main
 
    fun onFilterPress() {
       viewModelScope.launch {
@@ -71,35 +91,19 @@ class FilterScreenViewModel @Inject constructor(
          val filteredTasks = tasks
             .filter { task ->
                val start = _startDateTime.value ?: LocalDateTime.MIN
-               val end = _endDateTime.value ?: LocalDateTime.MAX
-               task.startDateTime >= start && task.endDateTime <= end
+               val end = _endEstimatedDateTime.value ?: LocalDateTime.MAX
+               task.startDateTime >= start && task.endEstimatedDateTime <= end
             }
             .filter { task ->
                val status = _taskStatus.value
                status == null || task.status == status
             }
             .filter { task ->
-               val titleFilter = _title.value?.trim().orEmpty()
+               val titleFilter = _title.value.trim()
                titleFilter.isEmpty() || task.title.contains(titleFilter, ignoreCase = true)
             }
 
-         _filteredTaskList.postValue(filteredTasks)
+         _filteredTaskList.value = filteredTasks
       }
-   }
-
-   fun onTitleChange(title: String) {
-      _title.postValue(title)
-   }
-
-   fun onTaskStatusChange(taskStatus: TaskStatus) {
-      _taskStatus.postValue(taskStatus)
-   }
-
-   fun onStartDateTimeChange(startDatetime: LocalDateTime) {
-      _startDateTime.postValue(startDatetime)
-   }
-
-   fun onEndDateTimeChange(endDateTime: LocalDateTime) {
-      _endDateTime.postValue(endDateTime)
    }
 }

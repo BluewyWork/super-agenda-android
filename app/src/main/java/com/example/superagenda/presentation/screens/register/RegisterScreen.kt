@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -17,9 +18,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,9 +34,7 @@ import com.example.superagenda.presentation.composables.PopupDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popupsQueue.observeAsState(
-      listOf()
-   )
+   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popupsQueue.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
@@ -66,8 +66,8 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
 
 @Composable
 fun Register(registerViewModel: RegisterViewModel, navController: NavController) {
-   val username: String by registerViewModel.username.observeAsState("")
-   val password: String by registerViewModel.password.observeAsState("")
+   val username by registerViewModel.username.collectAsStateWithLifecycle()
+   val password by registerViewModel.password.collectAsStateWithLifecycle()
    val passwordConfirm by registerViewModel.passwordConfirm.collectAsStateWithLifecycle()
 
    OutlinedTextField(
@@ -80,6 +80,8 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
       leadingIcon = { Icon(Icons.Default.Person, null) }
    )
 
+   val matches = password != passwordConfirm
+
    OutlinedTextField(
       modifier = Modifier
          .fillMaxWidth()
@@ -90,7 +92,9 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
       onValueChange = { registerViewModel.onPasswordChange(it) },
       singleLine = true,
       label = { Text(text = "Password") },
-      leadingIcon = { Icon(Icons.Filled.Lock, null) }
+      leadingIcon = { Icon(Icons.Filled.Lock, null) },
+      keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+      isError = matches
    )
 
    OutlinedTextField(
@@ -101,8 +105,14 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
       visualTransformation = PasswordVisualTransformation(),
       onValueChange = { registerViewModel.onPasswordConfirmChange(it) },
       label = { Text("Confirm Password") },
-      leadingIcon = { Icon(Icons.Filled.Lock, null) }
+      leadingIcon = { Icon(Icons.Filled.Lock, null) },
+      keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+      isError = matches
    )
+
+   if (matches) {
+      Text("Passwords does not match", color = Color(80, 0, 0))
+   }
 
    Spacer(modifier = Modifier.padding(16.dp))
 

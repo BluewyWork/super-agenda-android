@@ -9,7 +9,7 @@ data class Task(
    val description: String,
    val status: TaskStatus,
    val startDateTime: LocalDateTime,
-   val endDateTime: LocalDateTime,
+   val endDateTime: LocalDateTime?,
    val endEstimatedDateTime: LocalDateTime,
    val images: List<String>,
 )

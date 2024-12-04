@@ -101,6 +101,34 @@ fun NavigationHost(
          }
       }
 
+      // This is for the filter screen
+      composable(Destinations.TaskEdit.route + "2") {
+         val taskToEdit = filterViewModel.getTaskToEdit()
+
+         if (taskToEdit == null) {
+            navController.navigate(Destinations.Filter.route)
+            return@composable
+         }
+
+         taskEditViewModel.setTaskId(taskToEdit.id)
+         taskEditViewModel.setTitle(taskToEdit.title)
+         taskEditViewModel.setDescription(taskToEdit.description)
+         taskEditViewModel.setTaskStatus(taskToEdit.status)
+         taskEditViewModel.setStartDateTime(taskToEdit.startDateTime)
+         taskEditViewModel.setEndDateTime(taskToEdit.endEstimatedDateTime)
+         taskEditViewModel.setImages(taskToEdit.images)
+
+         Navigation(
+            navController = navController,
+            topBarTitle = "TASK EDIT",
+            navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+            wrapperNavigationViewModel = wrapperNavigationViewModel
+         ) {
+            TaskEditScreen(taskEditViewModel, navController, wrapperNavigationViewModel)
+         }
+      }
+
+
       composable(Destinations.NewTask.route) {
          Navigation(
             navController = navController,
@@ -118,7 +146,7 @@ fun NavigationHost(
             topBarTitle = "Find Tasks",
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            FilterScreen(filterViewModel, navController, wrapperNavigationViewModel)
+            FilterScreen(filterViewModel, navController)
          }
       }
 

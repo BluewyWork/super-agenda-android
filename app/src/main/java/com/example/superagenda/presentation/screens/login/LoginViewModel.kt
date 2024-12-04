@@ -1,7 +1,5 @@
 package com.example.superagenda.presentation.screens.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -13,6 +11,8 @@ import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,41 +22,35 @@ class LoginViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
    private val userUseCase: UserUseCase,
 ) : ViewModel() {
-   private val _username = MutableLiveData<String>()
-   val username: LiveData<String> = _username
+   private val _username = MutableStateFlow<String>("")
+   val username: StateFlow<String> = _username
 
-   private val _password = MutableLiveData<String>()
-   val password: LiveData<String> = _password
+   private val _password = MutableStateFlow<String>("")
+   val password: StateFlow<String> = _password
 
-   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
-   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onUsernameChange(username: String) {
-      _username.postValue(username)
+      _username.value = username
    }
 
    fun onPasswordChange(password: String) {
-      _password.postValue(password)
+      _password.value = (password)
    }
 
    private fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
-            Triple(
-               title,
-               message,
-               error
-            )
-         )
+         popupsQueue.value + Triple(title, message, error)
    }
 
    fun dismissPopup() {
-      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+      _popupsQueue.value = _popupsQueue.value.drop(1)
    }
 
    private suspend fun whenPopupsEmpty(code: () -> Unit) {
       // if this is null it will execute the code, hmm....
-      while (popupsQueue.value?.isNotEmpty() == true) {
+      while (popupsQueue.value.isNotEmpty()) {
          delay(2000)
       }
 
@@ -66,15 +60,14 @@ class LoginViewModel @Inject constructor(
    fun onLoginButtonPress(navController: NavController) {
       viewModelScope.launch {
          val username = username.value
+         val password = password.value
 
-         if (username.isNullOrBlank()) {
+         if (username.isBlank()) {
             enqueuePopup("ERROR", "Field username is not valid...")
             return@launch
          }
 
-         val password = password.value
-
-         if (password.isNullOrBlank()) {
+         if (password.isBlank()) {
             enqueuePopup("ERROR", "Field password is not valid...")
             return@launch
          }
@@ -92,7 +85,7 @@ class LoginViewModel @Inject constructor(
             )
 
             is Result.Success -> {
-               _password.postValue("")
+               _password.value = ("")
                enqueuePopup("INFO", "Successfully logged in!")
 
                when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {

@@ -36,14 +36,14 @@ class TaskEditViewModel @Inject constructor(
    private val _taskStatus = MutableStateFlow(TaskStatus.NotStarted)
    val taskStatus: StateFlow<TaskStatus> = _taskStatus
 
-   private val _startDateTime = MutableStateFlow(LocalDateTime.now())
-   val startDateTime: StateFlow<LocalDateTime> = _startDateTime
+   private val _startDateTime = MutableStateFlow<LocalDateTime?>(null)
+   val startDateTime: StateFlow<LocalDateTime?> = _startDateTime
 
-   private val _endEstimatedDateTime = MutableStateFlow(LocalDateTime.now())
-   val endEstimatedDateTime: StateFlow<LocalDateTime> = _endEstimatedDateTime
+   private val _endEstimatedDateTime = MutableStateFlow<LocalDateTime?>(null)
+   val endEstimatedDateTime: StateFlow<LocalDateTime?> = _endEstimatedDateTime
 
-   private val _endDateTime = MutableStateFlow(LocalDateTime.now())
-   val endDateTime: StateFlow<LocalDateTime> = _endDateTime
+   private val _endDateTime = MutableStateFlow<LocalDateTime?>(null)
+   val endDateTime: StateFlow<LocalDateTime?> = _endDateTime
 
    private val _images = MutableStateFlow<List<String>>(emptyList())
    val images: StateFlow<List<String>> = _images
@@ -69,11 +69,11 @@ class TaskEditViewModel @Inject constructor(
       _taskStatus.value = taskStatus
    }
 
-   fun setStartDateTime(startDatetime: LocalDateTime) {
+   fun setStartDateTime(startDatetime: LocalDateTime?) {
       _startDateTime.value = startDatetime
    }
 
-   fun setEndEstimatedDateTime(endEstimatedDateTime: LocalDateTime) {
+   fun setEndEstimatedDateTime(endEstimatedDateTime: LocalDateTime?) {
       _endEstimatedDateTime.value = endEstimatedDateTime
    }
 
@@ -125,6 +125,11 @@ class TaskEditViewModel @Inject constructor(
 
          if (title.isBlank()) {
             enqueuePopup("ERROR", "Title can not be empty...")
+            return@launch
+         }
+
+         if (startDatetime == null || endEstimatedDateTime == null) {
+            enqueuePopup("ERROR", "Dates can't be empty...")
             return@launch
          }
 

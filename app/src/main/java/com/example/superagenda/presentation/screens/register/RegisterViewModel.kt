@@ -20,43 +20,37 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
    private val registerUseCase: RegisterUseCase,
 ) : ViewModel() {
-   private val _username = MutableLiveData<String>()
-   val username: LiveData<String> = _username
+   private val _username = MutableStateFlow<String>("")
+   val username: StateFlow<String> = _username
 
-   private val _password = MutableLiveData<String>()
-   val password: LiveData<String> = _password
+   private val _password = MutableStateFlow<String>("")
+   val password: StateFlow<String> = _password
 
    private val _passwordConfirm = MutableStateFlow("")
    val passwordConfirm: StateFlow<String> = _passwordConfirm
 
-   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
-   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
    fun onUsernameChange(username: String) {
-      _username.postValue(username)
+      _username.value = username
    }
 
    fun onPasswordChange(password: String) {
-      _password.postValue(password)
+      _password.value =password
    }
 
    fun enqueuePopup(title: String, message: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Triple(title, message, error)) ?: listOf(
-            Triple(
-               title,
-               message,
-               error
-            )
-         )
+         popupsQueue.value + Triple(title, message, error)
    }
 
    fun dismissPopup() {
-      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+      _popupsQueue.value = _popupsQueue.value.drop(1)
    }
 
    private suspend fun whenPopupsEmpty(code: () -> Unit) {
-      while (popupsQueue.value?.isNotEmpty() == true) {
+      while (popupsQueue.value.isNotEmpty()) {
          delay(2000)
       }
 
@@ -73,12 +67,12 @@ class RegisterViewModel @Inject constructor(
          val password = password.value
          val passwordConfirm = _passwordConfirm.value
 
-         if (username.isNullOrBlank()) {
+         if (username.isBlank()) {
             enqueuePopup("ERROR", "Field username is not valid...")
             return@launch
          }
 
-         if (password.isNullOrBlank()) {
+         if (password.isBlank()) {
             enqueuePopup("ERROR", "Field password is not valid...")
             return@launch
          }

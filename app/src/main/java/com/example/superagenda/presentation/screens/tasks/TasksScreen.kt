@@ -170,7 +170,7 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
          }
 
          val tasksGroupedByWeek = tasksOngoing.groupBy { task ->
-            task.endDateTime.toLocalDate()
+            task.endEstimatedDateTime.toLocalDate()
                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
          }
 
@@ -230,7 +230,7 @@ fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController)
          }
 
          val tasksGroupedByWeek = tasksCompleted.groupBy { task ->
-            task.endDateTime.toLocalDate()
+            task.endEstimatedDateTime.toLocalDate()
                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
          }
 

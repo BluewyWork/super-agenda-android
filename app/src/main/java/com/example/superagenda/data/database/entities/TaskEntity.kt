@@ -13,7 +13,7 @@ data class TaskEntity(
    @ColumnInfo("description") val description: String,
    @ColumnInfo("status") val status: TaskStatusModel,
    @ColumnInfo("startDateTime") val startDateTime: String,
-   @ColumnInfo(name = "endDateTime") val endDateTime: String,
+   @ColumnInfo(name = "endDateTime") val endDateTime: String?,
    @ColumnInfo(name = "endEstimatedDateTime") val endEstimatedDateTime: String,
    @ColumnInfo(name = "images") val images: List<String>,
 )
