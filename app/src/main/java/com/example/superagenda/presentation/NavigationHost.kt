@@ -12,6 +12,8 @@ import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.FloatingActionButtonPlus
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
+import com.example.superagenda.presentation.screens.initial.InitialScreen
+import com.example.superagenda.presentation.screens.initial.InitialViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.navigation.Navigation
@@ -41,13 +43,22 @@ fun NavigationHost(
    filterViewModel: FilterScreenViewModel,
    wrapperNavigationViewModel: WrapperNavigationViewModel,
    otherViewModel: OtherViewModel,
+   initialViewModel: InitialViewModel,
 ) {
    val navController = rememberNavController()
 
    NavHost(
       navController = navController,
-      startDestination = Destinations.Slider.route
+      startDestination = Destinations.Initial.route
    ) {
+      composable(Destinations.Initial.route) {
+         Scaffold { padding ->
+            Box(Modifier.padding(padding)) {
+               InitialScreen(initialViewModel, navController)
+            }
+         }
+      }
+
       composable(Destinations.Slider.route) {
          Scaffold { padding ->
             Box(modifier = Modifier.padding(padding)) {

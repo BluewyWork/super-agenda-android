@@ -85,7 +85,7 @@ class TaskRepository @Inject constructor(
    suspend fun getTasksAtAPI(token: String): AppResult<List<Task>> {
       return withContext(Dispatchers.IO) {
          try {
-            Result.Success(taskApi.retrieveTaskList(token).success.map { it.toDomain() })
+            Result.Success(taskApi.retrieveTaskList(token).result.map { it.toDomain() })
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
 

@@ -3,11 +3,10 @@ package com.example.superagenda.presentation.screens.tasks
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.LastModifiedUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.Result
-import com.example.superagenda.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val loginUseCase: LoginUseCase
+   private val lastModifiedUseCase: LastModifiedUseCase,
 ) : ViewModel() {
    private val _tasks = MutableStateFlow<List<Task>>(listOf())
    val tasks: StateFlow<List<Task>> = _tasks
@@ -44,4 +43,6 @@ class TasksViewModel @Inject constructor(
          }
       }
    }
+
+
 }

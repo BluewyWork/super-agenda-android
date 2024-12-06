@@ -174,13 +174,13 @@ class TaskEditViewModel @Inject constructor(
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully updated task locally!")
 
-               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+               when (val result = lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> {}
                   is Result.Success -> {}
                }
 
                loginUseCase.isLoggedIn().onSuccess {
-                  when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
+                  when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
                      is Result.Error ->
                         enqueuePopup(
                            "ERROR",
@@ -215,7 +215,7 @@ class TaskEditViewModel @Inject constructor(
                )
 
             is Result.Success -> {
-               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+               when (val result = lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> {}
                   is Result.Success -> {}
                }
@@ -226,7 +226,7 @@ class TaskEditViewModel @Inject constructor(
                   }
 
                   is Result.Success -> {
-                     when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtAPI(taskId)) {
+                     when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtApi(taskId)) {
                         is Result.Error -> {
                            enqueuePopup(
                               "ERROR",

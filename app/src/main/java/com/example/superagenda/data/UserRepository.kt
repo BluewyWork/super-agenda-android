@@ -21,7 +21,7 @@ class UserRepository @Inject constructor(
    suspend fun getUserForProfileAtApi(token: String): AppResult<UserForProfile> {
       return withContext(Dispatchers.IO) {
          try {
-            Result.Success(userApi.getUserForProfile(token).success.toDomain())
+            Result.Success(userApi.getUserForProfile(token).result.toDomain())
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
             Result.Error(AppError.NetworkError.UNKNOWN)

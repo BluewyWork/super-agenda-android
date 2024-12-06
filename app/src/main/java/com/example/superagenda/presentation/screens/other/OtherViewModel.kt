@@ -99,7 +99,7 @@ class OtherViewModel @Inject constructor(
          var codeSuccess2 = true
 
          for (task in taskList) {
-            codeSuccess2 = when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
+            codeSuccess2 = when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
                is Result.Error -> {
                   enqueuePopup("ERROR", resultUpdateTaskAtApi.error.toString())
                   false
@@ -223,7 +223,7 @@ class OtherViewModel @Inject constructor(
                val isLoggedInResult = loginUseCase.isLoggedIn()
 
                isLoggedInResult.onSuccess {
-                  when (val result = taskUseCase.updateTaskAtAPI(task)) {
+                  when (val result = taskUseCase.updateTaskAtApi(task)) {
                      is Result.Error -> enqueuePopup(
                         "ERROR",
                         "Failed to update task at api...",

@@ -223,7 +223,7 @@ class NewTaskViewModel @Inject constructor(
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully created task locally!")
                // so this is my source of truth
-               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+               when (val result = lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> {}
                   is Result.Success -> {}
                }

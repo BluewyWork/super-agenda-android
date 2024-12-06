@@ -1,6 +1,10 @@
 package com.example.superagenda.util
 
 sealed interface AppError : Error {
+   enum class MainError : AppError {
+      CONVERSION_FAILED
+   }
+
    enum class ClientError : AppError {
       USERNAME_TOO_SHORT,
       PASSWORD_TOO_SHORT,

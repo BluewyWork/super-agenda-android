@@ -12,4 +12,7 @@ object Endpoints {
 
    const val GET_PROFILE = "/api/claims/user"
    const val DELETE_PROFILE = "/api/claims/user"
+
+   const val GET_LAST_MODIFIED = "/api/..."
+   const val UPDATE_LAST_MODIFIED = "/api/..."
 }

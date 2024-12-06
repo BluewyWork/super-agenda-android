@@ -46,7 +46,7 @@ class TaskUseCase @Inject constructor(
       return taskRepository.createTaskAtAPI(task, token)
    }
 
-   suspend fun updateTaskAtAPI(task: Task): AppResult<Boolean> {
+   suspend fun updateTaskAtApi(task: Task): AppResult<Boolean> {
       val token = when (val result = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(result.error)
          is Result.Success -> result.data
@@ -55,7 +55,7 @@ class TaskUseCase @Inject constructor(
       return taskRepository.updateTaskAtAPI(task, token)
    }
 
-   suspend fun deleteTaskAtAPI(taskID: ObjectId): AppResult<Boolean> {
+   suspend fun deleteTaskAtApi(taskID: ObjectId): AppResult<Boolean> {
       val token = when (val result = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(result.error)
          is Result.Success -> result.data

@@ -12,4 +12,5 @@ sealed class Destinations(
    object Filter : Destinations("filter")
    object Tasks : Destinations("tasks")
    object Other : Destinations("other")
+   object Initial: Destinations("initial")
 }
