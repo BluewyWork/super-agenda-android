@@ -5,9 +5,6 @@ import android.content.ContentResolver
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ImportTaskList(
-   modifier: Modifier = Modifier,
    onFileChosen: (ContentResolver, String) -> Unit,
+   content: @Composable (onClick: () -> Unit) -> Unit,
 ) {
    var chosenFile by remember { mutableStateOf<String?>(null) }
    val context = LocalContext.current
@@ -37,17 +34,10 @@ fun ImportTaskList(
       }
    }
 
-   Column {
-      Button(
-         onClick = {
-            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-               type = "application/json"
-            }
-            fileChooserLauncher.launch(intent)
-         },
-         modifier = modifier
-      ) {
-         Text("Import Backup File")
+   content {
+      val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+         type = "application/json"
       }
+      fileChooserLauncher.launch(intent)
    }
 }

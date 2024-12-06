@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.superagenda.domain.LastModifiedUseCase
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class TaskEditViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
+   private val lastModifiedUseCase: LastModifiedUseCase,
 ) : ViewModel() {
    private val _taskId = MutableStateFlow(ObjectId())
 
@@ -172,6 +174,11 @@ class TaskEditViewModel @Inject constructor(
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully updated task locally!")
 
+               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+                  is Result.Error -> {}
+                  is Result.Success -> {}
+               }
+
                loginUseCase.isLoggedIn().onSuccess {
                   when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtAPI(task)) {
                      is Result.Error ->
@@ -208,6 +215,11 @@ class TaskEditViewModel @Inject constructor(
                )
 
             is Result.Success -> {
+               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+                  is Result.Error -> {}
+                  is Result.Success -> {}
+               }
+
                when (loginUseCase.isLoggedIn()) {
                   is Result.Error -> {
                      onSuccess()

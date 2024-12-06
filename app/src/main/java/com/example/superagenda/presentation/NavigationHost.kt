@@ -174,7 +174,7 @@ fun NavigationHost(
             topBarTitle = "Other",
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            OtherScreen(otherViewModel, navController, wrapperNavigationViewModel)
+            OtherScreen(otherViewModel)
          }
       }
    }

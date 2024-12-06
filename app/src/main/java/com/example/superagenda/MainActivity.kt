@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.presentation.NavigationHost
 import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
@@ -16,6 +19,7 @@ import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksViewModel
 import com.example.superagenda.ui.theme.OneDarkProTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

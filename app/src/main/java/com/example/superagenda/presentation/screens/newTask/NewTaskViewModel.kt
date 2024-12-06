@@ -2,6 +2,7 @@ package com.example.superagenda.presentation.screens.newTask
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.superagenda.domain.LastModifiedUseCase
 import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.UserUseCase
@@ -23,6 +24,7 @@ class NewTaskViewModel @Inject constructor(
    private val task2UseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
    private val userUseCase: UserUseCase,
+   private val lastModifiedUseCase: LastModifiedUseCase
 ) : ViewModel() {
    private val _title = MutableStateFlow("")
    val title: StateFlow<String> = _title
@@ -220,6 +222,11 @@ class NewTaskViewModel @Inject constructor(
 
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully created task locally!")
+               // so this is my source of truth
+               when (val result = lastModifiedUseCase.upsertLastModified(LocalDateTime.now())) {
+                  is Result.Error -> {}
+                  is Result.Success -> {}
+               }
 
                // here because i don't want it to attempt if saving locally fails in the
                // first place

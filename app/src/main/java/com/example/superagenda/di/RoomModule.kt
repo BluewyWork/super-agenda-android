@@ -32,4 +32,8 @@ object RoomModule {
    @Singleton
    @Provides
    fun provideProfile(db: AppDatabase) = db.userForProfileDao()
+
+   @Singleton
+   @Provides
+   fun provideLastModifiedDao(db: AppDatabase) = db.lastModifiedDao()
 }
