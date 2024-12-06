@@ -52,12 +52,12 @@ class LastModifiedRepository @Inject constructor(
       }
    }
 
-   suspend fun getLastModifiedAtApi(token: String): AppResult<LocalDateTime> {
+   suspend fun getLastModifiedAtApi(token: String): AppResult<LocalDateTime?> {
       return withContext(Dispatchers.IO) {
          safeApiCall(
             apiCall = { miscApi.getLastModified(token) }
          ) {
-            bsonDateTimeToLocalDateTime(it.result)
+            it.result.lastModified?.let { it1 -> bsonDateTimeToLocalDateTime(it1) }
          }
       }
    }

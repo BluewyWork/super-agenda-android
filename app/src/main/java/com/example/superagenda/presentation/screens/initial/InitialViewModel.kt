@@ -3,12 +3,16 @@ package com.example.superagenda.presentation.screens.initial
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.LastModifiedUseCase
+import com.example.superagenda.domain.LoginUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +20,7 @@ import javax.inject.Inject
 class InitialViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
    private val lastModifiedUseCase: LastModifiedUseCase,
+   private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
 
    private val _showLoading = MutableStateFlow(true)
@@ -23,6 +28,16 @@ class InitialViewModel @Inject constructor(
 
    private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
    val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
+
+   private val _done = MutableStateFlow(false)
+   val done: StateFlow<Boolean> = _done.onStart {
+      var operationOne = false
+      refreshTasksIfOutdated { operationOne = true }
+
+      if (operationOne) {
+         _done.value = true
+      }
+   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
    // Utilities
 
@@ -60,8 +75,13 @@ class InitialViewModel @Inject constructor(
    fun refreshTasksIfOutdated(onDone: () -> Unit) {
       viewModelScope.launch {
          withShowLoading {
+            val resultLoggedIn = loginUseCase.isLoggedIn()
             val resultGetLastModifiedLocally = lastModifiedUseCase.getLastModifiedAtDatabase()
             val resultGetLastModifiedRemote = lastModifiedUseCase.getLastModifiedAtApi()
+
+            if (resultLoggedIn !is Result.Success) {
+               return@withShowLoading
+            }
 
             if (resultGetLastModifiedLocally !is Result.Success) {
                return@withShowLoading
@@ -73,6 +93,17 @@ class InitialViewModel @Inject constructor(
 
             val lastModifiedLocally = resultGetLastModifiedLocally.data
             val lastModifiedRemote = resultGetLastModifiedRemote.data
+
+            // this is unnecessary check since
+            // on failure equals null or non existent
+            // which logic is same as here
+            if (lastModifiedLocally == null) {
+               return@withShowLoading
+            }
+
+            if (lastModifiedRemote == null) {
+               return@withShowLoading
+            }
 
             if (lastModifiedLocally == lastModifiedRemote) {
                return@withShowLoading
@@ -93,9 +124,7 @@ class InitialViewModel @Inject constructor(
                      }
                   }
 
-                  if (!lastResult) {
-                     TODO()
-                  }
+                  onDone()
                }
             }
 

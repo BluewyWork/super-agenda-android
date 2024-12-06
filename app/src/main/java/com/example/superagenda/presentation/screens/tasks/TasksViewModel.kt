@@ -16,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val lastModifiedUseCase: LastModifiedUseCase,
 ) : ViewModel() {
    private val _tasks = MutableStateFlow<List<Task>>(listOf())
    val tasks: StateFlow<List<Task>> = _tasks
@@ -43,6 +42,4 @@ class TasksViewModel @Inject constructor(
          }
       }
    }
-
-
 }

@@ -19,7 +19,7 @@ class LastModifiedUseCase @Inject constructor(
       return lastModifiedRepository.upsertLastModifiedAtDatabase(lastModified)
    }
 
-   suspend fun getLastModifiedAtApi(): AppResult<LocalDateTime> {
+   suspend fun getLastModifiedAtApi(): AppResult<LocalDateTime?> {
       val token = when (val result = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(result.error)
          is Result.Success -> result.data
@@ -28,7 +28,7 @@ class LastModifiedUseCase @Inject constructor(
       return lastModifiedRepository.getLastModifiedAtApi(token)
    }
 
-   suspend fun updateLastModifiedAtDatabase(lastModified: LocalDateTime): AppResult<Unit> {
+   suspend fun updateLastModifiedAtApi(lastModified: LocalDateTime): AppResult<Unit> {
       val token = when (val result = authenticationRepository.getTokenAtDatabase()) {
          is Result.Error -> return Result.Error(result.error)
          is Result.Success -> result.data

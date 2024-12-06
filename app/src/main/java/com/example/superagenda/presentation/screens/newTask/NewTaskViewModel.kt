@@ -24,7 +24,7 @@ class NewTaskViewModel @Inject constructor(
    private val task2UseCase: TaskUseCase,
    private val loginUseCase: LoginUseCase,
    private val userUseCase: UserUseCase,
-   private val lastModifiedUseCase: LastModifiedUseCase
+   private val lastModifiedUseCase: LastModifiedUseCase,
 ) : ViewModel() {
    private val _title = MutableStateFlow("")
    val title: StateFlow<String> = _title
@@ -222,39 +222,43 @@ class NewTaskViewModel @Inject constructor(
 
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully created task locally!")
-               // so this is my source of truth
-               when (val result = lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
-                  is Result.Error -> {}
-                  is Result.Success -> {}
+               when (val result =
+                  lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  is Result.Error -> enqueuePopup(
+                     "ERROR",
+                     "Failed to update last modified...",
+                     result.error.toString()
+                  )
+
+                  is Result.Success -> enqueuePopup("INFO", "Successfully update last modified!")
                }
 
-               // here because i don't want it to attempt if saving locally fails in the
-               // first place
-               when (val resultLoggedIn = loginUseCase.isLoggedIn()) {
-                  is Result.Error -> {
-                     // skip cause not logged in
-                  }
+               val resultLoggedIn = loginUseCase.isLoggedIn()
+
+               if (resultLoggedIn !is Result.Success) {
+                  return@launch
+               }
+
+               when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
+                  is Result.Error ->
+                     enqueuePopup(
+                        "ERROR",
+                        "Failed to create task at API...",
+                        resultCreateTaskAtApi.error.toString()
+                     )
 
                   is Result.Success -> {
-                     when (val resultCreateTaskAtApi = task2UseCase.createTaskAtApi(task)) {
-                        is Result.Error ->
-                           enqueuePopup(
-                              "ERROR",
-                              "Failed to create task at API...",
-                              resultCreateTaskAtApi.error.toString()
-                           )
+                     enqueuePopup("INFO", "Successfully created task at API!")
 
-                        is Result.Success ->
-                           enqueuePopup("INFO", "Successfully created task at API!")
-                     }
+                     lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())
                   }
                }
 
                _title.value = ""
                _description.value = ""
                _taskStatus.value = TaskStatus.NotStarted
-               _startDateTime.value = LocalDateTime.now()
-               _endEstimatedDateTime.value = LocalDateTime.now()
+               _startDateTime.value = null
+               _endEstimatedDateTime.value = null
                _images.value = emptyList()
 
                whenPopupsEmpty {
