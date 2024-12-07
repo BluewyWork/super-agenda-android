@@ -27,6 +27,7 @@ import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterScreen
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
 import com.example.superagenda.presentation.screens.slider.SliderScreen
+import com.example.superagenda.presentation.screens.slider.SliderScreenViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditScreen
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksScreen
@@ -44,6 +45,7 @@ fun NavigationHost(
    wrapperNavigationViewModel: WrapperNavigationViewModel,
    otherViewModel: OtherViewModel,
    initialViewModel: InitialViewModel,
+   sliderScreenViewModel: SliderScreenViewModel,
 ) {
    val navController = rememberNavController()
 
@@ -62,7 +64,7 @@ fun NavigationHost(
       composable(Destinations.Slider.route) {
          Scaffold { padding ->
             Box(modifier = Modifier.padding(padding)) {
-               SliderScreen(navController)
+               SliderScreen(sliderScreenViewModel, navController)
             }
          }
       }

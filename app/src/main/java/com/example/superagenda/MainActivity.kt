@@ -13,6 +13,7 @@ import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
 import com.example.superagenda.presentation.screens.other.OtherViewModel
 import com.example.superagenda.presentation.screens.profile.ProfileViewModel
 import com.example.superagenda.presentation.screens.register.RegisterViewModel
+import com.example.superagenda.presentation.screens.slider.SliderScreenViewModel
 import com.example.superagenda.presentation.screens.taskEdit.TaskEditViewModel
 import com.example.superagenda.presentation.screens.tasks.TasksViewModel
 import com.example.superagenda.ui.theme.OneDarkProTheme
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
    private val wrapperNavigationViewModel: WrapperNavigationViewModel by viewModels()
    private val otherViewModel: OtherViewModel by viewModels()
    private val initialViewModel: InitialViewModel by viewModels()
+   private val sliderScreenViewModel: SliderScreenViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -46,7 +48,8 @@ class MainActivity : ComponentActivity() {
                filterViewModel = filterViewModel,
                wrapperNavigationViewModel = wrapperNavigationViewModel,
                otherViewModel = otherViewModel,
-               initialViewModel = initialViewModel
+               initialViewModel = initialViewModel,
+               sliderScreenViewModel = sliderScreenViewModel
             )
          }
       }
