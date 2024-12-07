@@ -1,13 +1,11 @@
 package com.example.superagenda.presentation.screens.taskEdit
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.TheRestUseCase
 import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.TheRestUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
@@ -49,8 +47,10 @@ class TaskEditViewModel @Inject constructor(
    private val _images = MutableStateFlow<List<String>>(emptyList())
    val images: StateFlow<List<String>> = _images
 
-   private val _popupsQueue = MutableLiveData<List<Triple<String, String, String>>>()
-   val popupsQueue: LiveData<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
+   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
+
+   private val
 
    // Getter & Setters
 
@@ -90,17 +90,11 @@ class TaskEditViewModel @Inject constructor(
 
    fun enqueuePopup(title: String, description: String, error: String = "") {
       _popupsQueue.value =
-         popupsQueue.value?.plus(Triple(title, description, error)) ?: listOf(
-            Triple(
-               title,
-               description,
-               error
-            )
-         )
+         popupsQueue.value + Triple(title, description, error)
    }
 
    fun dismissPopup() {
-      _popupsQueue.postValue(_popupsQueue.value?.drop(1))
+      _popupsQueue.value = _popupsQueue.value.drop(1)
    }
 
    private suspend fun whenPopupsEmpty(code: () -> Unit) {
@@ -185,7 +179,6 @@ class TaskEditViewModel @Inject constructor(
                      "INFO",
                      "Successfully updated last modified locally!"
                   )
-
                }
 
                val loggedIn = authenticationUseCase.isLoggedIn()
@@ -270,8 +263,6 @@ class TaskEditViewModel @Inject constructor(
                         "Failed to delete task at api...",
                         resultDeleteTaskAtApi.error.toString()
                      )
-
-                     onSuccess()
                   }
 
                   is Result.Success -> {
@@ -291,7 +282,9 @@ class TaskEditViewModel @Inject constructor(
                         )
                      }
 
-                     onSuccess()
+                     whenPopupsEmpty {
+                        onSuccess()
+                     }
                   }
                }
             }
