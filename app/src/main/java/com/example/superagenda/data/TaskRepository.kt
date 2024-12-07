@@ -11,6 +11,7 @@ import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
 import com.example.superagenda.util.Result
+import com.example.superagenda.util.safeApiCall
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -84,51 +85,48 @@ class TaskRepository @Inject constructor(
 
    suspend fun getTasksAtAPI(token: String): AppResult<List<Task>> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(taskApi.retrieveTaskList(token).result.map { it.toDomain() })
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = {
+               taskApi.retrieveTaskList(token)
+            }
+         ) {
+            it.result.map { item -> item.toDomain() }
          }
       }
    }
 
    suspend fun createTaskAtAPI(task: Task, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(taskApi.createTask(token, task.toData()).ok)
-
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = {
+               taskApi.createTask(token, task.toData())
+            }
+         ) {
+            it.ok
          }
       }
    }
 
    suspend fun updateTaskAtAPI(task: Task, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(
-               taskApi.updateTask(token, task.toData()).ok
-            )
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = {
+               taskApi.updateTask(token, task.toData())
+            }
+         ) {
+            it.ok
          }
       }
    }
 
    suspend fun deleteTaskAtApi(taskID: ObjectId, token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(taskApi.deleteTask(token, taskID.toHexString()).ok)
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = {
+               taskApi.deleteTask(token, taskID.toHexString())
+            }
+         ) {
+            it.ok
          }
       }
    }

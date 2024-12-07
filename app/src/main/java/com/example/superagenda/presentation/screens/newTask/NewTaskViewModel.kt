@@ -126,80 +126,80 @@ class NewTaskViewModel @Inject constructor(
             return@launch
          }
 
-         when (loginUseCase.isLoggedIn()) {
-            is Result.Error -> {
-               when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
-                  is Result.Error -> {
-                     enqueuePopup(
-                        "ERROR",
-                        "Failed to get tasks locally...",
-                        resultGetTasksAtDatabase.error.toString()
-                     )
-                     return@launch
-                  }
-
-                  is Result.Success -> {
-                     val tasksDatabase = resultGetTasksAtDatabase.data
-
-                     if (tasksDatabase.size > 5) {
-                        enqueuePopup(
-                           "INFO",
-                           "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
-                        )
-                        return@launch
-                     }
-                  }
-               }
-            }
-
-            is Result.Success -> {
-               when (val resultGetUseForProfileAtDatabase =
-                  userUseCase.getUserForProfileAtDatabase()) {
-                  is Result.Error -> {
-                     enqueuePopup(
-                        "ERROR",
-                        "Failed to get user for profile locally...",
-                        resultGetUseForProfileAtDatabase.error.toString()
-                     )
-                  }
-
-                  is Result.Success -> {
-                     val userForProfile = resultGetUseForProfileAtDatabase.data
-
-                     when (userForProfile.membership) {
-                        Membership.FREE -> {
-                           when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
-                              is Result.Error -> {
-                                 enqueuePopup(
-                                    "ERROR",
-                                    "Failed to get tasks locally...",
-                                    resultGetTasksAtDatabase.error.toString()
-                                 )
-                                 return@launch
-                              }
-
-                              is Result.Success -> {
-                                 val tasksDatabase = resultGetTasksAtDatabase.data
-
-                                 if (tasksDatabase.size > 5) {
-                                    enqueuePopup(
-                                       "INFO",
-                                       "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
-                                    )
-                                    return@launch
-                                 }
-                              }
-                           }
-                        }
-
-                        Membership.PREMIUM -> {
-                           // proceed
-                        }
-                     }
-                  }
-               }
-            }
-         }
+//         when (loginUseCase.isLoggedIn()) {
+//            is Result.Error -> {
+//               when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+//                  is Result.Error -> {
+//                     enqueuePopup(
+//                        "ERROR",
+//                        "Failed to get tasks locally...",
+//                        resultGetTasksAtDatabase.error.toString()
+//                     )
+//                     return@launch
+//                  }
+//
+//                  is Result.Success -> {
+//                     val tasksDatabase = resultGetTasksAtDatabase.data
+//
+//                     if (tasksDatabase.size > 5) {
+//                        enqueuePopup(
+//                           "INFO",
+//                           "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+//                        )
+//                        return@launch
+//                     }
+//                  }
+//               }
+//            }
+//
+//            is Result.Success -> {
+//               when (val resultGetUseForProfileAtDatabase =
+//                  userUseCase.getUserForProfileAtDatabase()) {
+//                  is Result.Error -> {
+//                     enqueuePopup(
+//                        "ERROR",
+//                        "Failed to get user for profile locally...",
+//                        resultGetUseForProfileAtDatabase.error.toString()
+//                     )
+//                  }
+//
+//                  is Result.Success -> {
+//                     val userForProfile = resultGetUseForProfileAtDatabase.data
+//
+//                     when (userForProfile.membership) {
+//                        Membership.FREE -> {
+//                           when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+//                              is Result.Error -> {
+//                                 enqueuePopup(
+//                                    "ERROR",
+//                                    "Failed to get tasks locally...",
+//                                    resultGetTasksAtDatabase.error.toString()
+//                                 )
+//                                 return@launch
+//                              }
+//
+//                              is Result.Success -> {
+//                                 val tasksDatabase = resultGetTasksAtDatabase.data
+//
+//                                 if (tasksDatabase.size > 5) {
+//                                    enqueuePopup(
+//                                       "INFO",
+//                                       "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+//                                    )
+//                                    return@launch
+//                                 }
+//                              }
+//                           }
+//                        }
+//
+//                        Membership.PREMIUM -> {
+//                           // proceed
+//                        }
+//                     }
+//                  }
+//               }
+//            }
+//         }
 
          val task = Task(
             id = ObjectId(),
@@ -222,6 +222,7 @@ class NewTaskViewModel @Inject constructor(
 
             is Result.Success -> {
                enqueuePopup("INFO", "Successfully created task locally!")
+
                when (val result =
                   lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
@@ -230,7 +231,8 @@ class NewTaskViewModel @Inject constructor(
                      result.error.toString()
                   )
 
-                  is Result.Success -> enqueuePopup("INFO", "Successfully update last modified!")
+                  is Result.Success ->
+                     enqueuePopup("INFO", "Successfully update last modified!")
                }
 
                val resultLoggedIn = loginUseCase.isLoggedIn()
@@ -250,7 +252,19 @@ class NewTaskViewModel @Inject constructor(
                   is Result.Success -> {
                      enqueuePopup("INFO", "Successfully created task at API!")
 
-                     lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())
+                     when (val resultUpdateLastModifiedAtApi =
+                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        is Result.Error -> enqueuePopup(
+                           "ERROR",
+                           "Failed to update last modified at api...",
+                           resultUpdateLastModifiedAtApi.error.toString()
+                        )
+
+                        is Result.Success -> enqueuePopup(
+                           "INFO",
+                           "Successfully updated last modified at api!"
+                        )
+                     }
                   }
                }
 

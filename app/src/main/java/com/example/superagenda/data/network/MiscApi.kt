@@ -1,8 +1,9 @@
 package com.example.superagenda.data.network
 
 import com.example.superagenda.data.network.models.ApiResponse
-import com.example.superagenda.data.network.models.LastModifiedResponse
+import com.example.superagenda.data.network.models.LastModifiedInResponse
 import org.bson.BsonDateTime
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -12,11 +13,11 @@ interface MiscApi {
    @GET(Endpoints.GET_LAST_MODIFIED)
    fun getLastModified(
       @Header("Authorization") token: String,
-   ): ApiResponse<LastModifiedResponse>
+   ): Response<ApiResponse<LastModifiedInResponse>>
 
    @PATCH(Endpoints.UPDATE_LAST_MODIFIED)
    fun updateLastModified(
       @Header("Authorization") token: String,
-      @Body lastModified: BsonDateTime,
-   ): ApiResponse<Map<Any, Any>>
+      @Body lastModified: LastModifiedInResponse,
+   ): Response<ApiResponse<Nothing>>
 }

@@ -10,6 +10,7 @@ import com.example.superagenda.domain.models.UserForProfile
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
 import com.example.superagenda.util.Result
+import com.example.superagenda.util.safeApiCall
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,22 +21,20 @@ class UserRepository @Inject constructor(
 ) {
    suspend fun getUserForProfileAtApi(token: String): AppResult<UserForProfile> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(userApi.getUserForProfile(token).result.toDomain())
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = { userApi.getUserForProfile(token) }
+         ) {
+            it.result.toDomain()
          }
       }
    }
 
    suspend fun deleteUserAtApi(token: String): AppResult<Boolean> {
       return withContext(Dispatchers.IO) {
-         try {
-            Result.Success(userApi.delete(token).ok)
-         } catch (e: Exception) {
-            Log.e("LOOK AT ME", "${e.message}")
-            Result.Error(AppError.NetworkError.UNKNOWN)
+         safeApiCall(
+            apiCall = { userApi.delete(token) }
+         ) {
+            it.ok
          }
       }
    }

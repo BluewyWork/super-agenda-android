@@ -1,29 +1,35 @@
 package com.example.superagenda.util
 
 import android.util.Log
-import com.example.superagenda.data.network.models.ApiResponse
 import retrofit2.HttpException
+import retrofit2.Response
 
 inline fun <V, T> safeApiCall(
-   apiCall: () -> ApiResponse<V>,
-   successHandler: (ApiResponse<V>) -> T,
-): AppResult<T> {
+   apiCall: () -> Response<T>,
+   successHandler: (T) -> V,
+): AppResult<V> {
    return try {
-      val result = successHandler(apiCall())
-      return Result.Success(result)
-   } catch (e: HttpException) {
-      Log.e("LOOK AT ME", "$e")
+      val response = apiCall()
 
-      when (e.code()) {
+      when (val code = response.code()) {
+         in 200..299 -> {
+            val body = response.body() ?: return Result.Error(AppError.NetworkError.SERIALIZATION)
+            val result = successHandler(body)
+            Result.Success(result)
+         }
+
          401 -> Result.Error(AppError.NetworkError.UNAUTHORIZED)
-         402 -> Result.Error(AppError.NetworkError.CONFLICT)
          408 -> Result.Error(AppError.NetworkError.REQUEST_TIMEOUT)
+         409 -> Result.Error(AppError.NetworkError.CONFLICT)
          413 -> Result.Error(AppError.NetworkError.PAYLOAD_TOO_LARGE)
          in 500..599 -> Result.Error(AppError.NetworkError.SERVER_ERROR)
          else -> Result.Error(AppError.NetworkError.UNKNOWN)
       }
+   } catch (e: HttpException) {
+      Log.e("LOOK AT ME", "${e.message}")
+      Result.Error(AppError.NetworkError.UNKNOWN)
    } catch (e: Exception) {
-      Log.e("LOOK AT ME", "$e")
+      Log.e("LOOK AT ME", "${e.message}")
       Result.Error(AppError.NetworkError.UNKNOWN)
    }
 }

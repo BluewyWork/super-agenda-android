@@ -8,6 +8,7 @@ import com.example.superagenda.data.models.localDateTimeToBsonDateTime
 import com.example.superagenda.data.models.localDateTimeToString
 import com.example.superagenda.data.models.stringToLocalDateTime
 import com.example.superagenda.data.network.MiscApi
+import com.example.superagenda.data.network.models.LastModifiedInResponse
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
 import com.example.superagenda.util.Result
@@ -70,7 +71,7 @@ class LastModifiedRepository @Inject constructor(
          val converted = localDateTimeToBsonDateTime(lastModified)
 
          safeApiCall(
-            apiCall = { miscApi.updateLastModified(token, converted) }
+            apiCall = { miscApi.updateLastModified(token, LastModifiedInResponse(converted)) }
          ) {}
       }
    }

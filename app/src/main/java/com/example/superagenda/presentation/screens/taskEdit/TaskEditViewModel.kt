@@ -177,11 +177,14 @@ class TaskEditViewModel @Inject constructor(
                   lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
-                     "Failed to update last modified...",
+                     "Failed to update last modified locally...",
                      result.error.toString()
                   )
 
-                  is Result.Success -> enqueuePopup("INFO", "Successfully updated last modified!")
+                  is Result.Success -> enqueuePopup(
+                     "INFO",
+                     "Successfully updated last modified locally!"
+                  )
 
                }
 
@@ -201,7 +204,20 @@ class TaskEditViewModel @Inject constructor(
 
                   is Result.Success -> {
                      enqueuePopup("INFO", "Successfully updated task at API!")
-                     lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())
+
+                     when (val resultUpdateLastModifiedAtApi =
+                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        is Result.Error -> enqueuePopup(
+                           "ERROR",
+                           "Failed to update last modified at api...",
+                           resultUpdateLastModifiedAtApi.error.toString()
+                        )
+
+                        is Result.Success -> enqueuePopup(
+                           "INFO",
+                           "Successfully updated last modified at api!"
+                        )
+                     }
                   }
                }
 
@@ -230,11 +246,14 @@ class TaskEditViewModel @Inject constructor(
                   lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
-                     "Failed to update last modified...",
+                     "Failed to update last modified locally...",
                      result.error.toString()
                   )
 
-                  is Result.Success -> enqueuePopup("INFO", "Successfully updated last modified!")
+                  is Result.Success -> enqueuePopup(
+                     "INFO",
+                     "Successfully updated last modified locally!"
+                  )
                }
 
                val loggedIn = loginUseCase.isLoggedIn()
@@ -257,7 +276,21 @@ class TaskEditViewModel @Inject constructor(
 
                   is Result.Success -> {
                      enqueuePopup("INFO", "Successfully updated task at api!")
-                     lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())
+
+                     when (val resultUpdateLastModifiedAtApi =
+                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        is Result.Error -> enqueuePopup(
+                           "ERROR",
+                           "Failed to update last modified at api...",
+                           resultUpdateLastModifiedAtApi.error.toString()
+                        )
+
+                        is Result.Success -> enqueuePopup(
+                           "INFO",
+                           "Successfully updated last modified at api!"
+                        )
+                     }
+
                      onSuccess()
                   }
                }
