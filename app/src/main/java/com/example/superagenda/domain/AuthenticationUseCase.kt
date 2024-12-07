@@ -2,12 +2,13 @@ package com.example.superagenda.domain
 
 import com.example.superagenda.data.AuthenticationRepository
 import com.example.superagenda.domain.models.UserForLogin
+import com.example.superagenda.domain.models.UserForRegister
 import com.example.superagenda.util.AppError
 import com.example.superagenda.util.AppResult
 import com.example.superagenda.util.Result
 import javax.inject.Inject
 
-class LoginUseCase @Inject constructor(
+class AuthenticationUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
 ) {
    suspend fun login(userForLogin: UserForLogin): AppResult<Unit> {
@@ -35,5 +36,9 @@ class LoginUseCase @Inject constructor(
 
    suspend fun deleteTokenFromDatabase(): AppResult<Unit> {
       return authenticationRepository.deleteTokenAtDatabase()
+   }
+
+   suspend fun register(userForRegister: UserForRegister): AppResult<Unit> {
+      return authenticationRepository.registerAtAPI(userForRegister)
    }
 }

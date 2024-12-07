@@ -8,7 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 
-interface MiscApi {
+interface TheRestApi {
    @GET(Endpoints.GET_LAST_MODIFIED)
    suspend fun getLastModified(
       @Header("Authorization") token: String,

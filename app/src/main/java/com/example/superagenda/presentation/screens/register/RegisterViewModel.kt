@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.RegisterUseCase
 import com.example.superagenda.domain.models.UserForRegister
 import com.example.superagenda.presentation.Destinations
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-   private val registerUseCase: RegisterUseCase,
+   private val authenticationUseCase: AuthenticationUseCase
 ) : ViewModel() {
    private val _username = MutableStateFlow<String>("")
    val username: StateFlow<String> = _username
@@ -82,7 +83,7 @@ class RegisterViewModel @Inject constructor(
             return@launch
          }
 
-         when (val resultRegister = registerUseCase.register(
+         when (val resultRegister = authenticationUseCase.register(
             UserForRegister(
                username,
                password

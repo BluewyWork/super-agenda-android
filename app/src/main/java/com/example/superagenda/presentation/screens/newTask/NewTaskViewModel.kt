@@ -2,11 +2,10 @@ package com.example.superagenda.presentation.screens.newTask
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.superagenda.domain.LastModifiedUseCase
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.TheRestUseCase
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.UserUseCase
-import com.example.superagenda.domain.models.Membership
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
@@ -22,9 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTaskViewModel @Inject constructor(
    private val task2UseCase: TaskUseCase,
-   private val loginUseCase: LoginUseCase,
+   private val authenticationUseCase: AuthenticationUseCase,
    private val userUseCase: UserUseCase,
-   private val lastModifiedUseCase: LastModifiedUseCase,
+   private val theRestUseCase: TheRestUseCase,
 ) : ViewModel() {
    private val _title = MutableStateFlow("")
    val title: StateFlow<String> = _title
@@ -224,7 +223,7 @@ class NewTaskViewModel @Inject constructor(
                enqueuePopup("INFO", "Successfully created task locally!")
 
                when (val result =
-                  lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
                      "Failed to update last modified...",
@@ -235,7 +234,7 @@ class NewTaskViewModel @Inject constructor(
                      enqueuePopup("INFO", "Successfully update last modified!")
                }
 
-               val resultLoggedIn = loginUseCase.isLoggedIn()
+               val resultLoggedIn = authenticationUseCase.isLoggedIn()
 
                if (resultLoggedIn !is Result.Success) {
                   return@launch
@@ -253,7 +252,7 @@ class NewTaskViewModel @Inject constructor(
                      enqueuePopup("INFO", "Successfully created task at API!")
 
                      when (val resultUpdateLastModifiedAtApi =
-                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
                         is Result.Error -> enqueuePopup(
                            "ERROR",
                            "Failed to update last modified at api...",

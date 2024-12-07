@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.models.UserForProfile
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
    private val userUseCase: UserUseCase,
-   private val loginUseCase: LoginUseCase,
+   private val authenticationUseCase: AuthenticationUseCase,
    private val taskUseCase: TaskUseCase,
 ) : ViewModel() {
    private val _userForProfile = MutableLiveData<UserForProfile?>()
@@ -108,7 +108,7 @@ class ProfileViewModel @Inject constructor(
                   return@launch
                }
 
-               when (val deleteTokenAtDatabase = loginUseCase.deleteTokenFromDatabase()) {
+               when (val deleteTokenAtDatabase = authenticationUseCase.deleteTokenFromDatabase()) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
                      "Failed to clear token from local storage...",
@@ -145,7 +145,7 @@ class ProfileViewModel @Inject constructor(
 
    fun onLogoutPress(navController: NavController) {
       viewModelScope.launch {
-         loginUseCase.deleteTokenFromDatabase().onError { error ->
+         authenticationUseCase.deleteTokenFromDatabase().onError { error ->
             enqueuePopup("ERROR", "Failed to clear token from local storage...", error.toString())
             return@launch
          }

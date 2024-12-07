@@ -3,7 +3,7 @@ package com.example.superagenda.presentation.screens.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.UserUseCase
 import com.example.superagenda.domain.models.UserForLogin
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-   private val loginUseCase: LoginUseCase,
+   private val authenticationUseCase: AuthenticationUseCase,
    private val taskUseCase: TaskUseCase,
    private val userUseCase: UserUseCase,
 ) : ViewModel() {
@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(
             return@launch
          }
 
-         when (val resultLogin = loginUseCase.login(
+         when (val resultLogin = authenticationUseCase.login(
             UserForLogin(
                username,
                password

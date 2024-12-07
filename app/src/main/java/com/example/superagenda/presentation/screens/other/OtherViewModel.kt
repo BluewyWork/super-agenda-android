@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.Result
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OtherViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val loginUseCase: LoginUseCase,
+   private val authenticationUseCase: AuthenticationUseCase,
 ) : ViewModel() {
    private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
    val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
@@ -220,7 +220,7 @@ class OtherViewModel @Inject constructor(
                   is Result.Success -> _tasksToResolve.update { it - task }
                }
 
-               val isLoggedInResult = loginUseCase.isLoggedIn()
+               val isLoggedInResult = authenticationUseCase.isLoggedIn()
 
                isLoggedInResult.onSuccess {
                   when (val result = taskUseCase.updateTaskAtApi(task)) {

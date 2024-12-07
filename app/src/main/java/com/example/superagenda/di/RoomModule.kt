@@ -35,5 +35,9 @@ object RoomModule {
 
    @Singleton
    @Provides
-   fun provideLastModifiedDao(db: AppDatabase) = db.lastModifiedDao()
+   fun provideTheRestDao(db: AppDatabase) = db.theRestDao()
+
+   @Singleton
+   @Provides
+   fun provideMiscDao(db: AppDatabase) = db.miscDao()
 }

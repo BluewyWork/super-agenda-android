@@ -1,22 +1,22 @@
 package com.example.superagenda.domain
 
 import com.example.superagenda.data.AuthenticationRepository
-import com.example.superagenda.data.LastModifiedRepository
+import com.example.superagenda.data.TheRestRepository
 import com.example.superagenda.util.AppResult
 import com.example.superagenda.util.Result
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class LastModifiedUseCase @Inject constructor(
+class TheRestUseCase @Inject constructor(
    private val authenticationRepository: AuthenticationRepository,
-   private val lastModifiedRepository: LastModifiedRepository,
+   private val theRestRepository: TheRestRepository,
 ) {
    suspend fun getLastModifiedAtDatabase(): AppResult<LocalDateTime> {
-      return lastModifiedRepository.getLastModifiedAtDatabase()
+      return theRestRepository.getLastModifiedAtDatabase()
    }
 
    suspend fun upsertLastModifiedAtDatabase(lastModified: LocalDateTime): AppResult<Unit> {
-      return lastModifiedRepository.upsertLastModifiedAtDatabase(lastModified)
+      return theRestRepository.upsertLastModifiedAtDatabase(lastModified)
    }
 
    suspend fun getLastModifiedAtApi(): AppResult<LocalDateTime?> {
@@ -25,7 +25,7 @@ class LastModifiedUseCase @Inject constructor(
          is Result.Success -> result.data
       }
 
-      return lastModifiedRepository.getLastModifiedAtApi(token)
+      return theRestRepository.getLastModifiedAtApi(token)
    }
 
    suspend fun updateLastModifiedAtApi(lastModified: LocalDateTime): AppResult<Unit> {
@@ -34,6 +34,6 @@ class LastModifiedUseCase @Inject constructor(
          is Result.Success -> result.data
       }
 
-      return lastModifiedRepository.updateLastModifiedAtApi(token, lastModified)
+      return theRestRepository.updateLastModifiedAtApi(token, lastModified)
    }
 }

@@ -37,12 +37,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun SliderScreen(navController: NavController) {
-   Slider(navController)
+fun SliderScreen(sliderScreenViewModel: SliderScreenViewModel, navController: NavController) {
+   Slider(sliderScreenViewModel, navController)
 }
 
 @Composable
-fun Slider(navController: NavController) {
+fun Slider(sliderScreenViewModel: SliderScreenViewModel, navController: NavController) {
    val scope = rememberCoroutineScope()
    val pagerState = rememberPagerState { 3 }
 
@@ -70,15 +70,15 @@ fun Slider(navController: NavController) {
          ) { currentPage ->
             when (currentPage) {
                0 -> {
-                  PageFirst(pagerState, scope, navController)
+                  PageFirst(pagerState, scope, sliderScreenViewModel, navController)
                }
 
                1 -> {
-                  PageSecond(pagerState, scope, navController)
+                  PageSecond(pagerState, scope, sliderScreenViewModel, navController)
                }
 
                2 -> {
-                  PageThird(navController)
+                  PageThird(sliderScreenViewModel, navController)
                }
             }
          }
@@ -102,7 +102,12 @@ fun Slider(navController: NavController) {
 }
 
 @Composable
-fun PageFirst(pagerState: PagerState, scope: CoroutineScope, navController: NavController) {
+fun PageFirst(
+   pagerState: PagerState,
+   scope: CoroutineScope,
+   sliderScreenViewModel: SliderScreenViewModel,
+   navController: NavController,
+) {
    Box(modifier = Modifier.fillMaxSize()) {
       Image(
          painter = painterResource(id = R.drawable.one),
@@ -139,6 +144,7 @@ fun PageFirst(pagerState: PagerState, scope: CoroutineScope, navController: NavC
             Row {
                Button(
                   onClick = {
+                     sliderScreenViewModel.saveShownTrue()
                      navController.navigate(Destinations.Tasks.route)
                   },
 
@@ -172,7 +178,12 @@ fun PageFirst(pagerState: PagerState, scope: CoroutineScope, navController: NavC
 }
 
 @Composable
-fun PageSecond(pagerState: PagerState, scope: CoroutineScope, navController: NavController) {
+fun PageSecond(
+   pagerState: PagerState,
+   scope: CoroutineScope,
+   sliderScreenViewModel: SliderScreenViewModel,
+   navController: NavController,
+) {
    Box(modifier = Modifier.fillMaxSize()) {
       Image(
          painter = painterResource(id = R.drawable.second),
@@ -205,9 +216,8 @@ fun PageSecond(pagerState: PagerState, scope: CoroutineScope, navController: Nav
             Row {
                Button(
                   onClick = {
-                     scope.launch {
-                        navController.navigate(Destinations.Tasks.route)
-                     }
+                     sliderScreenViewModel.saveShownTrue()
+                     navController.navigate(Destinations.Tasks.route)
                   },
 
                   modifier = Modifier
@@ -239,7 +249,7 @@ fun PageSecond(pagerState: PagerState, scope: CoroutineScope, navController: Nav
 }
 
 @Composable
-fun PageThird(navController: NavController) {
+fun PageThird(sliderScreenViewModel: SliderScreenViewModel, navController: NavController) {
    Box(modifier = Modifier.fillMaxSize()) {
       Image(
          painter = painterResource(id = R.drawable.third),
@@ -273,6 +283,7 @@ fun PageThird(navController: NavController) {
          ) {
             Button(
                onClick = {
+                  sliderScreenViewModel.saveShownTrue()
                   navController.navigate(Destinations.Tasks.route)
                },
                modifier = Modifier

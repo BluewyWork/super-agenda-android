@@ -3,7 +3,6 @@ package com.example.superagenda.presentation.screens.tasks
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.superagenda.domain.LastModifiedUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.Result

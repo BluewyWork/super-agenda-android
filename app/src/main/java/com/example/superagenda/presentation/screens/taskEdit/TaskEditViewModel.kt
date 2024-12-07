@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.superagenda.domain.LastModifiedUseCase
-import com.example.superagenda.domain.LoginUseCase
+import com.example.superagenda.domain.TheRestUseCase
+import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
@@ -23,8 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskEditViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
-   private val loginUseCase: LoginUseCase,
-   private val lastModifiedUseCase: LastModifiedUseCase,
+   private val authenticationUseCase: AuthenticationUseCase,
+   private val theRestUseCase: TheRestUseCase,
 ) : ViewModel() {
    private val _taskId = MutableStateFlow(ObjectId())
 
@@ -174,7 +174,7 @@ class TaskEditViewModel @Inject constructor(
                enqueuePopup("INFO", "Successfully updated task locally!")
 
                when (val result =
-                  lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
                      "Failed to update last modified locally...",
@@ -188,7 +188,7 @@ class TaskEditViewModel @Inject constructor(
 
                }
 
-               val loggedIn = loginUseCase.isLoggedIn()
+               val loggedIn = authenticationUseCase.isLoggedIn()
 
                if (loggedIn !is Result.Success) {
                   return@launch
@@ -206,7 +206,7 @@ class TaskEditViewModel @Inject constructor(
                      enqueuePopup("INFO", "Successfully updated task at API!")
 
                      when (val resultUpdateLastModifiedAtApi =
-                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
                         is Result.Error -> enqueuePopup(
                            "ERROR",
                            "Failed to update last modified at api...",
@@ -243,7 +243,7 @@ class TaskEditViewModel @Inject constructor(
 
             is Result.Success -> {
                when (val result =
-                  lastModifiedUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> enqueuePopup(
                      "ERROR",
                      "Failed to update last modified locally...",
@@ -256,7 +256,7 @@ class TaskEditViewModel @Inject constructor(
                   )
                }
 
-               val loggedIn = loginUseCase.isLoggedIn()
+               val loggedIn = authenticationUseCase.isLoggedIn()
 
                if (loggedIn !is Result.Success) {
                   onSuccess()
@@ -278,7 +278,7 @@ class TaskEditViewModel @Inject constructor(
                      enqueuePopup("INFO", "Successfully updated task at api!")
 
                      when (val resultUpdateLastModifiedAtApi =
-                        lastModifiedUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                        theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
                         is Result.Error -> enqueuePopup(
                            "ERROR",
                            "Failed to update last modified at api...",
