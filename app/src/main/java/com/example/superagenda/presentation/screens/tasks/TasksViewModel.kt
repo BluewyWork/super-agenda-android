@@ -36,7 +36,7 @@ class TasksViewModel @Inject constructor(
    fun refreshTasks() {
       viewModelScope.launch {
          when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
-            is Result.Error -> Log.e("LOOK AT ME", "${resultGetTasksAtDatabase.error}")
+            is Result.Error -> Log.e("LOOK AT ME", "@VIEWMODEL ${resultGetTasksAtDatabase.error}")
             is Result.Success -> _tasks.value = resultGetTasksAtDatabase.data
          }
       }

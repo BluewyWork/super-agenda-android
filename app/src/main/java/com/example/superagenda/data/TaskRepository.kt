@@ -31,12 +31,10 @@ class TaskRepository @Inject constructor(
       return withContext(Dispatchers.IO) {
          try {
             val taskList = taskDao.retrieveTasks()
-
             Result.Success(taskList.map { it.toData().toDomain() })
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
-
-            Result.Error(AppError.NetworkError.UNKNOWN)
+            Result.Error(AppError.DatabaseError.UNKNOWN)
          }
       }
    }

@@ -113,7 +113,7 @@ fun TaskCard(task: Task, onClick: () -> Unit) {
                   }
 
                   TaskStatus.Ongoing -> {
-                     val difference = Duration.between(LocalDateTime.now(), task.endDateTime)
+                     val difference = Duration.between(LocalDateTime.now(), task.endEstimatedDateTime)
                      val days = difference.toDays()
                      s = if (days > 0) {
                         "expires in $days day/s"

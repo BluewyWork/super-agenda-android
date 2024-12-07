@@ -120,17 +120,53 @@ class InitialViewModel @Inject constructor(
          }
 
          val resultGetTasksRemote = taskUseCase.getTasksAtApi()
+         val resultGetTasksDatabase = taskUseCase.getTasksAtDatabase()
 
          if (resultGetTasksRemote !is Result.Success) {
             return@withShowLoading
          }
 
-         var lastResult = false;
+         if (resultGetTasksDatabase !is Result.Success) {
+            return@withShowLoading
+         }
 
-         for (task in resultGetTasksRemote.data) {
-            lastResult = when (taskUseCase.upsertTaskAtDatabase(task)) {
-               is Result.Error -> false
-               is Result.Success -> true
+         if (lastModifiedLocally < lastModifiedRemote) {
+            val tasksDeleted = resultGetTasksDatabase.data - resultGetTasksRemote.data
+            var lastResult2 = false;
+
+            for (task in tasksDeleted) {
+               lastResult2 = when (taskUseCase.deleteTaskAtDatabase(task.id)) {
+                  is Result.Error -> false
+                  is Result.Success -> true
+               }
+            }
+
+            var lastResult = false;
+
+            for (task in resultGetTasksRemote.data) {
+               lastResult = when (taskUseCase.upsertTaskAtDatabase(task)) {
+                  is Result.Error -> false
+                  is Result.Success -> true
+               }
+            }
+         } else if (lastModifiedLocally > lastModifiedRemote) {
+            val tasksDeleted = resultGetTasksRemote.data - resultGetTasksDatabase.data
+            var lastResult = false
+
+            for (task in tasksDeleted) {
+               lastResult = when (taskUseCase.deleteTaskAtApi(task.id)) {
+                  is Result.Error -> false
+                  is Result.Success -> true
+               }
+            }
+
+            var lastResult2 = false
+
+            for (task in resultGetTasksDatabase.data) {
+              lastResult2 = when(taskUseCase.updateTaskAtApi(task))  {
+                 is Result.Error -> false
+                 is Result.Success -> true
+              }
             }
          }
       }

@@ -237,6 +237,7 @@ class NewTaskViewModel @Inject constructor(
                val resultLoggedIn = authenticationUseCase.isLoggedIn()
 
                if (resultLoggedIn !is Result.Success) {
+                  whenPopupsEmpty { onSuccess() }
                   return@launch
                }
 
