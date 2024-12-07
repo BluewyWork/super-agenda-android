@@ -96,7 +96,7 @@ class TaskEditViewModel @Inject constructor(
    }
 
    private suspend fun whenPopupsEmpty(code: () -> Unit) {
-      while (popupsQueue.value?.isNotEmpty() == true) {
+      while (popupsQueue.value.isNotEmpty()) {
          delay(2000)
       }
 
