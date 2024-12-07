@@ -12,7 +12,7 @@ import com.example.superagenda.presentation.Destinations
 @Composable
 fun InitialScreen(initialViewModel: InitialViewModel, navController: NavController) {
    val showLoading by initialViewModel.showLoading.collectAsStateWithLifecycle()
-   val done by initialViewModel.done.collectAsStateWithLifecycle()
+   val done by initialViewModel.navDecision.collectAsStateWithLifecycle()
 
    if (showLoading) {
       Box(

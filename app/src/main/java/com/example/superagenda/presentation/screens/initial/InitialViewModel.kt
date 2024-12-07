@@ -31,8 +31,8 @@ class InitialViewModel @Inject constructor(
    private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
    val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
-   private val _done = MutableStateFlow(TheDecision.UNDECIDED)
-   val done: StateFlow<TheDecision> = _done.onStart {
+   private val _navDecision = MutableStateFlow(TheDecision.UNDECIDED)
+   val navDecision: StateFlow<TheDecision> = _navDecision.onStart {
       viewModelScope.launch {
          val sliderShown = when (miscUseCase.getScreenShownAtDatabase()) {
             is Result.Error -> false
@@ -40,12 +40,12 @@ class InitialViewModel @Inject constructor(
          }
 
          if (!sliderShown) {
-            _done.value = TheDecision.NAV_SLIDER
+            _navDecision.value = TheDecision.NAV_SLIDER
             return@launch
          }
 
          refreshTasksIfOutdated()
-         _done.value = TheDecision.NAV_TASKS
+         _navDecision.value = TheDecision.NAV_TASKS
       }
    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TheDecision.UNDECIDED)
 
