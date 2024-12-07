@@ -50,8 +50,6 @@ class TaskEditViewModel @Inject constructor(
    private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
    val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
-   private val
-
    // Getter & Setters
 
    fun setTaskId(id: ObjectId) {
