@@ -193,6 +193,8 @@ class NewTaskViewModel @Inject constructor(
             images = images
          )
 
+         val resultLoggedIn = authenticationUseCase.isLoggedIn()
+
          when (val resultUpsertTaskAtDatabase = task2UseCase.upsertTaskAtDatabase(task)) {
             is Result.Error -> _popups.value += Popup(
                "ERROR",
@@ -206,16 +208,25 @@ class NewTaskViewModel @Inject constructor(
                when (val resultUpsertLastModifiedAtDatabase =
                   theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> {
+
                      _popups.value += Popup(
                         "ERROR",
                         "Failed to update last modified...",
                         resultUpsertLastModifiedAtDatabase.error.toString()
-                     )
+                     ) { onSuccess() }
+
                   }
 
                   is Result.Success -> {
-                     when (authenticationUseCase.isLoggedIn()) {
-                        is Result.Error -> {}
+
+                     when (resultLoggedIn) {
+                        is Result.Error -> {
+                           _popups.value += Popup(
+                              "INFO", "Successfully update last modified!"
+                           ) {
+                              onSuccess()
+                           }
+                        }
 
                         is Result.Success -> {
                            _popups.value += Popup(
