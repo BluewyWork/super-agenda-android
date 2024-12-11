@@ -18,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.superagenda.presentation.screens.other.composables.CardTask
 import com.example.superagenda.presentation.screens.other.composables.ImportTaskList
+import com.example.superagenda.ui.theme.oneDarkCustomYellow
 
 @Composable
 fun OtherScreen(
@@ -101,41 +103,46 @@ fun Other(otherViewModel: OtherViewModel) {
          return@Column
       }
 
-      Text("WARNING!")
-      Text("Some tasks needs manual intervention to solve..")
-      Text("Click here to solve")
-
+      Text("WARNING!", color = oneDarkCustomYellow)
+      Text("Some tasks needs manual intervention to solve..", color = oneDarkCustomYellow)
    }
 }
 
 @Composable
 fun TasksSolving(otherViewModel: OtherViewModel) {
-   val tasksToResolve by otherViewModel.tasksToResolve.collectAsStateWithLifecycle()
+   val tasksPairToResolve by otherViewModel.tasksToResolve.collectAsStateWithLifecycle()
+
+   if (tasksPairToResolve.isEmpty()) {
+      return
+   }
+
+   val pair = tasksPairToResolve.first()
 
    Column {
-      if (tasksToResolve.isEmpty()) {
-         return@Column
-      }
-
-      val task = tasksToResolve.first()
-
-      tasksToResolve.first()
+      Text("In Storage:")
+      CardTask(pair.first)
+      Text("New:")
+      CardTask(pair.second)
 
       Row {
          Button(onClick = {
-            otherViewModel.resolveTask(task, TaskResolutionOptions.KEEP_ORIGINAL)
+            otherViewModel.resolveTask(pair.second, TaskResolutionOptions.KEEP_ORIGINAL)
          }) {
             Text("Keep Original")
          }
 
+         Spacer(Modifier.width(8.dp))
+
          Button(onClick = {
-            otherViewModel.resolveTask(task, TaskResolutionOptions.KEEP_NEW)
+            otherViewModel.resolveTask(pair.second, TaskResolutionOptions.KEEP_NEW)
          }) {
             Text("Override Original")
          }
 
+         Spacer(Modifier.width(8.dp))
+
          Button(onClick = {
-            otherViewModel.resolveTask(task, TaskResolutionOptions.KEEP_BOTH)
+            otherViewModel.resolveTask(pair.second, TaskResolutionOptions.KEEP_BOTH)
          }) {
             Text("Keep Both")
          }

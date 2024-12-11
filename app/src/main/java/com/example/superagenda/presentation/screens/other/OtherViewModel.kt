@@ -33,8 +33,8 @@ class OtherViewModel @Inject constructor(
    private val _popups = MutableStateFlow<List<Popup>>(emptyList())
    val popups: StateFlow<List<Popup>> = _popups
 
-   private val _tasksToResolve = MutableStateFlow<List<Task>>(emptyList())
-   val tasksToResolve: StateFlow<List<Task>> = _tasksToResolve
+   private val _tasksToResolve = MutableStateFlow<List<Pair<Task, Task>>>(emptyList())
+   val tasksToResolve: StateFlow<List<Pair<Task, Task>>> = _tasksToResolve
 
 
    fun onPopupDismissed() {
@@ -87,13 +87,13 @@ class OtherViewModel @Inject constructor(
 
             is Result.Success -> {
                val tasksLocal = resultGetLocalTasks.data
-               val differingTasks = mutableListOf<Task>()
+               val differingTasks = mutableListOf<Pair<Task, Task>>()
 
                for (importedTask in tasksImported) {
                   val localTask = tasksLocal.find { it.id == importedTask.id }
 
                   if (localTask != null && localTask != importedTask) {
-                     differingTasks.add(importedTask)
+                     differingTasks.add(Pair(localTask, importedTask))
                   }
                }
 
@@ -123,7 +123,7 @@ class OtherViewModel @Inject constructor(
       viewModelScope.launch {
          when (taskResolutionOptions) {
             TaskResolutionOptions.KEEP_ORIGINAL -> {
-               _tasksToResolve.update { it - task }
+               _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
             }
 
             TaskResolutionOptions.KEEP_NEW -> {
@@ -138,7 +138,7 @@ class OtherViewModel @Inject constructor(
 
                   is Result.Success -> {
                      _popups.value += Popup("INFO", "Successfully updated task...")
-                     _tasksToResolve.update { it - task }
+                     _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
 
 
                      when (val resultUpsertLastModifiedAtDatabase =
@@ -195,7 +195,7 @@ class OtherViewModel @Inject constructor(
                   )
 
                   is Result.Success -> {
-                     _tasksToResolve.update { it - task }
+                     _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
                      _popups.value += Popup("INFO", "Successfully upserted task locally!")
 
 
