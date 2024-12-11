@@ -151,18 +151,25 @@ class TaskEditViewModel @Inject constructor(
                when (val resultUpsertLastModifiedAtDatabase =
                   theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
                   is Result.Error -> _popups.value += Popup(
-                     "ERROR", "Failed to update last modified locally...", resultUpsertLastModifiedAtDatabase.error.toString()
+                     "ERROR",
+                     "Failed to update last modified locally...",
+                     resultUpsertLastModifiedAtDatabase.error.toString()
                   )
 
                   is Result.Success -> {
-                     _popups.value += Popup(
-                        "INFO", "Successfully updated last modified locally!"
-                     )
 
                      when (authenticationUseCase.isLoggedIn()) {
-                        is Result.Error -> {}
+                        is Result.Error -> {
+                           _popups.value += Popup(
+                              "INFO", "Successfully updated last modified locally!"
+                           ) { onSuccess() }
+                        }
 
                         is Result.Success -> {
+                           _popups.value += Popup(
+                              "INFO", "Successfully updated last modified locally!"
+                           )
+
                            when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
                               is Result.Error -> _popups.value += Popup(
                                  "ERROR",
@@ -223,14 +230,20 @@ class TaskEditViewModel @Inject constructor(
                   )
 
                   is Result.Success -> {
-                     _popups.value += Popup(
-                        "INFO", "Successfully updated last modified locally!"
-                     )
-
                      when (authenticationUseCase.isLoggedIn()) {
-                        is Result.Error -> {}
+                        is Result.Error -> {
+                           _popups.value += Popup(
+                              "INFO", "Successfully updated last modified locally!"
+                           ) {
+                              onSuccess()
+                           }
+                        }
 
                         is Result.Success -> {
+                           _popups.value += Popup(
+                              "INFO", "Successfully updated last modified locally!"
+                           )
+
                            when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtApi(taskId)) {
                               is Result.Error -> {
                                  _popups.value += Popup(
