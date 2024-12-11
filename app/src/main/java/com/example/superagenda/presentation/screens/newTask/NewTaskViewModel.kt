@@ -6,6 +6,7 @@ import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.TheRestUseCase
 import com.example.superagenda.domain.UserUseCase
+import com.example.superagenda.domain.models.Membership
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
@@ -107,80 +108,84 @@ class NewTaskViewModel @Inject constructor(
             return@launch
          }
 
-//         when (loginUseCase.isLoggedIn()) {
-//            is Result.Error -> {
-//               when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
-//                  is Result.Error -> {
-//                     _popups.value += Popup(
-//                        "ERROR",
-//                        "Failed to get tasks locally...",
-//                        resultGetTasksAtDatabase.error.toString()
-//                     )
-//                     return@launch
-//                  }
-//
-//                  is Result.Success -> {
-//                     val tasksDatabase = resultGetTasksAtDatabase.data
-//
-//                     if (tasksDatabase.size > 5) {
-//                        _popups.value += Popup(
-//                           "INFO",
-//                           "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
-//                        )
-//                        return@launch
-//                     }
-//                  }
-//               }
-//            }
-//
-//            is Result.Success -> {
-//               when (val resultGetUseForProfileAtDatabase =
-//                  userUseCase.getUserForProfileAtDatabase()) {
-//                  is Result.Error -> {
-//                     _popups.value += Popup(
-//                        "ERROR",
-//                        "Failed to get user for profile locally...",
-//                        resultGetUseForProfileAtDatabase.error.toString()
-//                     )
-//                  }
-//
-//                  is Result.Success -> {
-//                     val userForProfile = resultGetUseForProfileAtDatabase.data
-//
-//                     when (userForProfile.membership) {
-//                        Membership.FREE -> {
-//                           when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
-//                              is Result.Error -> {
-//                                 _popups.value += Popup(
-//                                    "ERROR",
-//                                    "Failed to get tasks locally...",
-//                                    resultGetTasksAtDatabase.error.toString()
-//                                 )
-//                                 return@launch
-//                              }
-//
-//                              is Result.Success -> {
-//                                 val tasksDatabase = resultGetTasksAtDatabase.data
-//
-//                                 if (tasksDatabase.size > 5) {
-//                                    _popups.value += Popup(
-//                                       "INFO",
-//                                       "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
-//                                    )
-//                                    return@launch
-//                                 }
-//                              }
-//                           }
-//                        }
-//
-//                        Membership.PREMIUM -> {
-//                           // proceed
-//                        }
-//                     }
-//                  }
-//               }
-//            }
-//         }
+         when (authenticationUseCase.isLoggedIn()) {
+            is Result.Error -> {
+               when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+                  is Result.Error -> {
+                     _popups.value += Popup(
+                        "ERROR",
+                        "Failed to get tasks locally...",
+                        resultGetTasksAtDatabase.error.toString()
+                     )
+
+                     return@launch
+                  }
+
+                  is Result.Success -> {
+                     val tasksDatabase = resultGetTasksAtDatabase.data
+
+                     if (tasksDatabase.size > 5) {
+                        _popups.value += Popup(
+                           "INFO",
+                           "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+                        )
+
+                        return@launch
+                     }
+                  }
+               }
+            }
+
+            is Result.Success -> {
+               when (val resultGetUseForProfileAtDatabase =
+                  userUseCase.getUserForProfileAtDatabase()) {
+                  is Result.Error -> {
+                     _popups.value += Popup(
+                        "ERROR",
+                        "Failed to get user for profile locally...",
+                        resultGetUseForProfileAtDatabase.error.toString()
+                     )
+                  }
+
+                  is Result.Success -> {
+                     val userForProfile = resultGetUseForProfileAtDatabase.data
+
+                     when (userForProfile.membership) {
+                        Membership.FREE -> {
+                           when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
+                              is Result.Error -> {
+                                 _popups.value += Popup(
+                                    "ERROR",
+                                    "Failed to get tasks locally...",
+                                    resultGetTasksAtDatabase.error.toString()
+                                 )
+
+                                 return@launch
+                              }
+
+                              is Result.Success -> {
+                                 val tasksDatabase = resultGetTasksAtDatabase.data
+
+                                 if (tasksDatabase.size > 5) {
+                                    _popups.value += Popup(
+                                       "INFO",
+                                       "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
+                                    )
+
+                                    return@launch
+                                 }
+                              }
+                           }
+                        }
+
+                        Membership.PREMIUM -> {
+                           // proceed
+                        }
+                     }
+                  }
+               }
+            }
+         }
 
          val task = Task(
             id = ObjectId(),
