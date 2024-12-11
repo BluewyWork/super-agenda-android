@@ -33,7 +33,17 @@ class ProfileViewModel @Inject constructor(
    )
 
    val userForProfile: StateFlow<UserForProfile> = _userForProfile.onStart {
-      fetchUserForProfile()
+      viewModelScope.launch {
+         when (val result = userUseCase.getUserForProfileAtDatabase()) {
+            is Result.Error -> _popups.value += Popup(
+               "ERROR", "Failed to get profile locally...)", result.error.toString()
+            )
+
+            is Result.Success -> {
+               _userForProfile.value = result.data
+            }
+         }
+      }
    }.stateIn(
       viewModelScope, SharingStarted.WhileSubscribed(5000L), UserForProfile(
          username = "", membership = Membership.FREE
@@ -115,7 +125,9 @@ class ProfileViewModel @Inject constructor(
             }
 
             is Result.Success -> {
-               _popups.value += Popup("INFO", "Successfully logged out and cleared related data...") {
+               _popups.value += Popup(
+                  "INFO", "Successfully logged out and cleared related data..."
+               ) {
                   navController.navigate(Destinations.Login.route)
                }
             }

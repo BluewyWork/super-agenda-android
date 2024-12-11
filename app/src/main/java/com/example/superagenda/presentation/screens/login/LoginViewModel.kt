@@ -83,15 +83,13 @@ class LoginViewModel @Inject constructor(
                         lastResult =
                            when (val resultCreateTaskAtApi = taskUseCase.createTaskAtApi(task)) {
                               is Result.Error -> {
-                                 //                              _popups.value += Popup(
-                                 //                                 "ERROR",
-                                 //                                 "Failed to create task at api...",
-                                 //                                 resultCreateTaskAtApi.error.toString()
-                                 //                              )
                                  false
                               }
 
-                              is Result.Success -> resultCreateTaskAtApi.data
+                              is Result.Success -> {
+                                 resultCreateTaskAtApi.data
+                                 lastResult
+                              }
                            }
                      }
 
@@ -117,7 +115,7 @@ class LoginViewModel @Inject constructor(
                               lastResult2 = when (val resultUpdateAtDatabase =
                                  taskUseCase.upsertTaskAtDatabase(task)) {
                                  is Result.Error -> false
-                                 is Result.Success -> true
+                                 is Result.Success -> lastResult2
                               }
                            }
 

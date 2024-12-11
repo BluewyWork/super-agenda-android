@@ -112,7 +112,6 @@ fun Profile(
          Button(
             onClick = { profileViewModel.onDeleteButtonPressButton(navController) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = userForProfile.username != ""
          ) {
             Text("Delete Profile")
          }
