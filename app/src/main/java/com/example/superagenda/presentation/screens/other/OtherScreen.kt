@@ -64,7 +64,6 @@ fun OtherScreen(
 
 @Composable
 fun Other(otherViewModel: OtherViewModel) {
-   val tasksToResolve by otherViewModel.tasksToResolve.collectAsStateWithLifecycle()
 
    Column(
       modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -99,18 +98,19 @@ fun Other(otherViewModel: OtherViewModel) {
          }
       }
 
-      if (tasksToResolve.isEmpty()) {
-         return@Column
-      }
-
-      Text("WARNING!", color = oneDarkCustomYellow)
-      Text("Some tasks needs manual intervention to solve..", color = oneDarkCustomYellow)
    }
 }
 
 @Composable
 fun TasksSolving(otherViewModel: OtherViewModel) {
-   val tasksPairToResolve by otherViewModel.tasksToResolve.collectAsStateWithLifecycle()
+   val tasksPairToResolve by otherViewModel.tasksPairToResolve.collectAsStateWithLifecycle()
+
+   if (tasksPairToResolve.isEmpty()) {
+      return
+   }
+
+   Text("WARNING!", color = oneDarkCustomYellow)
+   Text("Some tasks needs manual intervention to solve..", color = oneDarkCustomYellow)
 
    if (tasksPairToResolve.isEmpty()) {
       return

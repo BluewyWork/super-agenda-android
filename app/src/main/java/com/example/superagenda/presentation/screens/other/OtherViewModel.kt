@@ -33,9 +33,8 @@ class OtherViewModel @Inject constructor(
    private val _popups = MutableStateFlow<List<Popup>>(emptyList())
    val popups: StateFlow<List<Popup>> = _popups
 
-   private val _tasksToResolve = MutableStateFlow<List<Pair<Task, Task>>>(emptyList())
-   val tasksToResolve: StateFlow<List<Pair<Task, Task>>> = _tasksToResolve
-
+   private val _tasksPairToResolve = MutableStateFlow<List<Pair<Task, Task>>>(emptyList())
+   val tasksPairToResolve: StateFlow<List<Pair<Task, Task>>> = _tasksPairToResolve
 
    fun onPopupDismissed() {
       _popups.value = _popups.value.drop(1)
@@ -97,7 +96,7 @@ class OtherViewModel @Inject constructor(
                   }
                }
 
-               _tasksToResolve.value = differingTasks
+               _tasksPairToResolve.value = differingTasks
             }
          }
       }
@@ -123,7 +122,7 @@ class OtherViewModel @Inject constructor(
       viewModelScope.launch {
          when (taskResolutionOptions) {
             TaskResolutionOptions.KEEP_ORIGINAL -> {
-               _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
+               _tasksPairToResolve.value = _tasksPairToResolve.value.filter { it.second != task }
             }
 
             TaskResolutionOptions.KEEP_NEW -> {
@@ -138,7 +137,7 @@ class OtherViewModel @Inject constructor(
 
                   is Result.Success -> {
                      _popups.value += Popup("INFO", "Successfully updated task...")
-                     _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
+                     _tasksPairToResolve.value = _tasksPairToResolve.value.filter { it.second != task }
 
 
                      when (val resultUpsertLastModifiedAtDatabase =
@@ -195,7 +194,7 @@ class OtherViewModel @Inject constructor(
                   )
 
                   is Result.Success -> {
-                     _tasksToResolve.value = _tasksToResolve.value.filter { it.second != task }
+                     _tasksPairToResolve.value = _tasksPairToResolve.value.filter { it.second != task }
                      _popups.value += Popup("INFO", "Successfully upserted task locally!")
 
 
