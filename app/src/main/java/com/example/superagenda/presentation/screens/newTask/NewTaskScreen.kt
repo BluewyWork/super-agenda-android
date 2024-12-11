@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,16 +35,38 @@ fun NewTaskScreen(
    newTaskViewModel: NewTaskViewModel,
    navController: NavController,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by newTaskViewModel.popupsQueue.collectAsStateWithLifecycle()
+   val popups by newTaskViewModel.popups.collectAsStateWithLifecycle()
 
-   if (popupsQueue.isNotEmpty()) {
-      PopupDialog(
-         title = popupsQueue.first().first,
-         message = popupsQueue.first().second,
-         error = popupsQueue.first().third,
+   if (popups.isNotEmpty()) {
+      val popup = popups.first()
 
-         onDismiss = {
-            newTaskViewModel.dismissPopup()
+      AlertDialog(
+         onDismissRequest = {
+            popup.code()
+            newTaskViewModel.onPopupDismissed()
+         },
+
+         title = { Text(popup.title) },
+
+         text = {
+            Column {
+               if (popup.error.isNotBlank()) {
+                  Text(popup.error)
+               }
+
+               Text(popup.description)
+            }
+         },
+
+         confirmButton = {
+            Button(
+               onClick = {
+                  popup.code()
+                  newTaskViewModel.onPopupDismissed()
+               }
+            ) {
+               Text("OK")
+            }
          }
       )
    }
@@ -66,27 +89,27 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
    ) {
       OutlinedTextField(
          value = title,
-         onValueChange = { newTaskViewModel.setTitle(it) },
+         onValueChange = { newTaskViewModel.onTitleChanged(it) },
          label = { Text("Title") },
          modifier = Modifier.fillMaxWidth()
       )
 
       OutlinedTextField(
          value = description,
-         onValueChange = { newTaskViewModel.setDescription(it) },
+         onValueChange = { newTaskViewModel.onDescriptionChanged(it) },
          label = { Text("Description") },
          modifier = Modifier.fillMaxWidth()
       )
 
       TaskStatusDropDown(taskStatus) {
-         newTaskViewModel.setTaskStatus(it)
+         newTaskViewModel.onTaskStatusChanged(it)
       }
 
       LocalDateTimePickerTextField(
          value = startDateTime,
 
          onLocalDateTimeChange = {
-            newTaskViewModel.setStartDateTime(it)
+            newTaskViewModel.onStartDateTimeChanged(it)
          },
 
          modifier = Modifier.fillMaxWidth(),
@@ -97,7 +120,7 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
          value = endEstimatedDateTime,
 
          onLocalDateTimeChange = {
-            newTaskViewModel.setEndEstimatedDateTime(it)
+            newTaskViewModel.onEndEstimatedDateTimeChanged(it)
          },
 
          modifier = Modifier.fillMaxWidth(),
@@ -115,7 +138,7 @@ fun NewTask(newTaskViewModel: NewTaskViewModel, navController: NavController) {
             }
          }
       ) { imageNew ->
-         newTaskViewModel.setImages(images + imageNew)
+         newTaskViewModel.onImagesChanged(images + imageNew)
       }
 
       if (showBigImage.isNotEmpty()) {

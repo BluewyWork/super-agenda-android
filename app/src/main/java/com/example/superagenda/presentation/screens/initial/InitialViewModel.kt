@@ -131,7 +131,9 @@ class InitialViewModel @Inject constructor(
          }
 
          if (lastModifiedLocally < lastModifiedRemote) {
-            val tasksDeleted = resultGetTasksDatabase.data - resultGetTasksRemote.data
+            val tasksDeleted =
+               resultGetTasksDatabase.data.filter { it !in resultGetTasksRemote.data }
+
             var lastResult2 = false;
 
             for (task in tasksDeleted) {
@@ -150,7 +152,9 @@ class InitialViewModel @Inject constructor(
                }
             }
          } else if (lastModifiedLocally > lastModifiedRemote) {
-            val tasksDeleted = resultGetTasksRemote.data - resultGetTasksDatabase.data
+            val tasksDeleted =
+               resultGetTasksRemote.data.filter { it !in resultGetTasksDatabase.data }
+
             var lastResult = false
 
             for (task in tasksDeleted) {
@@ -163,10 +167,10 @@ class InitialViewModel @Inject constructor(
             var lastResult2 = false
 
             for (task in resultGetTasksDatabase.data) {
-              lastResult2 = when(taskUseCase.updateTaskAtApi(task))  {
-                 is Result.Error -> false
-                 is Result.Success -> true
-              }
+               lastResult2 = when (taskUseCase.updateTaskAtApi(task)) {
+                  is Result.Error -> false
+                  is Result.Success -> true
+               }
             }
          }
       }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,7 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,49 +27,59 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.PopupDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
-   val popupsQueue: List<Triple<String, String, String>> by loginViewModel.popupsQueue.collectAsStateWithLifecycle()
-   if (popupsQueue.isNotEmpty()) {
-      PopupDialog(
-         title = popupsQueue.first().first,
-         message = popupsQueue.first().second,
-         error = popupsQueue.first().third,
+   val popups by loginViewModel.popups.collectAsStateWithLifecycle()
 
-         onDismiss = {
-            loginViewModel.dismissPopup()
-         }
-      )
-   }
+   if (popups.isNotEmpty()) {
+      val popup = popups.first()
 
-   Scaffold(
-      topBar = {
-         CenterAlignedTopAppBar(
-            title = { Text("Login Screen") },
-
-            navigationIcon = {
-               BackIconButton(
-                  onClick = {
-                     navController.navigate(Destinations.Tasks.route)
-                  }
-               )
-            }
-         )
+      AlertDialog(onDismissRequest = {
+         popup.code()
+         loginViewModel.onPopupDismissed()
       },
 
+         title = { Text(popup.title) },
+
+         text = {
+            Column {
+               if (popup.error.isNotBlank()) {
+                  Text(popup.error)
+               }
+
+               Text(popup.description)
+            }
+         },
+
+         confirmButton = {
+            Button(onClick = {
+               popup.code()
+               loginViewModel.onPopupDismissed()
+            }) {
+               Text("OK")
+            }
+         })
+   }
+
+   Scaffold(topBar = {
+      CenterAlignedTopAppBar(title = { Text("Login Screen") },
+
+         navigationIcon = {
+            BackIconButton(onClick = {
+               navController.navigate(Destinations.Tasks.route)
+            })
+         })
+   },
+
       content = { innerPadding ->
-         Column(
-            modifier = Modifier.padding(innerPadding),
+         Column(modifier = Modifier.padding(innerPadding),
 
             content = {
                Login(loginViewModel, navController)
-            }
-         )
-      }
-   )
+            })
+      })
 }
 
 @Composable
@@ -77,54 +87,52 @@ fun Login(loginViewModel: LoginViewModel, navController: NavController) {
    val username: String by loginViewModel.username.collectAsStateWithLifecycle()
    val password: String by loginViewModel.password.collectAsStateWithLifecycle()
 
-   Column(
-      content = {
-         OutlinedTextField(
-            modifier = Modifier
-               .fillMaxWidth()
-               .padding(start = 8.dp, end = 8.dp),
-            value = username,
-            enabled = true,
-            onValueChange = { loginViewModel.onUsernameChange(it) },
-            label = { Text(text = "Username") },
-            leadingIcon = { Icon(Icons.Default.Person, null) }
-         )
+   Column(content = {
+      OutlinedTextField(modifier = Modifier
+         .fillMaxWidth()
+         .padding(start = 8.dp, end = 8.dp),
+         value = username,
+         enabled = true,
+         onValueChange = { loginViewModel.onUsernameChanged(it) },
+         label = { Text(text = "Username") },
+         leadingIcon = { Icon(Icons.Default.Person, null) })
 
-         OutlinedTextField(
-            value = password,
-            visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { loginViewModel.onPasswordChange(it) },
-            singleLine = true,
-            label = { Text("Password") },
-            leadingIcon = { Icon(Icons.Filled.Lock, null) },
-            modifier = Modifier
-               .fillMaxWidth()
-               .padding(start = 8.dp, end = 8.dp),
-         )
+      OutlinedTextField(
+         value = password,
+         visualTransformation = PasswordVisualTransformation(),
+         onValueChange = { loginViewModel.onPasswordChanged(it) },
+         singleLine = true,
+         label = { Text("Password") },
+         leadingIcon = { Icon(Icons.Filled.Lock, null) },
+         modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp),
+      )
 
-         Spacer(modifier = Modifier.padding(16.dp))
+      Spacer(modifier = Modifier.padding(16.dp))
 
-         Button(
-            content = {
-               Text("Login")
-            },
+      Button(
+         content = {
+            Text("Login")
+         },
 
-            onClick = {
-               loginViewModel.onLoginButtonPress(navController)
-            },
+         onClick = {
+            loginViewModel.onLoginButtonPress() {
+               navController.navigate(Destinations.Tasks.route)
+            }
+         },
 
-            modifier = Modifier.fillMaxWidth()
-         )
+         modifier = Modifier.fillMaxWidth()
+      )
 
-         Text(
-            modifier = Modifier
-               .padding(top = 5.dp)
-               .fillMaxWidth()
-               .clickable { navController.navigate("register") },
+      Text(
+         modifier = Modifier
+            .padding(top = 5.dp)
+            .fillMaxWidth()
+            .clickable { navController.navigate("register") },
 
-            text = "Haz click aqui para registrarte!",
-            style = TextStyle(textAlign = TextAlign.Right)
-         )
-      }
-   )
+         text = "Haz click aqui para registrarte!",
+         style = TextStyle(textAlign = TextAlign.Right)
+      )
+   })
 }

@@ -22,7 +22,7 @@ fun TaskStatusDropDown(
    taskStatus: TaskStatus,
    onStatusChange: (TaskStatus) -> Unit,
 ) {
-   val taskStatuses = TaskStatus.values()
+   val taskStatuses = TaskStatus.entries.toTypedArray()
 
    var expanded by remember(calculation = { mutableStateOf(false) })
    var selectedStatus by remember(calculation = { mutableStateOf(taskStatus) })

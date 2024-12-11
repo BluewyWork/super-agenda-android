@@ -83,7 +83,6 @@ fun NavigationHost(
             topBarTitle = "Profile",
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            profileViewModel.onShow()
             ProfileScreen(profileViewModel, navController)
          }
       }

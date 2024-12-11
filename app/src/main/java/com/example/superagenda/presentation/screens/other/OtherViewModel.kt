@@ -9,9 +9,9 @@ import com.example.superagenda.data.models.TaskModel
 import com.example.superagenda.data.models.toDomain
 import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
+import com.example.superagenda.domain.TheRestUseCase
 import com.example.superagenda.domain.models.Task
 import com.example.superagenda.util.Result
-import com.example.superagenda.util.onSuccess
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,37 +21,31 @@ import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class OtherViewModel @Inject constructor(
    private val taskUseCase: TaskUseCase,
    private val authenticationUseCase: AuthenticationUseCase,
+   private val theRestUseCase: TheRestUseCase,
 ) : ViewModel() {
-   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
-   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popups = MutableStateFlow<List<Popup>>(emptyList())
+   val popups: StateFlow<List<Popup>> = _popups
 
    private val _tasksToResolve = MutableStateFlow<List<Task>>(emptyList())
    val tasksToResolve: StateFlow<List<Task>> = _tasksToResolve
 
-   // Utilities
 
-   fun enqueuePopup(title: String, message: String, error: String = "") {
-      _popupsQueue.value =
-         popupsQueue.value + Triple(title, message, error)
+   fun onPopupDismissed() {
+      _popups.value = _popups.value.drop(1)
    }
 
-   fun dismissPopup() {
-      _popupsQueue.value = _popupsQueue.value.drop(1)
-   }
-
-   // Main
-
-   fun onBackUpButtonPress() {
+   fun onBackUpButtonPressed() {
       viewModelScope.launch {
          when (val resultGetTasksAtDatabase = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> {
-               enqueuePopup("ERROR", "Failed, no tasks to backup...")
+               _popups.value += Popup("ERROR", "Failed, no tasks to backup...")
             }
 
             is Result.Success -> {
@@ -59,88 +53,35 @@ class OtherViewModel @Inject constructor(
 
                // TODO: Update this function to use AppResult
                if (taskUseCase.backupTasks(tasks)) {
-                  enqueuePopup(
-                     "INFO",
-                     "Successfully backed up tasks!\nYou can find it under Download"
+                  _popups.value += Popup(
+                     "INFO", "Successfully backed up tasks!\nYou can find it under Download"
                   )
                } else {
-                  enqueuePopup("ERROR", "Failed to backup tasks...")
+                  _popups.value += Popup("ERROR", "Failed to backup tasks...")
                }
             }
          }
       }
    }
 
-   fun onImportButtonPress(contentResolver: ContentResolver, filePath: String) {
-      viewModelScope.launch {
-         Log.d("LOOK AT ME", "CHOSEN FILE: ${printFileContents(contentResolver, filePath)}")
-         val taskList = deserializeTasksFromJson(contentResolver, filePath)
-
-         if (taskList == null) {
-            enqueuePopup("ERROR", "Failed, presumably corrupted or outdated file")
-            return@launch
-         }
-
-         if (taskList.isEmpty()) {
-            enqueuePopup("INFO", "No tasks, nothing to do...")
-            return@launch
-         }
-
-         var codeSuccess = true
-
-         for (task in taskList) {
-            codeSuccess =
-               when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
-                  is Result.Error -> false
-                  is Result.Success -> true
-               }
-         }
-
-         var codeSuccess2 = true
-
-         for (task in taskList) {
-            codeSuccess2 = when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
-               is Result.Error -> {
-                  enqueuePopup("ERROR", resultUpdateTaskAtApi.error.toString())
-                  false
-               }
-
-               is Result.Success -> resultUpdateTaskAtApi.data
-            }
-         }
-
-         if (codeSuccess) {
-            enqueuePopup("INFO", "Successfully imported tasks!")
-         } else {
-            enqueuePopup("ERROR", "Failure on importing some tasks...")
-         }
-
-         if (codeSuccess2) {
-            enqueuePopup("INFO", "Successfully synced tasks!")
-         } else {
-            enqueuePopup("ERROR", "Failed to sync tasks...")
-         }
-      }
-   }
-
-   fun onImport2Press(contentResolver: ContentResolver, filePath: String) {
+   fun onImportPressed(contentResolver: ContentResolver, filePath: String) {
       viewModelScope.launch {
          Log.d("LOOK AT ME", "CHOSEN FILE: ${printFileContents(contentResolver, filePath)}")
          val tasksImported = deserializeTasksFromJson(contentResolver, filePath)
 
          if (tasksImported == null) {
-            enqueuePopup("ERROR", "Failed, presumably corrupted or outdated file")
+            _popups.value += Popup("ERROR", "Failed, presumably corrupted or outdated file")
             return@launch
          }
 
          if (tasksImported.isEmpty()) {
-            enqueuePopup("INFO", "No tasks, nothing to do...")
+            _popups.value += Popup("INFO", "No tasks, nothing to do...")
             return@launch
          }
 
          when (val resultGetLocalTasks = taskUseCase.getTasksAtDatabase()) {
             is Result.Error -> {
-               enqueuePopup("ERROR", "Failed to retrieve local tasks...")
+               _popups.value += Popup("ERROR", "Failed to retrieve local tasks...")
                return@launch
             }
 
@@ -178,26 +119,6 @@ class OtherViewModel @Inject constructor(
    }
 
 
-   private fun deserializeTasksFromJson(
-      contentResolver: ContentResolver,
-      filePath: String,
-   ): List<Task>? {
-      try {
-         val gson = Gson()
-         val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
-         val reader = BufferedReader(InputStreamReader(inputStream))
-
-         val tasks: List<TaskModel> =
-            gson.fromJson(reader, Array<TaskModel>::class.java).toList()
-         reader.close()
-
-         return tasks.map { it.toDomain() }
-      } catch (e: Exception) {
-         Log.e("LOOK AT ME", "${e.message}")
-         return null
-      }
-   }
-
    fun resolveTask(task: Task, taskResolutionOptions: TaskResolutionOptions) {
       viewModelScope.launch {
          when (taskResolutionOptions) {
@@ -206,37 +127,55 @@ class OtherViewModel @Inject constructor(
             }
 
             TaskResolutionOptions.KEEP_NEW -> {
-               when (val result = taskUseCase.upsertTaskAtDatabase(task)) {
+               when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
                   is Result.Error -> {
-                     enqueuePopup(
+                     _popups.value += Popup(
                         "ERROR",
                         "Failed to update task locally...",
-                        result.error.toString()
+                        resultUpsertTaskAtDatabase.error.toString()
                      )
-
-                     return@launch
                   }
 
-                  is Result.Success -> _tasksToResolve.update { it - task }
-               }
+                  is Result.Success -> {
+                     _popups.value += Popup("INFO", "Successfully updated task...")
+                     _tasksToResolve.update { it - task }
 
-               val isLoggedInResult = authenticationUseCase.isLoggedIn()
 
-               isLoggedInResult.onSuccess {
-                  when (val result = taskUseCase.updateTaskAtApi(task)) {
-                     is Result.Error -> enqueuePopup(
-                        "ERROR",
-                        "Failed to update task at api...",
-                        result.error.toString()
-                     )
+                     when (val resultUpsertLastModifiedAtDatabase =
+                        theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                        is Result.Error -> _popups.value += Popup(
+                           "ERROR",
+                           "Failed to update last modified...",
+                           resultUpsertLastModifiedAtDatabase.error.toString()
+                        )
 
-                     is Result.Success -> enqueuePopup("INFO", "Successfully updated task!")
+                        is Result.Success -> {
+                           when (authenticationUseCase.isLoggedIn()) {
+                              is Result.Error -> {}
+
+                              is Result.Success -> {
+                                 when (val resultUpdateTaskAtApi =
+                                    taskUseCase.updateTaskAtApi(task)) {
+                                    is Result.Error -> _popups.value += Popup(
+                                       "ERROR",
+                                       "Failed to update task at api...",
+                                       resultUpdateTaskAtApi.error.toString()
+                                    )
+
+                                    is Result.Success -> _popups.value += Popup(
+                                       "INFO", "Successfully updated task!"
+                                    )
+                                 }
+                              }
+                           }
+                        }
+                     }
                   }
                }
             }
 
             TaskResolutionOptions.KEEP_BOTH -> {
-               val taskShadowed = Task(
+               val taskNew = Task(
                   ObjectId(),
                   task.title,
                   task.description,
@@ -247,19 +186,82 @@ class OtherViewModel @Inject constructor(
                   task.images
                )
 
-               when (val result = taskUseCase.upsertTaskAtDatabase(taskShadowed)) {
-                  is Result.Error -> TODO()
-                  is Result.Success -> TODO()
+               when (val resultUpsertTaskAtDatabase =
+                  taskUseCase.upsertTaskAtDatabase(taskNew)) {
+                  is Result.Error -> _popups.value += Popup(
+                     "ERROR",
+                     "Failed to upsert task locally...",
+                     resultUpsertTaskAtDatabase.error.toString()
+                  )
+
+                  is Result.Success -> {
+                     _tasksToResolve.update { it - task }
+                     _popups.value += Popup("INFO", "Successfully upserted task locally!")
+
+
+                     when (val resultUpsertLastModifiedAtDatabase =
+                        theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                        is Result.Error -> _popups.value += Popup(
+                           "ERROR",
+                           "Failed to update last modified...",
+                           resultUpsertLastModifiedAtDatabase.error.toString()
+                        )
+
+                        is Result.Success -> {
+                           when (authenticationUseCase.isLoggedIn()) {
+                              is Result.Error -> {}
+
+                              is Result.Success -> {
+                                 when (val resultCreateTaskAtApi =
+                                    taskUseCase.createTaskAtApi(taskNew)) {
+                                    is Result.Error -> _popups.value += Popup(
+                                       "ERROR",
+                                       "Failed to create task at api...",
+                                       resultCreateTaskAtApi.error.toString()
+                                    )
+
+                                    is Result.Success -> _popups.value += Popup(
+                                       "INFO", "Successfully created task at api!"
+                                    )
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
                }
             }
          }
       }
+   }
 
+   private fun deserializeTasksFromJson(
+      contentResolver: ContentResolver,
+      filePath: String,
+   ): List<Task>? {
+      try {
+         val gson = Gson()
+         val inputStream = contentResolver.openInputStream(Uri.parse(filePath))
+         val reader = BufferedReader(InputStreamReader(inputStream))
+
+         val tasks: List<TaskModel> = gson.fromJson(reader, Array<TaskModel>::class.java).toList()
+         reader.close()
+
+         return tasks.map { it.toDomain() }
+      } catch (e: Exception) {
+         Log.e("LOOK AT ME", "${e.message}")
+         return null
+      }
    }
 }
 
 enum class TaskResolutionOptions {
-   KEEP_ORIGINAL,
-   KEEP_NEW,
-   KEEP_BOTH
+   KEEP_ORIGINAL, KEEP_NEW, KEEP_BOTH
 }
+
+data class Popup(
+   val title: String = "",
+   val description: String = "",
+   val error: String = "",
+   val code: () -> Unit = {},
+)
