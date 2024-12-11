@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.newTask
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.AuthenticationUseCase
@@ -124,7 +125,7 @@ class NewTaskViewModel @Inject constructor(
                   is Result.Success -> {
                      val tasksDatabase = resultGetTasksAtDatabase.data
 
-                     if (tasksDatabase.size > 5) {
+                     if (tasksDatabase.size > 4) {
                         _popups.value += Popup(
                            "INFO",
                            "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
@@ -166,7 +167,7 @@ class NewTaskViewModel @Inject constructor(
                               is Result.Success -> {
                                  val tasksDatabase = resultGetTasksAtDatabase.data
 
-                                 if (tasksDatabase.size > 5) {
+                                 if (tasksDatabase.size > 4) {
                                     _popups.value += Popup(
                                        "INFO",
                                        "You can only create up to 5 tasks with the free plan, consider upgrading to premium"
