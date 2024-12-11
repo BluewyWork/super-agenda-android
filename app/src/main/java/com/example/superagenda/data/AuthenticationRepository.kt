@@ -34,7 +34,7 @@ class AuthenticationRepository @Inject constructor(
    suspend fun upsertTokenAtDatabase(token: String): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
-            tokenDao.upsert(TokenEntity(token))
+            tokenDao.upsert(TokenEntity(token =token))
             Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")

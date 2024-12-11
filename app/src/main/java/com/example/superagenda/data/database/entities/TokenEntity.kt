@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "token_table")
 data class TokenEntity(
-   @PrimaryKey(autoGenerate = false)
+   @PrimaryKey val id: Int = 0,
    @ColumnInfo(name = "token") val token: String,
 )

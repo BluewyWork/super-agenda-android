@@ -27,7 +27,7 @@ class MiscRepository @Inject constructor(
    suspend fun updateScreenShownAtDatabase(shown: Boolean): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
-            Result.Success(miscDao.upsert(MiscEntity(shown)))
+            Result.Success(miscDao.upsert(MiscEntity(sliderShown = shown)))
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")
             Result.Error(AppError.DatabaseError.UNKNOWN)

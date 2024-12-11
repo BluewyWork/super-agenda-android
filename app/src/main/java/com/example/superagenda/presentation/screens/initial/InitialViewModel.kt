@@ -1,5 +1,6 @@
 package com.example.superagenda.presentation.screens.initial
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superagenda.domain.AuthenticationUseCase
@@ -131,7 +132,12 @@ class InitialViewModel @Inject constructor(
             return@withShowLoading
          }
 
+         Log.d("LOOK AT ME", "modRemote ${lastModifiedRemote}")
+         Log.d("LOOK AT ME", "modLocarlly ${lastModifiedLocally}")
+
          if (lastModifiedLocally < lastModifiedRemote) {
+            Log.d("LOOK AT ME", "lastModifiedRemote is newer")
+
             val tasksDeleted =
                resultGetTasksDatabase.data.filter { it !in resultGetTasksRemote.data }
 
@@ -140,7 +146,7 @@ class InitialViewModel @Inject constructor(
             for (task in tasksDeleted) {
                lastResult2 = when (taskUseCase.deleteTaskAtDatabase(task.id)) {
                   is Result.Error -> false
-                  is Result.Success -> true
+                  is Result.Success -> lastResult2
                }
             }
 
@@ -153,6 +159,8 @@ class InitialViewModel @Inject constructor(
                }
             }
          } else if (lastModifiedLocally > lastModifiedRemote) {
+            Log.d("LOOK AT ME", "lastModifiedLocally is newer")
+
             val tasksDeleted =
                resultGetTasksRemote.data.filter { it !in resultGetTasksDatabase.data }
 
@@ -161,7 +169,7 @@ class InitialViewModel @Inject constructor(
             for (task in tasksDeleted) {
                lastResult = when (taskUseCase.deleteTaskAtApi(task.id)) {
                   is Result.Error -> false
-                  is Result.Success -> true
+                  is Result.Success -> lastResult
                }
             }
 

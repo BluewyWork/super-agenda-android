@@ -26,9 +26,11 @@ class TheRestRepository @Inject constructor(
       return withContext(Dispatchers.IO) {
          try {
             val value = theRestDao.get().lastModified
+            Log.d("LOOK AT ME", "get: $value")
 
             val converted = stringToLocalDateTime(value)
                ?: return@withContext Result.Error(AppError.MainError.CONVERSION_FAILED)
+            Log.d("LOOK AT ME", "get2: $converted")
 
             Result.Success(converted)
          } catch (e: Exception) {
@@ -41,10 +43,12 @@ class TheRestRepository @Inject constructor(
    suspend fun upsertLastModifiedAtDatabase(lastModified: LocalDateTime): AppResult<Unit> {
       return withContext(Dispatchers.IO) {
          try {
+            Log.d("LOOK AT ME", "raw: ${lastModified.toString()}")
             val converted = localDateTimeToString(lastModified)
                ?: return@withContext Result.Error(AppError.MainError.CONVERSION_FAILED)
+            Log.d("LOOK AT ME", "conv: $converted")
 
-            theRestDao.upsert(TheRestEntity(converted))
+            theRestDao.upsert(TheRestEntity(lastModified = converted))
             Result.Success(Unit)
          } catch (e: Exception) {
             Log.e("LOOK AT ME", "${e.message}")

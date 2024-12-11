@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "misc_table")
 data class MiscEntity(
-   @PrimaryKey(autoGenerate = false)
+   @PrimaryKey val id: Int = 0,
    val sliderShown: Boolean,
 )

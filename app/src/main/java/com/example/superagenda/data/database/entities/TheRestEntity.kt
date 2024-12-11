@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "the_rest_table")
 data class TheRestEntity(
-   @PrimaryKey(autoGenerate = false)
+   @PrimaryKey val id: Int = 0,
    @ColumnInfo("lastModified") val lastModified: String
 )
