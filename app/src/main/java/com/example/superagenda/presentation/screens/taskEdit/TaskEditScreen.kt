@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,10 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.ImageRow
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
-import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.taskEdit.composables.TaskStatusDropDown
 import com.example.superagenda.util.decodeBase64ToImage
 
@@ -34,18 +34,38 @@ import com.example.superagenda.util.decodeBase64ToImage
 fun TaskEditScreen(
    taskEditViewModel: TaskEditViewModel,
    navController: NavController,
-   wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by taskEditViewModel.popups.collectAsStateWithLifecycle()
+   val popups by taskEditViewModel.popups.collectAsStateWithLifecycle()
 
-   if (popupsQueue.isNotEmpty()) {
-      PopupDialog(
-         title = popupsQueue.first().first,
-         message = popupsQueue.first().second,
-         error = popupsQueue.first().third
-      ) {
+   if (popups.isNotEmpty()) {
+      val popup = popups.first()
+
+      AlertDialog(onDismissRequest = {
+         popup.code()
          taskEditViewModel.onPopupDismissed()
-      }
+      },
+
+         title = { Text(popup.title) },
+
+         text = {
+            Column {
+               if (popup.error.isNotBlank()) {
+                  Text(popup.error)
+               }
+
+               Text(popup.description)
+            }
+         },
+
+         confirmButton = {
+            Button(onClick = {
+               popup.code()
+               taskEditViewModel.onPopupDismissed()
+            }) {
+               Text("OK")
+            }
+         })
+
    }
 
    Column {
@@ -63,18 +83,15 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
    val images by taskEditViewModel.images.collectAsStateWithLifecycle()
 
    Column(
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-      modifier = Modifier.padding(8.dp)
+      verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)
    ) {
-      OutlinedTextField(
-         value = title,
+      OutlinedTextField(value = title,
          onValueChange = { it2 -> taskEditViewModel.setTitle(it2) },
          label = { Text("Title") },
          modifier = Modifier.fillMaxWidth()
       )
 
-      OutlinedTextField(
-         value = description,
+      OutlinedTextField(value = description,
          onValueChange = { it2 -> taskEditViewModel.setDescription(it2) },
          label = { Text("Description") },
          modifier = Modifier.fillMaxWidth()
@@ -85,8 +102,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
       }
 
       LocalDateTimePickerTextField(
-         label = "Start DateTime",
-         value = startDateTime,
+         label = "Start DateTime", value = startDateTime,
 
          onLocalDateTimeChange = { it2 ->
             taskEditViewModel.setStartDateTime(it2)
@@ -96,8 +112,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
       )
 
       LocalDateTimePickerTextField(
-         label = "End DateTime",
-         value = endEstimatedDateTime,
+         label = "End DateTime", value = endEstimatedDateTime,
 
          onLocalDateTimeChange = { it2 ->
             taskEditViewModel.setEndEstimatedDateTime(it2)
@@ -108,28 +123,22 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
 
       var showBigImage by remember { mutableStateOf("") }
 
-      ImageRow(
-         images,
-         onImageClick = { imageClicked ->
-            val bitmap = decodeBase64ToImage(imageClicked)
+      ImageRow(images, onImageClick = { imageClicked ->
+         val bitmap = decodeBase64ToImage(imageClicked)
 
-            if (bitmap != null) {
-               showBigImage = imageClicked
-            }
+         if (bitmap != null) {
+            showBigImage = imageClicked
          }
-      ) { imageNew ->
+      }) { imageNew ->
          taskEditViewModel.setImages(images + imageNew)
       }
 
       if (showBigImage.isNotEmpty()) {
-         Dialog(
-            onDismissRequest = { showBigImage = "" }
-         ) {
+         Dialog(onDismissRequest = { showBigImage = "" }) {
             Box(
                modifier = Modifier
                   .fillMaxSize()
-                  .padding(16.dp),
-               contentAlignment = Alignment.Center
+                  .padding(16.dp), contentAlignment = Alignment.Center
             ) {
                Column(
                   horizontalAlignment = Alignment.CenterHorizontally
@@ -157,8 +166,7 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
                taskEditViewModel.onDeleteButtonPress {
                   navController.navigateUp()
                }
-            },
-            modifier = Modifier
+            }, modifier = Modifier
                .fillMaxWidth()
                .weight(.5f)
          ) {
@@ -166,8 +174,11 @@ fun TaskEdit(taskEditViewModel: TaskEditViewModel, navController: NavController)
          }
 
          Button(
-            onClick = { taskEditViewModel.onUpdateButtonPress(navController) },
-            modifier = Modifier
+            onClick = {
+               taskEditViewModel.onUpdateButtonPress {
+                  navController.navigate(Destinations.Tasks.route)
+               }
+            }, modifier = Modifier
                .fillMaxWidth()
                .weight(.5f)
          ) {

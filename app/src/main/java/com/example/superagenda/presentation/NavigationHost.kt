@@ -109,7 +109,7 @@ fun NavigationHost(
             navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            TaskEditScreen(taskEditViewModel, navController, wrapperNavigationViewModel)
+            TaskEditScreen(taskEditViewModel, navController)
          }
       }
 
@@ -136,7 +136,7 @@ fun NavigationHost(
             navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
-            TaskEditScreen(taskEditViewModel, navController, wrapperNavigationViewModel)
+            TaskEditScreen(taskEditViewModel, navController)
          }
       }
 
