@@ -32,6 +32,7 @@ class InitialViewModel @Inject constructor(
    val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
 
    private val _navDecision = MutableStateFlow(TheDecision.UNDECIDED)
+
    val navDecision: StateFlow<TheDecision> = _navDecision.onStart {
       viewModelScope.launch {
          val sliderShown = when (miscUseCase.getScreenShownAtDatabase()) {

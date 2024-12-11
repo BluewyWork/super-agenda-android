@@ -116,8 +116,10 @@ class TaskEditViewModel @Inject constructor(
             return@launch
          }
 
+         val now = LocalDateTime.now()
+
          if (taskStatus == TaskStatus.Completed) {
-            endDateTime = LocalDateTime.now()
+            endDateTime = now
          }
 
          if (startDatetime >= endEstimatedDateTime) {
@@ -126,6 +128,7 @@ class TaskEditViewModel @Inject constructor(
             )
             return@launch
          }
+
 
          val task = Task(
             id = taskId,
@@ -149,7 +152,7 @@ class TaskEditViewModel @Inject constructor(
                _popups.value += Popup("INFO", "Successfully updated task locally!")
 
                when (val resultUpsertLastModifiedAtDatabase =
-                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(now)) {
                   is Result.Error -> _popups.value += Popup(
                      "ERROR",
                      "Failed to update last modified locally...",
@@ -183,7 +186,7 @@ class TaskEditViewModel @Inject constructor(
                                  _popups.value += Popup("INFO", "Successfully updated task at API!")
 
                                  when (val resultUpdateLastModifiedAtApi =
-                                    theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                                    theRestUseCase.updateLastModifiedAtApi(now)) {
                                     is Result.Error -> _popups.value += Popup(
                                        "ERROR",
                                        "Failed to update last modified at api...",
@@ -212,6 +215,7 @@ class TaskEditViewModel @Inject constructor(
    fun onDeleteButtonPress(onSuccess: () -> Unit) {
       viewModelScope.launch {
          val taskId = _taskId.value
+         val now = LocalDateTime.now()
 
          when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTaskAtDatabase(taskId)) {
             is Result.Error -> _popups.value += Popup(
@@ -224,7 +228,7 @@ class TaskEditViewModel @Inject constructor(
                _popups.value += Popup("INFO", "Successfully deleted task locally!")
 
                when (val result =
-                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(now)) {
                   is Result.Error -> _popups.value += Popup(
                      "ERROR", "Failed to update last modified locally...", result.error.toString()
                   )
@@ -257,7 +261,7 @@ class TaskEditViewModel @Inject constructor(
                                  _popups.value += Popup("INFO", "Successfully updated task at api!")
 
                                  when (val resultUpdateLastModifiedAtApi =
-                                    theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                                    theRestUseCase.updateLastModifiedAtApi(now)) {
                                     is Result.Error -> _popups.value += Popup(
                                        "ERROR",
                                        "Failed to update last modified at api...",

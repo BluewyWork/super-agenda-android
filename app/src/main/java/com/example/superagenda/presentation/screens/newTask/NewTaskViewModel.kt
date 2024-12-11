@@ -109,6 +109,8 @@ class NewTaskViewModel @Inject constructor(
             return@launch
          }
 
+         val now = LocalDateTime.now()
+
          when (authenticationUseCase.isLoggedIn()) {
             is Result.Error -> {
                when (val resultGetTasksAtDatabase = task2UseCase.getTasksAtDatabase()) {
@@ -195,7 +197,7 @@ class NewTaskViewModel @Inject constructor(
             status = taskStatus,
             startDateTime = startDatetime,
             endEstimatedDateTime = endEstimatedDateTime,
-            endDateTime = LocalDateTime.now(),
+            endDateTime = now,
             images = images
          )
 
@@ -212,7 +214,7 @@ class NewTaskViewModel @Inject constructor(
                _popups.value += Popup("INFO", "Successfully created task locally!")
 
                when (val resultUpsertLastModifiedAtDatabase =
-                  theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                  theRestUseCase.upsertLastModifiedAtDatabase(now)) {
                   is Result.Error -> {
 
                      _popups.value += Popup(
@@ -256,7 +258,7 @@ class NewTaskViewModel @Inject constructor(
                                  )
 
                                  when (val resultUpdateLastModifiedAtApi =
-                                    theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                                    theRestUseCase.updateLastModifiedAtApi(now)) {
                                     is Result.Error -> {
                                        _popups.value += Popup(
                                           "INFO", "Successfully created task at API!"
