@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,21 +30,44 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.BackIconButton
-import com.example.superagenda.presentation.composables.PopupDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popups.collectAsStateWithLifecycle()
+   val popupsQueue by registerViewModel.popups.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
-      PopupDialog(
-         popupsQueue.first().first,
-         popupsQueue.first().second,
-         popupsQueue.first().third
-      ) {
-         registerViewModel.onPopupDismissed()
-      }
+      val popup = popupsQueue.first()
+
+      AlertDialog(
+         onDismissRequest = {
+            popup.code()
+            registerViewModel.onPopupDismissed()
+         },
+
+         title = { Text(popup.title) },
+
+         text = {
+            Column {
+               if (popup.error.isNotBlank()) {
+                  Text(popup.error)
+               }
+
+               Text(popup.description)
+            }
+         },
+
+         confirmButton = {
+            Button(
+               onClick = {
+                  popup.code()
+                  registerViewModel.onPopupDismissed()
+               }
+            ) {
+               Text("OK")
+            }
+         }
+      )
    }
 
    Scaffold(
