@@ -2,7 +2,6 @@ package com.example.superagenda.presentation.screens.taskEdit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.example.superagenda.domain.AuthenticationUseCase
 import com.example.superagenda.domain.TaskUseCase
 import com.example.superagenda.domain.TheRestUseCase
@@ -10,7 +9,6 @@ import com.example.superagenda.domain.models.Task
 import com.example.superagenda.domain.models.TaskStatus
 import com.example.superagenda.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -47,8 +45,8 @@ class TaskEditViewModel @Inject constructor(
    private val _images = MutableStateFlow<List<String>>(emptyList())
    val images: StateFlow<List<String>> = _images
 
-   private val _popupsQueue = MutableStateFlow<List<Triple<String, String, String>>>(emptyList())
-   val popupsQueue: StateFlow<List<Triple<String, String, String>>> = _popupsQueue
+   private val _popups = MutableStateFlow<List<Popup>>(emptyList())
+   val popups: StateFlow<List<Popup>> = _popups
 
    // Getter & Setters
 
@@ -86,26 +84,13 @@ class TaskEditViewModel @Inject constructor(
 
    // Utilities
 
-   fun enqueuePopup(title: String, description: String, error: String = "") {
-      _popupsQueue.value =
-         popupsQueue.value + Triple(title, description, error)
-   }
-
-   fun dismissPopup() {
-      _popupsQueue.value = _popupsQueue.value.drop(1)
-   }
-
-   private suspend fun whenPopupsEmpty(code: () -> Unit) {
-      while (popupsQueue.value.isNotEmpty()) {
-         delay(2000)
-      }
-
-      code()
+   fun onPopupDismissed() {
+      _popups.value = _popups.value.drop(1)
    }
 
    // Main
 
-   fun onUpdateButtonPress(navController: NavController) {
+   fun onUpdateButtonPress(onSuccess: () -> Unit) {
       viewModelScope.launch {
          val taskId = _taskId.value
          val title = title.value
@@ -117,17 +102,17 @@ class TaskEditViewModel @Inject constructor(
          val images = _images.value
 
          if (title.isBlank()) {
-            enqueuePopup("ERROR", "Title can not be empty...")
+            _popups.value += Popup("ERROR", "Title can not be empty...")
             return@launch
          }
 
          if (startDatetime == null || endEstimatedDateTime == null) {
-            enqueuePopup("ERROR", "Dates can't be empty...")
+            _popups.value += Popup("ERROR", "Dates can't be empty...")
             return@launch
          }
 
          if (description.isBlank()) {
-            enqueuePopup("ERROR", "Description can not be empty...")
+            _popups.value += Popup("ERROR", "Description can not be empty...")
             return@launch
          }
 
@@ -136,9 +121,8 @@ class TaskEditViewModel @Inject constructor(
          }
 
          if (startDatetime >= endEstimatedDateTime) {
-            enqueuePopup(
-               "ERROR",
-               "The expiration date can't be before or the same as the start date"
+            _popups.value += Popup(
+               "ERROR", "The expiration date can't be before or the same as the start date"
             )
             return@launch
          }
@@ -155,65 +139,63 @@ class TaskEditViewModel @Inject constructor(
          )
 
          when (val resultUpsertTaskAtDatabase = taskUseCase.upsertTaskAtDatabase(task)) {
-            is Result.Error ->
-               enqueuePopup(
-                  "ERROR",
-                  "Failed to update task locally...",
-                  resultUpsertTaskAtDatabase.error.toString()
-               )
+            is Result.Error -> _popups.value += Popup(
+               "ERROR",
+               "Failed to update task locally...",
+               resultUpsertTaskAtDatabase.error.toString()
+            )
 
             is Result.Success -> {
-               enqueuePopup("INFO", "Successfully updated task locally!")
+               _popups.value += Popup("INFO", "Successfully updated task locally!")
 
-               when (val result =
+               when (val resultUpsertLastModifiedAtDatabase =
                   theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
-                  is Result.Error -> enqueuePopup(
-                     "ERROR",
-                     "Failed to update last modified locally...",
-                     result.error.toString()
+                  is Result.Error -> _popups.value += Popup(
+                     "ERROR", "Failed to update last modified locally...", resultUpsertLastModifiedAtDatabase.error.toString()
                   )
-
-                  is Result.Success -> enqueuePopup(
-                     "INFO",
-                     "Successfully updated last modified locally!"
-                  )
-               }
-
-               val loggedIn = authenticationUseCase.isLoggedIn()
-
-               if (loggedIn !is Result.Success) {
-                  return@launch
-               }
-
-               when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
-                  is Result.Error ->
-                     enqueuePopup(
-                        "ERROR",
-                        "Failed to update task at API...",
-                        resultUpdateTaskAtApi.error.toString()
-                     )
 
                   is Result.Success -> {
-                     enqueuePopup("INFO", "Successfully updated task at API!")
+                     _popups.value += Popup(
+                        "INFO", "Successfully updated last modified locally!"
+                     )
 
-                     when (val resultUpdateLastModifiedAtApi =
-                        theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
-                        is Result.Error -> enqueuePopup(
-                           "ERROR",
-                           "Failed to update last modified at api...",
-                           resultUpdateLastModifiedAtApi.error.toString()
-                        )
+                     when (authenticationUseCase.isLoggedIn()) {
+                        is Result.Error -> {}
 
-                        is Result.Success -> enqueuePopup(
-                           "INFO",
-                           "Successfully updated last modified at api!"
-                        )
+                        is Result.Success -> {
+                           when (val resultUpdateTaskAtApi = taskUseCase.updateTaskAtApi(task)) {
+                              is Result.Error -> _popups.value += Popup(
+                                 "ERROR",
+                                 "Failed to update task at API...",
+                                 resultUpdateTaskAtApi.error.toString()
+                              ) {
+                                 onSuccess()
+                              }
+
+                              is Result.Success -> {
+                                 _popups.value += Popup("INFO", "Successfully updated task at API!")
+
+                                 when (val resultUpdateLastModifiedAtApi =
+                                    theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                                    is Result.Error -> _popups.value += Popup(
+                                       "ERROR",
+                                       "Failed to update last modified at api...",
+                                       resultUpdateLastModifiedAtApi.error.toString()
+                                    ) {
+                                       onSuccess()
+                                    }
+
+                                    is Result.Success -> _popups.value += Popup(
+                                       "INFO", "Successfully updated last modified at api!"
+                                    ) {
+                                       onSuccess()
+                                    }
+                                 }
+                              }
+                           }
+                        }
                      }
                   }
-               }
-
-               whenPopupsEmpty {
-                  navController.navigateUp()
                }
             }
          }
@@ -225,63 +207,57 @@ class TaskEditViewModel @Inject constructor(
          val taskId = _taskId.value
 
          when (val resultDeleteTaskAtDatabase = taskUseCase.deleteTaskAtDatabase(taskId)) {
-            is Result.Error ->
-               enqueuePopup(
-                  "ERROR",
-                  "Failed to delete task locally...",
-                  resultDeleteTaskAtDatabase.error.toString()
-               )
+            is Result.Error -> _popups.value += Popup(
+               "ERROR",
+               "Failed to delete task locally...",
+               resultDeleteTaskAtDatabase.error.toString()
+            )
 
             is Result.Success -> {
+               _popups.value += Popup("INFO", "Successfully deleted task locally!")
+
                when (val result =
                   theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
-                  is Result.Error -> enqueuePopup(
-                     "ERROR",
-                     "Failed to update last modified locally...",
-                     result.error.toString()
+                  is Result.Error -> _popups.value += Popup(
+                     "ERROR", "Failed to update last modified locally...", result.error.toString()
                   )
-
-                  is Result.Success -> enqueuePopup(
-                     "INFO",
-                     "Successfully updated last modified locally!"
-                  )
-               }
-
-               val loggedIn = authenticationUseCase.isLoggedIn()
-
-               if (loggedIn !is Result.Success) {
-                  onSuccess()
-                  return@launch
-               }
-
-               when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtApi(taskId)) {
-                  is Result.Error -> {
-                     enqueuePopup(
-                        "ERROR",
-                        "Failed to delete task at api...",
-                        resultDeleteTaskAtApi.error.toString()
-                     )
-                  }
 
                   is Result.Success -> {
-                     enqueuePopup("INFO", "Successfully updated task at api!")
+                     _popups.value += Popup(
+                        "INFO", "Successfully updated last modified locally!"
+                     )
 
-                     when (val resultUpdateLastModifiedAtApi =
-                        theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
-                        is Result.Error -> enqueuePopup(
-                           "ERROR",
-                           "Failed to update last modified at api...",
-                           resultUpdateLastModifiedAtApi.error.toString()
-                        )
+                     when (authenticationUseCase.isLoggedIn()) {
+                        is Result.Error -> {}
 
-                        is Result.Success -> enqueuePopup(
-                           "INFO",
-                           "Successfully updated last modified at api!"
-                        )
-                     }
+                        is Result.Success -> {
+                           when (val resultDeleteTaskAtApi = taskUseCase.deleteTaskAtApi(taskId)) {
+                              is Result.Error -> {
+                                 _popups.value += Popup(
+                                    "ERROR",
+                                    "Failed to delete task at api...",
+                                    resultDeleteTaskAtApi.error.toString()
+                                 ) { onSuccess() }
+                              }
 
-                     whenPopupsEmpty {
-                        onSuccess()
+                              is Result.Success -> {
+                                 _popups.value += Popup("INFO", "Successfully updated task at api!")
+
+                                 when (val resultUpdateLastModifiedAtApi =
+                                    theRestUseCase.updateLastModifiedAtApi(LocalDateTime.now())) {
+                                    is Result.Error -> _popups.value += Popup(
+                                       "ERROR",
+                                       "Failed to update last modified at api...",
+                                       resultUpdateLastModifiedAtApi.error.toString()
+                                    ) { onSuccess() }
+
+                                    is Result.Success -> _popups.value += Popup(
+                                       "INFO", "Successfully updated last modified at api!"
+                                    ) { onSuccess() }
+                                 }
+                              }
+                           }
+                        }
                      }
                   }
                }
@@ -290,3 +266,10 @@ class TaskEditViewModel @Inject constructor(
       }
    }
 }
+
+data class Popup(
+   val title: String = "",
+   val description: String = "",
+   val error: String = "",
+   val code: () -> Unit = {},
+)

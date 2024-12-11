@@ -36,7 +36,7 @@ fun TaskEditScreen(
    navController: NavController,
    wrapperNavigationViewModel: WrapperNavigationViewModel,
 ) {
-   val popupsQueue: List<Triple<String, String, String>> by taskEditViewModel.popupsQueue.collectAsStateWithLifecycle()
+   val popupsQueue: List<Triple<String, String, String>> by taskEditViewModel.popups.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
@@ -44,7 +44,7 @@ fun TaskEditScreen(
          message = popupsQueue.first().second,
          error = popupsQueue.first().third
       ) {
-         taskEditViewModel.dismissPopup()
+         taskEditViewModel.onPopupDismissed()
       }
    }
 
