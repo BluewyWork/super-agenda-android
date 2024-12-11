@@ -34,7 +34,7 @@ import com.example.superagenda.presentation.composables.PopupDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavController) {
-   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popupsQueue.collectAsStateWithLifecycle()
+   val popupsQueue: List<Triple<String, String, String>> by registerViewModel.popups.collectAsStateWithLifecycle()
 
    if (popupsQueue.isNotEmpty()) {
       PopupDialog(
@@ -42,7 +42,7 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, navController: NavContr
          popupsQueue.first().second,
          popupsQueue.first().third
       ) {
-         registerViewModel.dismissPopup()
+         registerViewModel.onPopupDismissed()
       }
    }
 
@@ -75,7 +75,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
          .fillMaxWidth()
          .padding(start = 8.dp, end = 8.dp),
       value = username,
-      onValueChange = { registerViewModel.onUsernameChange(it) },
+      onValueChange = { registerViewModel.onUsernameChanged(it) },
       label = { Text(text = "Username") },
       leadingIcon = { Icon(Icons.Default.Person, null) }
    )
@@ -89,7 +89,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
 
       value = password,
       visualTransformation = PasswordVisualTransformation(),
-      onValueChange = { registerViewModel.onPasswordChange(it) },
+      onValueChange = { registerViewModel.onPasswordChanged(it) },
       singleLine = true,
       label = { Text(text = "Password") },
       leadingIcon = { Icon(Icons.Filled.Lock, null) },
@@ -103,7 +103,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
          .padding(start = 8.dp, end = 8.dp),
       value = passwordConfirm,
       visualTransformation = PasswordVisualTransformation(),
-      onValueChange = { registerViewModel.onPasswordConfirmChange(it) },
+      onValueChange = { registerViewModel.onPasswordConfirmChanged(it) },
       label = { Text("Confirm Password") },
       leadingIcon = { Icon(Icons.Filled.Lock, null) },
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -117,7 +117,7 @@ fun Register(registerViewModel: RegisterViewModel, navController: NavController)
    Spacer(modifier = Modifier.padding(16.dp))
 
    Button(
-      onClick = { registerViewModel.onRegisterButtonPress(navController) },
+      onClick = { registerViewModel.onRegisterButtonPressed(navController) },
       modifier = Modifier.fillMaxWidth()
    ) {
       Text("Register")
