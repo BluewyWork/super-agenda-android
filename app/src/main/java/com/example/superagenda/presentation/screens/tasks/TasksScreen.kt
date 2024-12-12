@@ -127,11 +127,9 @@ fun TasksNotStarted(tasksViewModel: TasksViewModel, navController: NavController
                currentWeekStart -> "Starts This Week"
                lastWeekStart -> "Started Last Week"
                nextWeekStart -> "Starts Next Week"
-               else -> if (weekStart.isBefore(currentWeekStart)) {
-                  "Started at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               } else {
+
+               else ->
                   "Starts the Week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               }
             }
 
             LineWithText(weekLabel)
@@ -186,11 +184,9 @@ fun TasksOngoing(tasksViewModel: TasksViewModel, navController: NavController) {
                currentWeekStart -> "Ends This Week"
                lastWeekStart -> "Ends Last Week"
                nextWeekStart -> "Ends Next Week"
-               else -> if (weekStart.isBefore(currentWeekStart)) {
-                  "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               } else {
-                  "Ends at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               }
+
+               else ->
+                  "Ends on the week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
             }
 
             LineWithText(weekLabel)
@@ -244,11 +240,8 @@ fun TasksCompleted(tasksViewModel: TasksViewModel, navController: NavController)
             val weekLabel = when (weekStart) {
                currentWeekStart -> "Completed This Week"
                lastWeekStart -> "Completed Last Week"
-               else -> if (weekStart.isBefore(currentWeekStart)) {
-                  "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               } else {
-                  "Completed at ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
-               }
+               else ->
+                  "Completed on the week of ${weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
             }
 
             LineWithText(weekLabel)
