@@ -17,16 +17,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.filter.composables.CardTask
+import com.example.superagenda.presentation.screens.history.composable.CardTask
 import com.example.superagenda.presentation.screens.filter.composables.TaskStatusDropDown
-import com.example.superagenda.ui.theme.oneDarkProOnSurface
 import com.example.superagenda.ui.theme.oneDarkProSurface
 
 @Composable

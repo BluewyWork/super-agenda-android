@@ -12,6 +12,8 @@ import com.example.superagenda.presentation.composables.BackIconButton
 import com.example.superagenda.presentation.composables.FloatingActionButtonPlus
 import com.example.superagenda.presentation.screens.filter.FilterScreen
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
+import com.example.superagenda.presentation.screens.history.HistoryScreen
+import com.example.superagenda.presentation.screens.history.HistoryViewModel
 import com.example.superagenda.presentation.screens.initial.InitialScreen
 import com.example.superagenda.presentation.screens.initial.InitialViewModel
 import com.example.superagenda.presentation.screens.login.LoginScreen
@@ -46,6 +48,7 @@ fun NavigationHost(
    otherViewModel: OtherViewModel,
    initialViewModel: InitialViewModel,
    sliderScreenViewModel: SliderScreenViewModel,
+   historyViewModel: HistoryViewModel
 ) {
    val navController = rememberNavController()
 
@@ -140,6 +143,31 @@ fun NavigationHost(
          }
       }
 
+      composable(Destinations.TaskEdit.route + "3") {
+         val taskToEdit = historyViewModel.getTaskToEdit()
+
+         if (taskToEdit == null) {
+            navController.navigate(Destinations.History.route)
+            return@composable
+         }
+
+         taskEditViewModel.setTaskId(taskToEdit.id)
+         taskEditViewModel.setTitle(taskToEdit.title)
+         taskEditViewModel.setDescription(taskToEdit.description)
+         taskEditViewModel.setTaskStatus(taskToEdit.status)
+         taskEditViewModel.setStartDateTime(taskToEdit.startDateTime)
+         taskEditViewModel.setEndDateTime(taskToEdit.endEstimatedDateTime)
+         taskEditViewModel.setImages(taskToEdit.images)
+
+         Navigation(
+            navController = navController,
+            topBarTitle = "TASK EDIT",
+            navigationIcon = { BackIconButton(onClick = { navController.navigateUp() }) },
+            wrapperNavigationViewModel = wrapperNavigationViewModel
+         ) {
+            TaskEditScreen(taskEditViewModel, navController)
+         }
+      }
 
       composable(Destinations.NewTask.route) {
          Navigation(
@@ -187,6 +215,16 @@ fun NavigationHost(
             wrapperNavigationViewModel = wrapperNavigationViewModel
          ) {
             OtherScreen(otherViewModel)
+         }
+      }
+
+      composable(Destinations.History.route) {
+         Navigation(
+            navController,
+            "History",
+            wrapperNavigationViewModel = wrapperNavigationViewModel
+         ) {
+            HistoryScreen(historyViewModel, navController)
          }
       }
    }

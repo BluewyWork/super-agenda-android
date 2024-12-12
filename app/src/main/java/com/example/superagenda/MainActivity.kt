@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import com.example.superagenda.presentation.NavigationHost
 import com.example.superagenda.presentation.screens.navigation.WrapperNavigationViewModel
 import com.example.superagenda.presentation.screens.filter.FilterScreenViewModel
+import com.example.superagenda.presentation.screens.history.HistoryViewModel
 import com.example.superagenda.presentation.screens.initial.InitialViewModel
 import com.example.superagenda.presentation.screens.login.LoginViewModel
 import com.example.superagenda.presentation.screens.newTask.NewTaskViewModel
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
    private val otherViewModel: OtherViewModel by viewModels()
    private val initialViewModel: InitialViewModel by viewModels()
    private val sliderScreenViewModel: SliderScreenViewModel by viewModels()
+   private val historyViewModel: HistoryViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -49,7 +51,8 @@ class MainActivity : ComponentActivity() {
                wrapperNavigationViewModel = wrapperNavigationViewModel,
                otherViewModel = otherViewModel,
                initialViewModel = initialViewModel,
-               sliderScreenViewModel = sliderScreenViewModel
+               sliderScreenViewModel = sliderScreenViewModel,
+               historyViewModel = historyViewModel
             )
          }
       }

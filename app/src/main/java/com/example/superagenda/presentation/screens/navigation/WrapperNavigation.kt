@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
@@ -196,6 +197,18 @@ fun BottomBar(navController: NavController) {
          // because default size is way too big
          .height(50.dp),
    ) {
+      NavigationBarItem(
+         selected = currentRoute == Destinations.History.route,
+         onClick = { navController.navigate(Destinations.History.route) },
+
+         icon = {
+            Icon(
+               imageVector = Icons.Default.ThumbUp,
+               contentDescription = null
+            )
+         }
+      )
+
       NavigationBarItem(
          selected = currentRoute == Destinations.Tasks.route,
          onClick = { navController.navigate(Destinations.Tasks.route) },

@@ -13,4 +13,5 @@ sealed class Destinations(
    object Tasks : Destinations("tasks")
    object Other : Destinations("other")
    object Initial: Destinations("initial")
+   object History : Destinations("history")
 }

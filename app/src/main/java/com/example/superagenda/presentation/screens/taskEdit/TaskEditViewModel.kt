@@ -122,6 +122,10 @@ class TaskEditViewModel @Inject constructor(
             endDateTime = now
          }
 
+         if (taskStatus == TaskStatus.NotStarted) {
+            endDateTime = null
+         }
+
          if (startDatetime >= endEstimatedDateTime) {
             _popups.value += Popup(
                "ERROR", "The expiration date can't be before or the same as the start date"
