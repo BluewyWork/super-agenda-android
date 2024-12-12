@@ -26,6 +26,8 @@ import com.example.superagenda.presentation.composables.LocalDateTimePickerTextF
 import com.example.superagenda.presentation.composables.PopupDialog
 import com.example.superagenda.presentation.screens.filter.composables.CardTask
 import com.example.superagenda.presentation.screens.filter.composables.TaskStatusDropDown
+import com.example.superagenda.ui.theme.oneDarkProOnSurface
+import com.example.superagenda.ui.theme.oneDarkProSurface
 
 @Composable
 fun FilterScreen(
@@ -120,7 +122,7 @@ fun Filter(filterScreenViewModel: FilterScreenViewModel, navController: NavContr
                   bottomStart = 0.dp
                )
             )
-            .background(Color.Gray)
+            .background(color = oneDarkProSurface)
             .padding(8.dp)
       ) {
          LazyColumn {
