@@ -3,6 +3,7 @@ package com.example.superagenda.presentation.screens.filter.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -56,17 +57,19 @@ fun CardTask(task: Task, onClick: () -> Unit) {
 
                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-               Text(
-                  text = task.title,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  softWrap = false,
+               Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                  Text(
+                     text = task.title,
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis,
+                     softWrap = false,
 
-                  style = MaterialTheme.typography.headlineMedium.copy(
-                     fontSize = 24.sp,
-                     fontWeight = FontWeight.Bold
+                     style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                     )
                   )
-               )
+               }
 
                Text(
                   text = task.description,
@@ -93,8 +96,8 @@ fun CardTask(task: Task, onClick: () -> Unit) {
                }
                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-               Text("Start: ${task.startDateTime.format(formatter)}")
-               Text("End: ${task.endEstimatedDateTime.format(formatter)}")
+               Text("Start: ${task.startDateTime.format(formatter)}", fontSize = 12.sp)
+               Text("End: ${task.endEstimatedDateTime.format(formatter)}", fontSize = 12.sp)
 
                if (task.endDateTime != null) {
                   Text("Real end time on ${task.endDateTime.format(formatter)}", fontSize = 12.sp)

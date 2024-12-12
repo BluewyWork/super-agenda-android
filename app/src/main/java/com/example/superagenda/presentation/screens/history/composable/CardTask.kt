@@ -3,6 +3,7 @@ package com.example.superagenda.presentation.screens.history.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -56,17 +57,20 @@ fun CardTask(task: Task, onClick: () -> Unit) {
 
                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-               Text(
-                  text = task.title,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis,
-                  softWrap = false,
+               Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                  Text(
+                     text = task.title,
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis,
+                     softWrap = false,
 
-                  style = MaterialTheme.typography.headlineMedium.copy(
-                     fontSize = 24.sp,
-                     fontWeight = FontWeight.Bold
+                     style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                     )
                   )
-               )
+               }
+
 
                Text(
                   text = task.description,
