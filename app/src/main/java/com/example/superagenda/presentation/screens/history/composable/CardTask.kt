@@ -95,6 +95,10 @@ fun CardTask(task: Task, onClick: () -> Unit) {
 
                Text("Start at ${task.startDateTime.format(formatter)}", fontSize = 12.sp)
                Text("Ends at ${task.endEstimatedDateTime.format(formatter)}", fontSize = 12.sp)
+
+               if (task.endDateTime != null) {
+                  Text("Real end time on ${task.endDateTime.format(formatter)}", fontSize = 12.sp)
+               }
             }
          }
       }

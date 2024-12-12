@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.superagenda.presentation.Destinations
 import com.example.superagenda.presentation.composables.LocalDateTimePickerTextField
 import com.example.superagenda.presentation.composables.PopupDialog
-import com.example.superagenda.presentation.screens.history.composable.CardTask
+import com.example.superagenda.presentation.screens.filter.composables.CardTask
 import com.example.superagenda.presentation.screens.filter.composables.TaskStatusDropDown
 import com.example.superagenda.ui.theme.oneDarkProSurface
 
