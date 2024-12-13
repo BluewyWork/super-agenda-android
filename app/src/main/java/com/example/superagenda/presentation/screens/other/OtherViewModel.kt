@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import java.io.BufferedReader
@@ -86,6 +85,7 @@ class OtherViewModel @Inject constructor(
 
             is Result.Success -> {
                val tasksLocal = resultGetLocalTasks.data
+               val tasksGood = mutableListOf<Task>()
                val differingTasks = mutableListOf<Pair<Task, Task>>()
 
                for (importedTask in tasksImported) {
@@ -93,10 +93,137 @@ class OtherViewModel @Inject constructor(
 
                   if (localTask != null && localTask != importedTask) {
                      differingTasks.add(Pair(localTask, importedTask))
+                  } else {
+                     tasksGood.add(importedTask)
                   }
                }
 
+               for (taskGood in tasksGood) {
+                  when (val resultUpsertTaskAtDatabase =
+                     taskUseCase.upsertTaskAtDatabase(taskGood)) {
+                     is Result.Error -> _popups.value += Popup(
+                        "ERROR",
+                        "Failed to upsert task locally...",
+                        resultUpsertTaskAtDatabase.error.toString()
+                     )
+
+                     is Result.Success -> {
+                        when (val resultUpdateLastModified =
+                           theRestUseCase.upsertLastModifiedAtDatabase(LocalDateTime.now())) {
+                           is Result.Error -> _popups.value += Popup(
+                              "ERROR",
+                              "Failed to update last modified locally...",
+                              resultUpdateLastModified.error.toString()
+                           )
+
+                           is Result.Success -> {
+                           }
+                        }
+                     }
+                  }
+               }
+
+               refreshTasksIfOutdated()
                _tasksPairToResolve.value = differingTasks
+            }
+         }
+      }
+   }
+
+   private suspend fun refreshTasksIfOutdated() {
+      val resultLoggedIn = authenticationUseCase.isLoggedIn()
+
+      if (resultLoggedIn !is Result.Success) {
+         return
+      }
+
+      val resultGetLastModifiedLocally = theRestUseCase.getLastModifiedAtDatabase()
+      val resultGetLastModifiedRemote = theRestUseCase.getLastModifiedAtApi()
+
+      if (resultGetLastModifiedLocally !is Result.Success) {
+         return
+      }
+
+      if (resultGetLastModifiedRemote !is Result.Success) {
+         return
+      }
+
+      val lastModifiedLocally = resultGetLastModifiedLocally.data
+      val lastModifiedRemote = resultGetLastModifiedRemote.data
+
+      // this is unnecessary check since
+      // on failure equals null or non existent
+      // which logic is same as here
+      if (lastModifiedLocally == null) {
+         return
+      }
+
+      if (lastModifiedRemote == null) {
+         return
+      }
+
+      if (lastModifiedLocally == lastModifiedRemote) {
+         return
+      }
+
+      val resultGetTasksRemote = taskUseCase.getTasksAtApi()
+      val resultGetTasksDatabase = taskUseCase.getTasksAtDatabase()
+
+      if (resultGetTasksRemote !is Result.Success) {
+         return
+      }
+
+      if (resultGetTasksDatabase !is Result.Success) {
+         return
+      }
+
+      Log.d("LOOK AT ME", "modRemote ${lastModifiedRemote}")
+      Log.d("LOOK AT ME", "modLocarlly ${lastModifiedLocally}")
+
+      if (lastModifiedLocally < lastModifiedRemote) {
+         Log.d("LOOK AT ME", "lastModifiedRemote is newer")
+
+         val tasksDeleted =
+            resultGetTasksDatabase.data.filter { it !in resultGetTasksRemote.data }
+
+         var lastResult2 = false;
+
+         for (task in tasksDeleted) {
+            lastResult2 = when (taskUseCase.deleteTaskAtDatabase(task.id)) {
+               is Result.Error -> false
+               is Result.Success -> lastResult2
+            }
+         }
+
+         var lastResult = false;
+
+         for (task in resultGetTasksRemote.data) {
+            lastResult = when (taskUseCase.upsertTaskAtDatabase(task)) {
+               is Result.Error -> false
+               is Result.Success -> true
+            }
+         }
+      } else if (lastModifiedLocally > lastModifiedRemote) {
+         Log.d("LOOK AT ME", "lastModifiedLocally is newer")
+
+         val tasksDeleted =
+            resultGetTasksRemote.data.filter { it !in resultGetTasksDatabase.data }
+
+         var lastResult = false
+
+         for (task in tasksDeleted) {
+            lastResult = when (taskUseCase.deleteTaskAtApi(task.id)) {
+               is Result.Error -> false
+               is Result.Success -> lastResult
+            }
+         }
+
+         var lastResult2 = false
+
+         for (task in resultGetTasksDatabase.data) {
+            lastResult2 = when (taskUseCase.updateTaskAtApi(task)) {
+               is Result.Error -> false
+               is Result.Success -> true
             }
          }
       }
@@ -137,7 +264,8 @@ class OtherViewModel @Inject constructor(
 
                   is Result.Success -> {
                      _popups.value += Popup("INFO", "Successfully updated task...")
-                     _tasksPairToResolve.value = _tasksPairToResolve.value.filter { it.second != task }
+                     _tasksPairToResolve.value =
+                        _tasksPairToResolve.value.filter { it.second != task }
 
 
                      when (val resultUpsertLastModifiedAtDatabase =
@@ -194,7 +322,8 @@ class OtherViewModel @Inject constructor(
                   )
 
                   is Result.Success -> {
-                     _tasksPairToResolve.value = _tasksPairToResolve.value.filter { it.second != task }
+                     _tasksPairToResolve.value =
+                        _tasksPairToResolve.value.filter { it.second != task }
                      _popups.value += Popup("INFO", "Successfully upserted task locally!")
 
 

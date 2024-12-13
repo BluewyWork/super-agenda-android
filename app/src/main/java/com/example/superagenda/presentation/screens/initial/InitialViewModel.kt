@@ -164,7 +164,7 @@ class InitialViewModel @Inject constructor(
             val tasksDeleted =
                resultGetTasksRemote.data.filter { it !in resultGetTasksDatabase.data }
 
-            var lastResult = false
+            var lastResult = true
 
             for (task in tasksDeleted) {
                lastResult = when (taskUseCase.deleteTaskAtApi(task.id)) {
@@ -173,12 +173,15 @@ class InitialViewModel @Inject constructor(
                }
             }
 
-            var lastResult2 = false
+            var lastResult2 = true
 
             for (task in resultGetTasksDatabase.data) {
                lastResult2 = when (taskUseCase.updateTaskAtApi(task)) {
                   is Result.Error -> false
-                  is Result.Success -> true
+                  is Result.Success -> {
+                     Log.d("LOOK AT ME", "updating task: ${task.id}")
+                     lastResult2
+                  }
                }
             }
          }
