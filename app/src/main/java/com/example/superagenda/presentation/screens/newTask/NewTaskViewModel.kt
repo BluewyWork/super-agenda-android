@@ -197,7 +197,7 @@ class NewTaskViewModel @Inject constructor(
             status = taskStatus,
             startDateTime = startDatetime,
             endEstimatedDateTime = endEstimatedDateTime,
-            endDateTime = now,
+            endDateTime = null,
             images = images
          )
 
