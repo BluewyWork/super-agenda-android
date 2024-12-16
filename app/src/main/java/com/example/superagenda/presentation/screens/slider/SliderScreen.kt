@@ -186,7 +186,7 @@ fun PageSecond(
 ) {
    Box(modifier = Modifier.fillMaxSize()) {
       Image(
-         painter = painterResource(id = R.drawable.second),
+         painter = painterResource(id = R.drawable.sixth),
          contentDescription = null,
          contentScale = ContentScale.Fit,
          modifier = Modifier.fillMaxSize()
@@ -201,8 +201,7 @@ fun PageSecond(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
          ) {
-            Text("Welcome a Super Agenda", fontSize = 36.sp)
-            Text("", fontSize = 20.sp)
+            Text("Disfruta las tareas!", fontSize = 36.sp)
          }
 
          Column(
@@ -252,7 +251,7 @@ fun PageSecond(
 fun PageThird(sliderScreenViewModel: SliderScreenViewModel, navController: NavController) {
    Box(modifier = Modifier.fillMaxSize()) {
       Image(
-         painter = painterResource(id = R.drawable.third),
+         painter = painterResource(id = R.drawable.fifth),
          contentDescription = null,
          contentScale = ContentScale.Fit,
          modifier = Modifier.fillMaxSize()
@@ -270,7 +269,7 @@ fun PageThird(sliderScreenViewModel: SliderScreenViewModel, navController: NavCo
             horizontalAlignment = Alignment.CenterHorizontally
          ) {
             Text("Empezar", fontSize = 36.sp)
-            Text("Musica", fontSize = 20.sp)
+            Text("...", fontSize = 20.sp)
          }
 
          Column(
